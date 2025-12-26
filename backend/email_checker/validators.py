@@ -24,15 +24,6 @@ class EmailValidator:
             'guerrillamail.de', 'spam4.me', 'anonymousemail.me'
         }
 
-        try:
-            from email_checker.models import DisposableEmailDomain
-            db_domains = DisposableEmailDomain.objects.filter(
-                is_active=True
-            ).values_list('domain', flat=True)
-            common_disposable.update(db_domains)
-        except Exception:
-            pass
-
         return common_disposable
 
     def validate_syntax(self, email: str) -> Tuple[bool, str]:
