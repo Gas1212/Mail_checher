@@ -50,16 +50,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# MongoDB configuration
+# Database configuration - Using SQLite for Django admin/auth
+# MongoDB is used directly via pymongo in the email_checker app
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': config('MONGODB_NAME', default='email_checker'),
-        'CLIENT': {
-            'host': config('MONGODB_URI', default='mongodb://localhost:27017/'),
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# MongoDB configuration for email storage
+MONGODB_URI = config('MONGODB_URI', default='mongodb://localhost:27017/')
+MONGODB_NAME = config('MONGODB_NAME', default='email_checker')
+MONGODB_COLLECTION = config('MONGODB_COLLECTION', default='validations')
 
 AUTH_PASSWORD_VALIDATORS = [
     {
