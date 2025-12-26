@@ -78,7 +78,7 @@ export default function ContactPage() {
                 Get in <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Touch</span>
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
               </p>
             </motion.div>
           </div>
@@ -143,7 +143,7 @@ export default function ContactPage() {
                           <Send className="w-4 h-4 text-white" />
                         </div>
                         <p className="text-green-800 font-medium">
-                          Message sent successfully! We'll get back to you soon.
+                          Message sent successfully! We&apos;ll get back to you soon.
                         </p>
                       </div>
                     )}
