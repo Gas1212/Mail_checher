@@ -147,11 +147,19 @@ export default function SettingsPage() {
           </Link>
 
           <Link
-            href="/tools"
+            href="/tools/email-checker"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
           >
             <Mail className="w-5 h-5" />
-            <span>Tools</span>
+            <span>Single Checker</span>
+          </Link>
+
+          <Link
+            href="/tools/bulk-checker"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Mail className="w-5 h-5" />
+            <span>Bulk Checker</span>
           </Link>
 
           <Link

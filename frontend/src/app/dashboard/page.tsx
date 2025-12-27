@@ -114,6 +114,14 @@ export default function DashboardPage() {
           </Link>
 
           <Link
+            href="/tools/email-checker"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Mail className="w-5 h-5" />
+            <span>Single Checker</span>
+          </Link>
+
+          <Link
             href="/tools/bulk-checker"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
           >
@@ -215,23 +223,14 @@ export default function DashboardPage() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link
                   href="/tools/email-checker"
                   className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
                   <Mail className="w-8 h-8 text-indigo-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">Email Validator</h3>
-                  <p className="text-sm text-gray-600">Validate email addresses</p>
-                </Link>
-
-                <Link
-                  href="/tools/spf-checker"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-                >
-                  <Settings className="w-8 h-8 text-indigo-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">SPF Checker</h3>
-                  <p className="text-sm text-gray-600">Check SPF records</p>
+                  <h3 className="font-semibold text-gray-900 mb-1">Single Email Checker</h3>
+                  <p className="text-sm text-gray-600">Validate individual email addresses</p>
                 </Link>
 
                 <Link
@@ -239,7 +238,7 @@ export default function DashboardPage() {
                   className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
                   <LayoutDashboard className="w-8 h-8 text-indigo-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">Bulk Checker</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">Bulk Email Checker</h3>
                   <p className="text-sm text-gray-600">Validate multiple emails at once</p>
                 </Link>
               </div>
