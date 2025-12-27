@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Check, Mail, Shield, Zap } from 'lucide-react';
-import EmailChecker from '@/components/EmailChecker';
+import { Check, Mail, Shield, Zap, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Hero() {
   const features = [
@@ -66,14 +66,26 @@ export default function Hero() {
             with our powerful email validation service. Get instant results.
           </motion.p>
 
-          {/* Email Checker */}
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="mb-12"
+            className="mb-12 flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <EmailChecker />
+            <Link
+              href="/tools/email-checker"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              Check Email Now
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+            <Link
+              href="/tools"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-indigo-600 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200"
+            >
+              View All Tools
+            </Link>
           </motion.div>
 
           {/* Trust badges */}

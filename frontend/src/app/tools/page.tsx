@@ -9,6 +9,14 @@ import Footer from '@/components/layout/Footer';
 export default function ToolsPage() {
   const tools = [
     {
+      name: 'Email Validator',
+      description: 'Comprehensive email validation with syntax, DNS, SMTP checks',
+      icon: Mail,
+      href: '/tools/email-checker',
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+    },
+    {
       name: 'SPF Checker',
       description: 'Validate SPF records and email authentication configuration',
       icon: Shield,
