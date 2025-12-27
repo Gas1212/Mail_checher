@@ -1,5 +1,33 @@
 # Guide de déploiement - Email Checker
 
+## IMPORTANT: Fix JWT sur Serv00
+
+Si vous rencontrez l'erreur `module 'jwt' has no attribute 'encode'` sur serv00, c'est un conflit entre les packages `jwt` et `PyJWT`.
+
+### Solution rapide:
+
+Connectez-vous à serv00 via SSH:
+
+```bash
+cd ~/domains/gas1911.serv00.net/public_python
+
+# Désinstaller les packages conflictuels
+pip uninstall -y jwt PyJWT
+
+# Réinstaller seulement PyJWT
+pip install PyJWT==2.8.0
+
+# Vérifier
+python -c "import jwt; print('Version:', jwt.__version__); print('Has encode:', hasattr(jwt, 'encode'))"
+
+# Redémarrer
+devil www restart gas1911.serv00.net
+```
+
+Le package `jwt` (obsolète) ne doit PAS être installé, seulement `PyJWT`.
+
+---
+
 ## Options de déploiement
 
 ### Option 1: Déploiement local avec MongoDB Atlas (Recommandé pour le développement)
