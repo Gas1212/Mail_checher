@@ -27,4 +27,31 @@ export const emailAPI = {
   },
 };
 
+export const securityToolsAPI = {
+  checkSPF: async (domain: string): Promise<any> => {
+    const response = await api.post('/tools/spf-check/', { domain });
+    return response.data;
+  },
+
+  checkDMARC: async (domain: string): Promise<any> => {
+    const response = await api.post('/tools/dmarc-check/', { domain });
+    return response.data;
+  },
+
+  checkDNS: async (domain: string): Promise<any> => {
+    const response = await api.post('/tools/dns-check/', { domain });
+    return response.data;
+  },
+
+  analyzeHeaders: async (headers: string): Promise<any> => {
+    const response = await api.post('/tools/header-analyze/', { headers });
+    return response.data;
+  },
+
+  checkPhishing: async (url: string): Promise<any> => {
+    const response = await api.post('/tools/phishing-check/', { url });
+    return response.data;
+  },
+};
+
 export default api;
