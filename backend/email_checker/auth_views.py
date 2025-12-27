@@ -1,15 +1,13 @@
 """
-Authentication views for user registration and login
+Authentication views using MongoDB
 """
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
 from rest_framework import serializers
-from .models import User, UserProfile
+from .mongo_auth import MongoUserManager, generate_tokens, verify_token
 from datetime import datetime
 
 
@@ -37,31 +35,73 @@ class GoogleAuthSerializer(serializers.Serializer):
     profile_picture = serializers.URLField(required=False, allow_blank=True)
 
 
-class UserSerializer(serializers.Serializer):
-    id = serializers.UUIDField(read_only=True)
-    email = serializers.EmailField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    job_title = serializers.CharField()
-    company = serializers.CharField()
-    industry = serializers.CharField()
-    profile_picture = serializers.URLField()
-    is_verified = serializers.BooleanField()
-    date_joined = serializers.DateTimeField()
+class UserUpdateSerializer(serializers.Serializer):
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    job_title = serializers.CharField(required=False)
+    company = serializers.CharField(required=False)
+    industry = serializers.CharField(required=False)
 
 
-class UserProfileSerializer(serializers.Serializer):
-    total_checks = serializers.IntegerField()
-    checks_this_month = serializers.IntegerField()
-    plan_type = serializers.CharField()
-    credits_remaining = serializers.IntegerField()
-    credits_used = serializers.IntegerField()
+def serialize_user(user: dict) -> dict:
+    """Serialize user document for API response"""
+    if not user:
+        return None
+
+    return {
+        'id': user['_id'],
+        'email': user['email'],
+        'first_name': user.get('first_name', ''),
+        'last_name': user.get('last_name', ''),
+        'job_title': user.get('job_title', ''),
+        'company': user.get('company', ''),
+        'industry': user.get('industry', ''),
+        'profile_picture': user.get('profile_picture', ''),
+        'is_verified': user.get('is_verified', False),
+        'date_joined': user.get('date_joined').isoformat() if user.get('date_joined') else None
+    }
+
+
+def serialize_profile(profile: dict) -> dict:
+    """Serialize profile document for API response"""
+    if not profile:
+        return None
+
+    return {
+        'total_checks': profile.get('total_checks', 0),
+        'checks_this_month': profile.get('checks_this_month', 0),
+        'api_calls': profile.get('api_calls', 0),
+        'plan_type': profile.get('plan_type', 'free'),
+        'credits_remaining': profile.get('credits_remaining', 0),
+        'credits_used': profile.get('credits_used', 0)
+    }
+
+
+# Custom permission for authenticated users
+class IsAuthenticatedMongo:
+    """
+    Custom permission to check MongoDB JWT authentication
+    """
+    def has_permission(self, request, view):
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+
+        if not auth_header.startswith('Bearer '):
+            return False
+
+        token = auth_header.split(' ')[1]
+
+        try:
+            payload = verify_token(token)
+            request.user_id = payload['user_id']
+            return True
+        except Exception:
+            return False
 
 
 # ViewSet
 class AuthViewSet(viewsets.ViewSet):
     """
-    Authentication endpoints
+    Authentication endpoints using MongoDB
     """
     permission_classes = [AllowAny]
 
@@ -80,42 +120,31 @@ class AuthViewSet(viewsets.ViewSet):
             )
 
         data = serializer.validated_data
+        user_manager = MongoUserManager()
 
-        # Check if user already exists
-        if User.objects.filter(email=data['email']).exists():
-            return Response(
-                {'error': 'User with this email already exists'},
-                status=status.HTTP_400_BAD_REQUEST
+        try:
+            user = user_manager.create_user(
+                email=data['email'],
+                password=data['password'],
+                first_name=data.get('first_name', ''),
+                last_name=data.get('last_name', ''),
+                job_title=data.get('job_title', ''),
+                company=data.get('company', ''),
+                industry=data.get('industry', ''),
             )
 
-        # Create user
-        user = User.objects.create_user(
-            email=data['email'],
-            password=data['password'],
-            first_name=data.get('first_name', ''),
-            last_name=data.get('last_name', ''),
-            job_title=data.get('job_title', ''),
-            company=data.get('company', ''),
-            industry=data.get('industry', ''),
-        )
+            tokens = generate_tokens(user['_id'])
 
-        # Create user profile
-        UserProfile.objects.create(
-            user_id=user.id,
-            plan_type='free',
-            credits_remaining=100
-        )
+            return Response({
+                'user': serialize_user(user),
+                'tokens': tokens
+            }, status=status.HTTP_201_CREATED)
 
-        # Generate tokens
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'user': UserSerializer(user).data,
-            'tokens': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
-        }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     @action(detail=False, methods=['post'], url_path='login')
     def login(self, request):
@@ -134,28 +163,22 @@ class AuthViewSet(viewsets.ViewSet):
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
 
-        user = authenticate(email=email, password=password)
+        user_manager = MongoUserManager()
 
-        if user is None:
+        try:
+            user = user_manager.authenticate(email, password)
+            tokens = generate_tokens(user['_id'])
+
+            return Response({
+                'user': serialize_user(user),
+                'tokens': tokens
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
             return Response(
-                {'error': 'Invalid credentials'},
+                {'error': str(e)},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-
-        # Update last login
-        user.last_login = datetime.now()
-        user.save()
-
-        # Generate tokens
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'user': UserSerializer(user).data,
-            'tokens': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
-        }, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'], url_path='google')
     def google_auth(self, request):
@@ -172,90 +195,110 @@ class AuthViewSet(viewsets.ViewSet):
             )
 
         data = serializer.validated_data
+        user_manager = MongoUserManager()
 
-        # Check if user exists with this Google ID
-        user = User.objects.filter(google_id=data['google_id']).first()
-
-        if user:
-            # Update last login
-            user.last_login = datetime.now()
-            user.save()
-        else:
-            # Check if user exists with this email
-            user = User.objects.filter(email=data['email']).first()
+        try:
+            # Check if user exists with this Google ID
+            user = user_manager.get_user_by_google_id(data['google_id'])
 
             if user:
-                # Link Google account to existing user
-                user.google_id = data['google_id']
-                user.profile_picture = data.get('profile_picture', '')
-                user.save()
+                # Update last login
+                user_manager.users.update_one(
+                    {'_id': user['_id']},
+                    {'$set': {'last_login': datetime.utcnow()}}
+                )
             else:
-                # Create new user
-                user = User.objects.create_user(
-                    email=data['email'],
-                    first_name=data.get('first_name', ''),
-                    last_name=data.get('last_name', ''),
-                    google_id=data['google_id'],
-                    profile_picture=data.get('profile_picture', ''),
-                    is_verified=True,  # Google accounts are pre-verified
-                )
+                # Check if user exists with this email
+                user = user_manager.get_user_by_email(data['email'])
 
-                # Create user profile
-                UserProfile.objects.create(
-                    user_id=user.id,
-                    plan_type='free',
-                    credits_remaining=100
-                )
+                if user:
+                    # Link Google account to existing user
+                    user = user_manager.link_google_account(
+                        user['_id'],
+                        data['google_id'],
+                        data.get('profile_picture', '')
+                    )
+                else:
+                    # Create new user
+                    user = user_manager.create_user(
+                        email=data['email'],
+                        first_name=data.get('first_name', ''),
+                        last_name=data.get('last_name', ''),
+                        google_id=data['google_id'],
+                        profile_picture=data.get('profile_picture', ''),
+                        is_verified=True,  # Google accounts are pre-verified
+                    )
 
-        # Generate tokens
-        refresh = RefreshToken.for_user(user)
+            tokens = generate_tokens(user['_id'])
 
-        return Response({
-            'user': UserSerializer(user).data,
-            'tokens': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
-        }, status=status.HTTP_200_OK)
+            return Response({
+                'user': serialize_user(user),
+                'tokens': tokens
+            }, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], url_path='me', permission_classes=[IsAuthenticated])
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    @action(detail=False, methods=['get'], url_path='me', permission_classes=[IsAuthenticatedMongo])
     def get_current_user(self, request):
         """
         Get current user info
         GET /api/auth/me/
+        Requires: Authorization: Bearer <token>
         """
-        user = request.user
-        profile = UserProfile.objects.filter(user_id=user.id).first()
+        user_manager = MongoUserManager()
 
-        return Response({
-            'user': UserSerializer(user).data,
-            'profile': UserProfileSerializer(profile).data if profile else None,
-        }, status=status.HTTP_200_OK)
+        try:
+            user = user_manager.get_user_by_id(request.user_id)
+            profile = user_manager.get_user_profile(request.user_id)
 
-    @action(detail=False, methods=['put'], url_path='update-profile', permission_classes=[IsAuthenticated])
+            if not user:
+                return Response(
+                    {'error': 'User not found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            return Response({
+                'user': serialize_user(user),
+                'profile': serialize_profile(profile),
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    @action(detail=False, methods=['put'], url_path='update-profile', permission_classes=[IsAuthenticatedMongo])
     def update_profile(self, request):
         """
         Update user profile
         PUT /api/auth/update-profile/
+        Requires: Authorization: Bearer <token>
         """
-        user = request.user
-        data = request.data
+        serializer = UserUpdateSerializer(data=request.data)
 
-        # Update user fields
-        if 'first_name' in data:
-            user.first_name = data['first_name']
-        if 'last_name' in data:
-            user.last_name = data['last_name']
-        if 'job_title' in data:
-            user.job_title = data['job_title']
-        if 'company' in data:
-            user.company = data['company']
-        if 'industry' in data:
-            user.industry = data['industry']
+        if not serializer.is_valid():
+            return Response(
+                {'error': 'Invalid data', 'details': serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        user.save()
+        user_manager = MongoUserManager()
 
-        return Response({
-            'user': UserSerializer(user).data,
-            'message': 'Profile updated successfully'
-        }, status=status.HTTP_200_OK)
+        try:
+            user = user_manager.update_user(request.user_id, **serializer.validated_data)
+
+            return Response({
+                'user': serialize_user(user),
+                'message': 'Profile updated successfully'
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
