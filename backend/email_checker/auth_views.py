@@ -253,7 +253,9 @@ class AuthViewSet(viewsets.ViewSet):
 
         try:
             user = user_manager.get_user_by_id(request.user_id)
-            profile = user_manager.get_user_profile(request.user_id)
+
+            # Check and reset monthly credits if needed
+            profile = user_manager.check_and_reset_monthly_credits(request.user_id)
 
             if not user:
                 return Response(

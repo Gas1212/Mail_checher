@@ -114,6 +114,7 @@ class MongoUserManager:
         self.users.insert_one(user_doc)
 
         # Create user profile
+        now = datetime.utcnow()
         profile_doc = {
             '_id': str(uuid.uuid4()),
             'user_id': user_id,
@@ -123,11 +124,12 @@ class MongoUserManager:
             'plan_type': 'free',
             'credits_remaining': 100,
             'credits_used': 0,
+            'last_credit_reset': now,
             'timezone': 'UTC',
             'language': 'en',
             'notifications_enabled': True,
-            'created_at': datetime.utcnow(),
-            'updated_at': datetime.utcnow()
+            'created_at': now,
+            'updated_at': now
         }
 
         self.profiles.insert_one(profile_doc)
@@ -259,3 +261,34 @@ class MongoUserManager:
                 '$set': {'updated_at': datetime.utcnow()}
             }
         )
+
+    def reset_monthly_credits(self, user_id: str):
+        """Reset credits to 100 at the beginning of each month"""
+        now = datetime.utcnow()
+        profile = self.get_user_profile(user_id)
+
+        if not profile:
+            return
+
+        # Get last reset date
+        last_reset = profile.get('last_credit_reset', profile.get('created_at', now))
+
+        # Check if it's a new month
+        if last_reset.month != now.month or last_reset.year != now.year:
+            self.profiles.update_one(
+                {'user_id': user_id},
+                {
+                    '$set': {
+                        'credits_remaining': 100,
+                        'credits_used': 0,
+                        'checks_this_month': 0,
+                        'last_credit_reset': now,
+                        'updated_at': now
+                    }
+                }
+            )
+
+    def check_and_reset_monthly_credits(self, user_id: str) -> dict:
+        """Check if credits need to be reset and return profile"""
+        self.reset_monthly_credits(user_id)
+        return self.get_user_profile(user_id)

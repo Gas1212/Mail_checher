@@ -128,10 +128,10 @@ class EmailValidationViewSet(viewsets.ViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Check and deduct credits
-        db = get_db()
-        profiles = db['user_profiles']
-        profile = profiles.find_one({'user_id': user_id})
+        # Check and reset monthly credits if needed, then get profile
+        from .mongo_auth import MongoUserManager
+        user_manager = MongoUserManager()
+        profile = user_manager.check_and_reset_monthly_credits(user_id)
 
         if not profile:
             return Response(
@@ -147,7 +147,7 @@ class EmailValidationViewSet(viewsets.ViewSet):
             )
 
         # Deduct 1 credit
-        profiles.update_one(
+        user_manager.profiles.update_one(
             {'user_id': user_id},
             {
                 '$inc': {
