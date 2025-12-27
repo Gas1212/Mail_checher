@@ -14,9 +14,6 @@ export default function SignUpPage() {
     password: '',
     first_name: '',
     last_name: '',
-    job_title: '',
-    company: '',
-    industry: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -132,37 +129,6 @@ export default function SignUpPage() {
               placeholder="At least 8 characters"
               required
             />
-
-            {/* Professional Info */}
-            <div className="border-t border-gray-200 pt-5">
-              <p className="text-sm font-medium text-gray-700 mb-4">Professional Information (Optional)</p>
-
-              <div className="space-y-4">
-                <Input
-                  label="Job Title"
-                  name="job_title"
-                  value={formData.job_title}
-                  onChange={handleChange}
-                  placeholder="e.g., Marketing Manager"
-                />
-
-                <Input
-                  label="Company"
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  placeholder="e.g., Acme Inc."
-                />
-
-                <Input
-                  label="Industry"
-                  name="industry"
-                  value={formData.industry}
-                  onChange={handleChange}
-                  placeholder="e.g., Technology, Healthcare"
-                />
-              </div>
-            </div>
 
             <div className="flex items-start text-sm">
               <input

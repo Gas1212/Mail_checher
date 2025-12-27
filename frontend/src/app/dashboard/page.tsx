@@ -114,11 +114,11 @@ export default function DashboardPage() {
           </Link>
 
           <Link
-            href="/tools"
+            href="/tools/bulk-checker"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
           >
             <Mail className="w-5 h-5" />
-            <span>Tools</span>
+            <span>Bulk Checker</span>
           </Link>
 
           <Link
@@ -235,12 +235,12 @@ export default function DashboardPage() {
                 </Link>
 
                 <Link
-                  href="/tools"
+                  href="/tools/bulk-checker"
                   className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
                   <LayoutDashboard className="w-8 h-8 text-indigo-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">All Tools</h3>
-                  <p className="text-sm text-gray-600">View all security tools</p>
+                  <h3 className="font-semibold text-gray-900 mb-1">Bulk Checker</h3>
+                  <p className="text-sm text-gray-600">Validate multiple emails at once</p>
                 </Link>
               </div>
             </CardContent>

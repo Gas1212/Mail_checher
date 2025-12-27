@@ -90,6 +90,43 @@ class EmailValidationViewSet(viewsets.ViewSet):
         stats = get_validation_stats()
         return Response(stats, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'], url_path='bulk-validate')
+    def bulk_validate(self, request):
+        """
+        Validate email without saving to database (for bulk operations)
+        POST /api/emails/bulk-validate/
+        Body: { "email": "test@example.com", "check_smtp": true }
+        """
+        serializer = EmailCheckRequestSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                {'error': 'Invalid request', 'details': serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        email = serializer.validated_data['email']
+        check_smtp = serializer.validated_data.get('check_smtp', True)
+
+        validator = EmailValidator()
+        validation_result = validator.validate_email_complete(email, check_smtp)
+
+        # DO NOT save to database - just return validation result
+        response_data = {
+            'email': email,
+            'is_valid': validation_result['is_valid_syntax'] and validation_result['is_valid_dns'],
+            'is_valid_syntax': validation_result['is_valid_syntax'],
+            'is_valid_dns': validation_result['is_valid_dns'],
+            'is_valid_smtp': validation_result.get('is_valid_smtp', False),
+            'is_disposable': validation_result.get('is_disposable', False),
+            'domain': validation_result.get('domain', ''),
+            'mx_records': validation_result.get('mx_records', []),
+            'validation_message': validation_result.get('message', ''),
+            'details': validation_result.get('details', {})
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
 
 # DisposableEmailDomainViewSet removed - not needed for MVP
 # Disposable email detection is handled via external API in validators.py
