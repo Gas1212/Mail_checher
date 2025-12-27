@@ -112,8 +112,12 @@ class EmailValidator:
 
     def validate_email_complete(self, email: str, check_smtp: bool = True) -> Dict:
         """Perform complete email validation"""
+        # Extract domain from email
+        domain = email.split('@')[1] if '@' in email else ''
+
         result = {
             'email': email,
+            'domain': domain,
             'is_valid_syntax': False,
             'is_valid_dns': False,
             'is_valid_smtp': False,

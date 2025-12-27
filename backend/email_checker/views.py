@@ -96,15 +96,70 @@ class EmailValidationViewSet(viewsets.ViewSet):
         Validate email without saving to database (for bulk operations)
         POST /api/emails/bulk-validate/
         Body: { "email": "test@example.com", "check_smtp": true }
+        Requires authentication and deducts 1 credit per validation
         """
-        serializer = EmailCheckRequestSerializer(data=request.data)
+        from rest_framework.permissions import IsAuthenticated
+        from .mongo_auth import verify_token
+        from .db import get_db
 
+        # Check authentication
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if not auth_header.startswith('Bearer '):
+            return Response(
+                {'error': 'Authentication required'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        token = auth_header.split(' ')[1]
+        try:
+            payload = verify_token(token)
+            user_id = payload.get('user_id')
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        # Validate request
+        serializer = EmailCheckRequestSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(
                 {'error': 'Invalid request', 'details': serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Check and deduct credits
+        db = get_db()
+        profiles = db['user_profiles']
+        profile = profiles.find_one({'user_id': user_id})
+
+        if not profile:
+            return Response(
+                {'error': 'User profile not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        credits_remaining = profile.get('credits_remaining', 0)
+        if credits_remaining < 1:
+            return Response(
+                {'error': 'Insufficient credits. Please purchase more credits.'},
+                status=status.HTTP_402_PAYMENT_REQUIRED
+            )
+
+        # Deduct 1 credit
+        profiles.update_one(
+            {'user_id': user_id},
+            {
+                '$inc': {
+                    'credits_remaining': -1,
+                    'credits_used': 1,
+                    'total_checks': 1,
+                    'checks_this_month': 1
+                }
+            }
+        )
+
+        # Perform validation
         email = serializer.validated_data['email']
         check_smtp = serializer.validated_data.get('check_smtp', True)
 
