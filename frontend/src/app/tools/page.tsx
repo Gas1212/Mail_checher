@@ -1,107 +1,118 @@
 'use client';
 
-import { useState } from 'react';
-import { Tab } from '@headlessui/react';
-import { Shield, Mail, Globe, FileText, AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
+import { Shield, Mail, Globe, FileText, AlertTriangle, FileType } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { cn } from '@/lib/utils';
-import SPFChecker from '@/components/tools/SPFChecker';
-import DMARCChecker from '@/components/tools/DMARCChecker';
-import DNSChecker from '@/components/tools/DNSChecker';
-import HeaderAnalyzer from '@/components/tools/HeaderAnalyzer';
-import PhishingChecker from '@/components/tools/PhishingChecker';
 
 export default function ToolsPage() {
   const tools = [
     {
       name: 'SPF Checker',
+      description: 'Validate SPF records and email authentication configuration',
       icon: Shield,
-      description: 'Validate SPF records',
-      component: SPFChecker,
+      href: '/tools/spf-checker',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
     },
     {
       name: 'DMARC Checker',
+      description: 'Check DMARC policies and email security settings',
       icon: Mail,
-      description: 'Check DMARC policy',
-      component: DMARCChecker,
+      href: '/tools/dmarc-checker',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
     },
     {
       name: 'DNS Lookup',
+      description: 'Perform comprehensive DNS record lookups for any domain',
       icon: Globe,
-      description: 'DNS record checker',
-      component: DNSChecker,
+      href: '/tools/dns-checker',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
     },
     {
       name: 'Header Analyzer',
+      description: 'Analyze email headers for security threats and authentication',
       icon: FileText,
-      description: 'Analyze email headers',
-      component: HeaderAnalyzer,
+      href: '/tools/header-analyzer',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
     },
     {
       name: 'Phishing Checker',
+      description: 'Detect potential phishing URLs and security threats',
       icon: AlertTriangle,
-      description: 'Detect phishing URLs',
-      component: PhishingChecker,
+      href: '/tools/phishing-checker',
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+    },
+    {
+      name: 'TXT Record Checker',
+      description: 'Check TXT records including SPF, DMARC, and DKIM',
+      icon: FileType,
+      href: '/tools/txt-checker',
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
     },
   ];
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="pt-16 min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 py-12">
-          <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Email Security <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Tools</span>
-            </h1>
-            <p className="text-xl text-gray-600">
-              Comprehensive suite of tools to validate and secure your email infrastructure
+      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Email Security Tools</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Comprehensive suite of tools to validate email authentication, check DNS records,
+              and protect against phishing attacks.
             </p>
           </div>
-        </div>
 
-        {/* Tools Tabs */}
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <Tab.Group>
-            <Tab.List className="flex space-x-2 rounded-xl bg-white p-2 shadow-sm mb-8 overflow-x-auto">
-              {tools.map((tool) => {
-                const Icon = tool.icon;
-                return (
-                  <Tab
-                    key={tool.name}
-                    className={({ selected }) =>
-                      cn(
-                        'flex items-center space-x-2 px-4 py-3 rounded-lg font-medium transition-all whitespace-nowrap',
-                        'focus:outline-none focus:ring-2 focus:ring-indigo-500',
-                        selected
-                          ? 'bg-indigo-600 text-white shadow-md'
-                          : 'text-gray-700 hover:bg-gray-100'
-                      )
-                    }
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{tool.name}</span>
-                  </Tab>
-                );
-              })}
-            </Tab.List>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tools.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <Link key={tool.name} href={tool.href} className="block group">
+                  <Card className="h-full transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+                    <CardHeader>
+                      <div className={`w-12 h-12 rounded-lg ${tool.bgColor} flex items-center justify-center mb-4`}>
+                        <Icon className={`w-6 h-6 ${tool.color}`} />
+                      </div>
+                      <CardTitle className="text-xl group-hover:text-indigo-600 transition-colors">
+                        {tool.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600">{tool.description}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
 
-            <Tab.Panels>
-              {tools.map((tool) => {
-                const ToolComponent = tool.component;
-                return (
-                  <Tab.Panel key={tool.name} className="focus:outline-none">
-                    <ToolComponent />
-                  </Tab.Panel>
-                );
-              })}
-            </Tab.Panels>
-          </Tab.Group>
+          <div className="mt-16 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Need Help?</h2>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Our security tools help you validate email authentication, analyze headers,
+                and protect against phishing attacks. Each tool provides detailed analysis
+                and actionable recommendations.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+              >
+                Contact Support
+              </Link>
+            </div>
+          </div>
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

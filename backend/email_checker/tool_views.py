@@ -9,6 +9,7 @@ from .tools.dmarc_checker import DMARCChecker
 from .tools.dns_checker import DNSChecker
 from .tools.header_analyzer import EmailHeaderAnalyzer
 from .tools.phishing_checker import PhishingChecker
+from .tools.txt_checker import TXTChecker
 
 
 # Serializers
@@ -138,5 +139,27 @@ class SecurityToolsViewSet(viewsets.ViewSet):
 
         checker = PhishingChecker()
         result = checker.check_url(url)
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_path='txt-check')
+    def txt_check(self, request):
+        """
+        Check TXT records for a domain
+        POST /api/tools/txt-check/
+        Body: { "domain": "example.com" }
+        """
+        serializer = DomainCheckSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                {'error': 'Invalid request', 'details': serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        domain = serializer.validated_data['domain']
+
+        checker = TXTChecker()
+        result = checker.check_txt(domain)
 
         return Response(result, status=status.HTTP_200_OK)

@@ -52,6 +52,11 @@ export const securityToolsAPI = {
     const response = await api.post('/tools/phishing-check/', { url });
     return response.data;
   },
+
+  checkTXT: async (domain: string): Promise<any> => {
+    const response = await api.post('/tools/txt-check/', { domain });
+    return response.data;
+  },
 };
 
 export default api;
