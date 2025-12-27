@@ -54,8 +54,14 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/auth/signin"
+              className="text-gray-700 hover:text-indigo-600 transition-colors font-medium"
+            >
+              Sign In
+            </Link>
             <Button size="md" asChild>
-              <Link href="/">Get Started</Link>
+              <Link href="/auth/signup">Get Started</Link>
             </Button>
           </div>
 
@@ -88,8 +94,15 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/auth/signin"
+              className="block py-2 text-gray-700 hover:text-indigo-600 transition-colors font-medium"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Sign In
+            </Link>
             <Button className="w-full" asChild>
-              <Link href="/">Get Started</Link>
+              <Link href="/auth/signup">Get Started</Link>
             </Button>
           </div>
         </div>
