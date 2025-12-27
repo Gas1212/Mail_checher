@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
@@ -80,7 +80,6 @@ export default function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              icon={<Mail className="w-5 h-5 text-gray-400" />}
             />
 
             <Input
@@ -90,7 +89,6 @@ export default function SignInPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
-              icon={<Lock className="w-5 h-5 text-gray-400" />}
             />
 
             <div className="flex items-center justify-between text-sm">

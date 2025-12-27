@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, User, Briefcase, Building, TrendingUp } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 
@@ -117,7 +116,6 @@ export default function SignUpPage() {
                 value={formData.first_name}
                 onChange={handleChange}
                 placeholder="John"
-                icon={<User className="w-5 h-5 text-gray-400" />}
               />
               <Input
                 label="Last Name"
@@ -125,7 +123,6 @@ export default function SignUpPage() {
                 value={formData.last_name}
                 onChange={handleChange}
                 placeholder="Doe"
-                icon={<User className="w-5 h-5 text-gray-400" />}
               />
             </div>
 
@@ -137,7 +134,6 @@ export default function SignUpPage() {
               onChange={handleChange}
               placeholder="you@example.com"
               required
-              icon={<Mail className="w-5 h-5 text-gray-400" />}
             />
 
             <Input
@@ -148,7 +144,6 @@ export default function SignUpPage() {
               onChange={handleChange}
               placeholder="At least 8 characters"
               required
-              icon={<Lock className="w-5 h-5 text-gray-400" />}
             />
 
             {/* Professional Info */}
@@ -162,7 +157,6 @@ export default function SignUpPage() {
                   value={formData.job_title}
                   onChange={handleChange}
                   placeholder="e.g., Marketing Manager"
-                  icon={<Briefcase className="w-5 h-5 text-gray-400" />}
                 />
 
                 <Input
@@ -171,7 +165,6 @@ export default function SignUpPage() {
                   value={formData.company}
                   onChange={handleChange}
                   placeholder="e.g., Acme Inc."
-                  icon={<Building className="w-5 h-5 text-gray-400" />}
                 />
 
                 <Input
@@ -180,7 +173,6 @@ export default function SignUpPage() {
                   value={formData.industry}
                   onChange={handleChange}
                   placeholder="e.g., Technology, Healthcare"
-                  icon={<TrendingUp className="w-5 h-5 text-gray-400" />}
                 />
               </div>
             </div>
