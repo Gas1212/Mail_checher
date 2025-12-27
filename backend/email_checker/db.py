@@ -20,6 +20,12 @@ def get_mongo_client():
     return _client, _db, _collection
 
 
+def get_db():
+    """Get MongoDB database instance"""
+    _, db, _ = get_mongo_client()
+    return db
+
+
 def save_validation(email, validation_result, ip_address=None):
     """Save email validation to MongoDB"""
     _, _, collection = get_mongo_client()
