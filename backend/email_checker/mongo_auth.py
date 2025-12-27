@@ -97,13 +97,16 @@ class MongoUserManager:
             'job_title': kwargs.get('job_title', ''),
             'company': kwargs.get('company', ''),
             'industry': kwargs.get('industry', ''),
-            'google_id': kwargs.get('google_id'),
             'profile_picture': kwargs.get('profile_picture', ''),
             'is_active': True,
             'is_verified': kwargs.get('is_verified', False),
             'date_joined': datetime.utcnow(),
             'last_login': None
         }
+
+        # Only add google_id if it exists
+        if kwargs.get('google_id'):
+            user_doc['google_id'] = kwargs.get('google_id')
 
         if password:
             user_doc['password'] = hash_password(password)
