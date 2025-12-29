@@ -378,7 +378,7 @@ export default function BlacklistCheckerPage() {
                   {result.stats.listed_count > 0 && (
                     <div className="mt-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
                       <p className="text-sm font-medium text-orange-900 mb-2">
-                        What to do if you're listed:
+                        What to do if you&apos;re listed:
                       </p>
                       <ul className="space-y-1 text-sm text-orange-800">
                         <li>• Review your email sending practices</li>
