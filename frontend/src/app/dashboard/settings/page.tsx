@@ -12,7 +12,8 @@ import {
   Save,
   Server,
   Shield,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
@@ -187,6 +188,22 @@ export default function SettingsPage() {
           >
             <Sparkles className="w-5 h-5" />
             <span>List Cleaner</span>
+          </Link>
+
+          <Link
+            href="/tools/spf-generator"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Shield className="w-5 h-5" />
+            <span>SPF Generator</span>
+          </Link>
+
+          <Link
+            href="/tools/blacklist-checker"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <AlertTriangle className="w-5 h-5" />
+            <span>Blacklist Checker</span>
           </Link>
 
           <Link

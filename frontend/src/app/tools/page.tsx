@@ -49,12 +49,20 @@ export default function ToolsPage() {
       bgColor: 'bg-purple-50',
     },
     {
-      name: 'SPF Checker',
-      description: 'Validate SPF records and email authentication configuration',
+      name: 'SPF Generator',
+      description: 'Generate SPF records for your domain with custom configuration',
       icon: Shield,
-      href: '/tools/spf-checker',
+      href: '/tools/spf-generator',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
+    },
+    {
+      name: 'Blacklist Checker',
+      description: 'Check if your domain or IP is listed on spam blacklists',
+      icon: AlertTriangle,
+      href: '/tools/blacklist-checker',
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
     },
     {
       name: 'DMARC Checker',
