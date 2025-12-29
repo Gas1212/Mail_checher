@@ -404,7 +404,7 @@ export default function SPFGeneratorPage() {
                 </CardContent>
               </Card>
 
-              {result.warnings.length > 0 && (
+              {result.warnings && result.warnings.length > 0 && (
                 <Card className="mb-6 border-orange-200 bg-orange-50">
                   <CardHeader>
                     <CardTitle className="flex items-center text-orange-900">
@@ -440,7 +440,7 @@ export default function SPFGeneratorPage() {
                     <div className="space-y-3">
                       <p className="text-sm font-medium text-gray-700">Steps:</p>
                       <ol className="space-y-2">
-                        {result.installation_steps.map((step, index) => (
+                        {result.installation_steps && result.installation_steps.map((step, index) => (
                           <li key={index} className="text-sm text-gray-600 flex items-start">
                             <span className="font-medium mr-2 text-indigo-600">{index + 1}.</span>
                             <span>{step}</span>
@@ -461,7 +461,7 @@ export default function SPFGeneratorPage() {
                     <div>
                       <p className="text-sm font-medium text-gray-700 mb-2">Mechanisms:</p>
                       <div className="space-y-2">
-                        {Object.entries(result.explanation.mechanisms).map(([key, value]) => (
+                        {result.explanation?.mechanisms && Object.entries(result.explanation.mechanisms).map(([key, value]) => (
                           <div key={key} className="flex items-start space-x-2 text-sm">
                             <code className="px-2 py-0.5 bg-gray-100 rounded text-indigo-600">{key}</code>
                             <span className="text-gray-600">{value}</span>
