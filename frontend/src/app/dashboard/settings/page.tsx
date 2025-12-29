@@ -9,7 +9,10 @@ import {
   LogOut,
   Mail,
   User,
-  Save
+  Save,
+  Server,
+  Shield,
+  Sparkles
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
@@ -160,6 +163,30 @@ export default function SettingsPage() {
           >
             <Mail className="w-5 h-5" />
             <span>Bulk Checker</span>
+          </Link>
+
+          <Link
+            href="/tools/mx-lookup"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Server className="w-5 h-5" />
+            <span>MX Lookup</span>
+          </Link>
+
+          <Link
+            href="/tools/role-detector"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Shield className="w-5 h-5" />
+            <span>Role Detector</span>
+          </Link>
+
+          <Link
+            href="/tools/list-cleaner"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Sparkles className="w-5 h-5" />
+            <span>List Cleaner</span>
           </Link>
 
           <Link

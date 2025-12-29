@@ -10,7 +10,10 @@ import {
   Mail,
   TrendingUp,
   CreditCard,
-  User
+  User,
+  Server,
+  Shield,
+  Sparkles
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 
@@ -130,6 +133,30 @@ export default function DashboardPage() {
           </Link>
 
           <Link
+            href="/tools/mx-lookup"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Server className="w-5 h-5" />
+            <span>MX Lookup</span>
+          </Link>
+
+          <Link
+            href="/tools/role-detector"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Shield className="w-5 h-5" />
+            <span>Role Detector</span>
+          </Link>
+
+          <Link
+            href="/tools/list-cleaner"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Sparkles className="w-5 h-5" />
+            <span>List Cleaner</span>
+          </Link>
+
+          <Link
             href="/dashboard/settings"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
           >
@@ -223,7 +250,7 @@ export default function DashboardPage() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Link
                   href="/tools/email-checker"
                   className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
@@ -237,9 +264,36 @@ export default function DashboardPage() {
                   href="/tools/bulk-checker"
                   className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
                 >
-                  <LayoutDashboard className="w-8 h-8 text-indigo-600 mb-2" />
+                  <Mail className="w-8 h-8 text-indigo-600 mb-2" />
                   <h3 className="font-semibold text-gray-900 mb-1">Bulk Email Checker</h3>
                   <p className="text-sm text-gray-600">Validate multiple emails at once</p>
+                </Link>
+
+                <Link
+                  href="/tools/mx-lookup"
+                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all"
+                >
+                  <Server className="w-8 h-8 text-green-600 mb-2" />
+                  <h3 className="font-semibold text-gray-900 mb-1">MX Lookup</h3>
+                  <p className="text-sm text-gray-600">Check mail exchange records</p>
+                </Link>
+
+                <Link
+                  href="/tools/role-detector"
+                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-all"
+                >
+                  <Shield className="w-8 h-8 text-orange-600 mb-2" />
+                  <h3 className="font-semibold text-gray-900 mb-1">Role Detector</h3>
+                  <p className="text-sm text-gray-600">Identify generic role accounts</p>
+                </Link>
+
+                <Link
+                  href="/tools/list-cleaner"
+                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all"
+                >
+                  <Sparkles className="w-8 h-8 text-purple-600 mb-2" />
+                  <h3 className="font-semibold text-gray-900 mb-1">List Cleaner</h3>
+                  <p className="text-sm text-gray-600">Remove duplicates and invalid emails</p>
                 </Link>
               </div>
             </CardContent>
