@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, FileType } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, FileType, Server, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -15,6 +15,38 @@ export default function ToolsPage() {
       href: '/tools/email-checker',
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
+    },
+    {
+      name: 'Bulk Email Checker',
+      description: 'Validate multiple email addresses at once with CSV export',
+      icon: Mail,
+      href: '/tools/bulk-checker',
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+    },
+    {
+      name: 'MX Lookup',
+      description: 'Check mail exchange records and DNS configuration for domains',
+      icon: Server,
+      href: '/tools/mx-lookup',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+    },
+    {
+      name: 'Role Account Detector',
+      description: 'Identify generic role-based email addresses vs personal accounts',
+      icon: Shield,
+      href: '/tools/role-detector',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+    },
+    {
+      name: 'List Cleaner',
+      description: 'Remove duplicates and invalid emails from your mailing lists',
+      icon: Sparkles,
+      href: '/tools/list-cleaner',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
     },
     {
       name: 'SPF Checker',
