@@ -84,7 +84,7 @@ export default function GoogleAuthButton({ mode }: GoogleAuthButtonProps) {
         theme="outline"
         size="large"
         text={mode === 'signin' ? 'signin_with' : 'signup_with'}
-        width="100%"
+        width={400}
       />
       {error && (
         <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
