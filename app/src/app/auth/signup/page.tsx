@@ -7,6 +7,8 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 
+export const dynamic = 'force-dynamic';
+
 export default function SignUpPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({

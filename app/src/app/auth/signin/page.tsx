@@ -8,6 +8,8 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 
+export const dynamic = 'force-dynamic';
+
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
