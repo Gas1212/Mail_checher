@@ -149,17 +149,24 @@ class SitemapToolsViewSet(viewsets.ViewSet):
             # Check namespace
             namespace = {'ns': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
 
+            # Detect if namespace is used
+            has_namespace = root.tag.startswith('{http://www.sitemaps.org/schemas/sitemap/0.9}')
+
             # Extract URLs
-            url_elements = root.findall('.//ns:url', namespace)
-            if not url_elements:
-                # Try without namespace
+            if has_namespace:
+                url_elements = root.findall('.//ns:url', namespace)
+            else:
                 url_elements = root.findall('.//url')
 
             if not url_elements:
                 errors.append('No URL entries found in sitemap')
 
             for idx, url_elem in enumerate(url_elements):
-                loc_elem = url_elem.find('ns:loc', namespace) or url_elem.find('loc')
+                # Find loc element based on namespace presence
+                if has_namespace:
+                    loc_elem = url_elem.find('ns:loc', namespace)
+                else:
+                    loc_elem = url_elem.find('loc')
 
                 if loc_elem is None or not loc_elem.text:
                     errors.append(f'URL #{idx + 1}: Missing <loc> element')
@@ -176,12 +183,19 @@ class SitemapToolsViewSet(viewsets.ViewSet):
                 if len(url) > 2048:
                     warnings.append(f'URL #{idx + 1}: URL exceeds 2048 characters')
 
-                # Extract other elements
-                lastmod_elem = url_elem.find('ns:lastmod', namespace) or url_elem.find('lastmod')
+                # Extract other elements based on namespace
+                if has_namespace:
+                    lastmod_elem = url_elem.find('ns:lastmod', namespace)
+                    changefreq_elem = url_elem.find('ns:changefreq', namespace)
+                    priority_elem = url_elem.find('ns:priority', namespace)
+                else:
+                    lastmod_elem = url_elem.find('lastmod')
+                    changefreq_elem = url_elem.find('changefreq')
+                    priority_elem = url_elem.find('priority')
+
                 if lastmod_elem is not None and lastmod_elem.text:
                     url_info['lastmod'] = lastmod_elem.text.strip()
 
-                changefreq_elem = url_elem.find('ns:changefreq', namespace) or url_elem.find('changefreq')
                 if changefreq_elem is not None and changefreq_elem.text:
                     changefreq = changefreq_elem.text.strip()
                     url_info['changefreq'] = changefreq
@@ -189,7 +203,6 @@ class SitemapToolsViewSet(viewsets.ViewSet):
                     if changefreq not in valid_changefreq:
                         warnings.append(f'URL #{idx + 1}: Invalid changefreq value - {changefreq}')
 
-                priority_elem = url_elem.find('ns:priority', namespace) or url_elem.find('priority')
                 if priority_elem is not None and priority_elem.text:
                     try:
                         priority = float(priority_elem.text.strip())
