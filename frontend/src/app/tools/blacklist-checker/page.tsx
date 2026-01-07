@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getAppUrl } from '@/lib/config';
 import {
   LayoutDashboard,
   Settings,
@@ -141,7 +142,7 @@ export default function BlacklistCheckerPage() {
         </div>
 
         <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
-          <Link href="/dashboard" className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+          <Link href={getAppUrl("/dashboard")} className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
             <LayoutDashboard className="w-5 h-5" />
             <span>Dashboard</span>
           </Link>
@@ -239,7 +240,7 @@ export default function BlacklistCheckerPage() {
           {/* Settings */}
           <div className="pt-2 border-t border-gray-200">
             <Link
-              href="/dashboard/settings"
+              href={getAppUrl("/dashboard/settings")}
               className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
             >
               <Settings className="w-5 h-5" />

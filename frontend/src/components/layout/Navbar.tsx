@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Sparkles } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { getAppUrl } from '@/lib/config';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,14 +55,14 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/auth/signin"
+            <a
+              href={getAppUrl('/auth/signin')}
               className="text-gray-700 hover:text-indigo-600 transition-colors font-medium"
             >
               Sign In
-            </Link>
+            </a>
             <Button size="md" asChild>
-              <Link href="/auth/signup">Get Started</Link>
+              <a href={getAppUrl('/auth/signup')}>Get Started</a>
             </Button>
           </div>
 
@@ -94,15 +95,14 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/auth/signin"
+            <a
+              href={getAppUrl('/auth/signin')}
               className="block py-2 text-gray-700 hover:text-indigo-600 transition-colors font-medium"
-              onClick={() => setIsMobileMenuOpen(false)}
             >
               Sign In
-            </Link>
+            </a>
             <Button className="w-full" asChild>
-              <Link href="/auth/signup">Get Started</Link>
+              <a href={getAppUrl('/auth/signup')}>Get Started</a>
             </Button>
           </div>
         </div>
