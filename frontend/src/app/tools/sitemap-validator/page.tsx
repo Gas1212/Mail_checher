@@ -30,11 +30,19 @@ interface URLInfo {
 
 interface ValidationResult {
   is_valid: boolean;
+  score: number;
   errors: string[];
   warnings: string[];
   url_count: number;
   urls: URLInfo[];
+  total_size_kb: number;
   total_size_mb: number;
+  response_time: number;
+  metadata_coverage: {
+    lastmod: number;
+    priority: number;
+    changefreq: number;
+  };
   validated_at: string;
   recommendations: string[];
 }
@@ -274,39 +282,96 @@ export default function SitemapValidator() {
             <>
               <Card className="mb-6">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    {result.is_valid ? (
-                      <>
-                        <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
-                        <span className="text-green-900">Valid Sitemap</span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="w-6 h-6 text-red-600 mr-2" />
-                        <span className="text-red-900">Invalid Sitemap</span>
-                      </>
-                    )}
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      {result.is_valid ? (
+                        <>
+                          <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
+                          <span className="text-green-900">Valid</span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-6 h-6 text-red-600 mr-2" />
+                          <span className="text-red-900">Invalid</span>
+                        </>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-indigo-600">{result.score}/100</div>
+                      <div className="text-xs text-gray-500">Score</div>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-3 gap-4">
+                  {/* Overview Stats */}
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-gray-900">{result.url_count}</p>
-                      <p className="text-sm text-gray-600">URLs</p>
+                      <p className="text-2xl font-bold text-gray-900">{result.url_count.toLocaleString()}</p>
+                      <p className="text-xs text-gray-600">URLs</p>
                     </div>
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-gray-900">{result.errors.length}</p>
-                      <p className="text-sm text-gray-600">Errors</p>
+                      <p className="text-2xl font-bold text-gray-900">{result.total_size_kb.toLocaleString()}</p>
+                      <p className="text-xs text-gray-600">File Size (KB)</p>
                     </div>
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <p className="text-2xl font-bold text-gray-900">{result.warnings.length}</p>
-                      <p className="text-sm text-gray-600">Warnings</p>
+                      <p className="text-2xl font-bold text-gray-900">{result.response_time}</p>
+                      <p className="text-xs text-gray-600">Response Time (ms)</p>
+                    </div>
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <p className="text-2xl font-bold text-red-600">{result.errors.length}</p>
+                      <p className="text-xs text-red-600">Critical Errors</p>
+                    </div>
+                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                      <p className="text-2xl font-bold text-orange-600">{result.warnings.length}</p>
+                      <p className="text-xs text-orange-600">Warnings</p>
                     </div>
                   </div>
 
-                  <div className="mt-4 text-sm text-gray-600">
-                    <p>File Size: <span className="font-semibold">{result.total_size_mb} MB</span></p>
-                    <p>Validated: {new Date(result.validated_at).toLocaleString()}</p>
+                  {/* Metadata Coverage */}
+                  <div className="mb-4">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Metadata Coverage</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-gray-600">Last Modified</span>
+                          <span className="font-medium text-gray-900">{result.metadata_coverage.lastmod}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
+                            style={{ width: `${result.metadata_coverage.lastmod}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-gray-600">Priority</span>
+                          <span className="font-medium text-gray-900">{result.metadata_coverage.priority}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-green-600 h-2 rounded-full"
+                            style={{ width: `${result.metadata_coverage.priority}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-gray-600">Change Frequency</span>
+                          <span className="font-medium text-gray-900">{result.metadata_coverage.changefreq}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-purple-600 h-2 rounded-full"
+                            style={{ width: `${result.metadata_coverage.changefreq}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-xs text-gray-500">
+                    Validated: {new Date(result.validated_at).toLocaleString()}
                   </div>
                 </CardContent>
               </Card>

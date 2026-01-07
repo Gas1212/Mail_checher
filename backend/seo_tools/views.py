@@ -108,15 +108,19 @@ class SitemapToolsViewSet(viewsets.ViewSet):
             warnings = []
             url_count = 0
             urls = []
+            response_time = 0
+            import time
 
             # Get sitemap content
             if sitemap_url:
+                start_time = time.time()
                 try:
                     response = requests.get(sitemap_url, timeout=10, headers={
                         'User-Agent': 'Mozilla/5.0 (compatible; SitemapValidator/1.0)'
                     })
                     response.raise_for_status()
                     sitemap_content = response.text
+                    response_time = int((time.time() - start_time) * 1000)  # Convert to milliseconds
                 except requests.exceptions.RequestException as e:
                     return Response(
                         {'error': f'Failed to fetch sitemap: {str(e)}'},
@@ -203,21 +207,33 @@ class SitemapToolsViewSet(viewsets.ViewSet):
                 warnings.append(f'Sitemap contains {url_count} URLs. Maximum recommended is 50,000')
 
             # Check file size
-            size_mb = len(sitemap_content.encode('utf-8')) / (1024 * 1024)
+            size_bytes = len(sitemap_content.encode('utf-8'))
+            size_kb = size_bytes / 1024
+            size_mb = size_bytes / (1024 * 1024)
             if size_mb > 50:
                 warnings.append(f'Sitemap size is {size_mb:.2f}MB. Maximum recommended is 50MB')
 
             is_valid = len(errors) == 0
 
+            # Calculate metadata coverage
+            metadata_coverage = self._calculate_metadata_coverage(urls)
+
+            # Calculate performance score
+            score = self._calculate_score(is_valid, errors, warnings, url_count, size_mb, metadata_coverage)
+
             return Response({
                 'is_valid': is_valid,
+                'score': score,
                 'errors': errors,
                 'warnings': warnings,
                 'url_count': url_count,
                 'urls': urls[:100],  # Return first 100 URLs for preview
+                'total_size_kb': round(size_kb, 1),
                 'total_size_mb': round(size_mb, 2),
+                'response_time': response_time,
+                'metadata_coverage': metadata_coverage,
                 'validated_at': datetime.now().isoformat(),
-                'recommendations': self._get_validation_recommendations(errors, warnings, url_count)
+                'recommendations': self._get_validation_recommendations(errors, warnings, url_count, size_mb)
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -384,7 +400,64 @@ class SitemapToolsViewSet(viewsets.ViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-    def _get_validation_recommendations(self, errors, warnings, url_count):
+    def _calculate_metadata_coverage(self, urls):
+        """Calculate metadata coverage percentage"""
+        if not urls:
+            return {
+                'lastmod': 0,
+                'priority': 0,
+                'changefreq': 0
+            }
+
+        lastmod_count = sum(1 for url in urls if url.get('lastmod'))
+        priority_count = sum(1 for url in urls if url.get('priority') is not None)
+        changefreq_count = sum(1 for url in urls if url.get('changefreq'))
+
+        total_urls = len(urls)
+
+        return {
+            'lastmod': round((lastmod_count / total_urls) * 100, 1) if total_urls > 0 else 0,
+            'priority': round((priority_count / total_urls) * 100, 1) if total_urls > 0 else 0,
+            'changefreq': round((changefreq_count / total_urls) * 100, 1) if total_urls > 0 else 0
+        }
+
+    def _calculate_score(self, is_valid, errors, warnings, url_count, size_mb, metadata_coverage):
+        """Calculate overall sitemap score (0-100)"""
+        score = 100
+
+        # Deduct points for errors (critical)
+        score -= len(errors) * 20  # -20 points per error
+
+        # Deduct points for warnings (minor)
+        score -= len(warnings) * 5  # -5 points per warning
+
+        # Deduct points for size issues
+        if size_mb > 50:
+            score -= 15
+        elif size_mb > 40:
+            score -= 10
+
+        # Deduct points for too many URLs
+        if url_count > 50000:
+            score -= 15
+        elif url_count > 40000:
+            score -= 10
+
+        # Deduct points for no URLs
+        if url_count == 0:
+            score -= 50
+
+        # Bonus for good metadata coverage
+        avg_coverage = (metadata_coverage['lastmod'] + metadata_coverage['priority'] + metadata_coverage['changefreq']) / 3
+        if avg_coverage > 80:
+            score += 5
+        elif avg_coverage < 30:
+            score -= 5
+
+        # Ensure score is between 0 and 100
+        return max(0, min(100, score))
+
+    def _get_validation_recommendations(self, errors, warnings, url_count, size_mb):
         """Generate recommendations based on validation results"""
         recommendations = []
 
@@ -399,6 +472,9 @@ class SitemapToolsViewSet(viewsets.ViewSet):
 
         if url_count == 0:
             recommendations.append('Add URLs to your sitemap')
+
+        if size_mb > 40:
+            recommendations.append('Consider compressing large sitemaps with gzip')
 
         recommendations.extend([
             'Keep your sitemap updated regularly',
