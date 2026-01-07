@@ -12,7 +12,17 @@ import {
   CreditCard,
   ArrowLeft,
   AlertCircle,
-  Trash2
+  Trash2,
+  LayoutDashboard,
+  Settings,
+  LogOut,
+  Mail,
+  User,
+  Server,
+  Shield,
+  Sparkles,
+  AlertTriangle,
+  Search
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -220,36 +230,178 @@ export default function BulkCheckerPage() {
   const validCount = results.filter(r => r.is_valid).length;
   const invalidCount = results.length - validCount;
 
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    router.push('/');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            Back to Dashboard
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
+        <div className="p-6 border-b border-gray-200">
+          <Link href="/">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Mail Checker
+            </h1>
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Bulk Email Checker</h1>
-              <p className="text-gray-600 mt-1">
-                Upload CSV/TXT file or paste emails to validate in bulk
-              </p>
+        </div>
+
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-indigo-600" />
             </div>
-            <div className="bg-white rounded-lg border border-gray-200 px-6 py-3">
-              <div className="flex items-center space-x-2">
-                <CreditCard className="w-5 h-5 text-indigo-600" />
-                <div>
-                  <p className="text-xs text-gray-500">Available Credits</p>
-                  <p className="text-2xl font-bold text-gray-900">{credits}</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">
+                {user?.first_name || user?.email}
+              </p>
+              <p className="text-xs text-gray-500 truncate">Free Plan</p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
+          <Link href="/dashboard" className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+            <LayoutDashboard className="w-5 h-5" />
+            <span>Dashboard</span>
+          </Link>
+
+          {/* Email Validation Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Email Validation
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/email-checker"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Single Checker</span>
+              </Link>
+              <Link
+                href="/tools/bulk-checker"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Bulk Checker</span>
+              </Link>
+              <Link
+                href="/tools/mx-lookup"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Server className="w-5 h-5" />
+                <span>MX Lookup</span>
+              </Link>
+              <Link
+                href="/tools/role-detector"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Shield className="w-5 h-5" />
+                <span>Role Detector</span>
+              </Link>
+              <Link
+                href="/tools/list-cleaner"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>List Cleaner</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Email Security Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Email Security
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/spf-generator"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Shield className="w-5 h-5" />
+                <span>SPF Generator</span>
+              </Link>
+              <Link
+                href="/tools/blacklist-checker"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <AlertTriangle className="w-5 h-5" />
+                <span>Blacklist Checker</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* SEO Tools Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              SEO Tools
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/sitemap-validator"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <CheckCircle className="w-5 h-5" />
+                <span>Sitemap Validator</span>
+              </Link>
+              <Link
+                href="/tools/sitemap-finder"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Search className="w-5 h-5" />
+                <span>Sitemap Finder</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Settings */}
+          <div className="pt-2 border-t border-gray-200">
+            <Link
+              href="/dashboard/settings"
+              className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+            >
+              <Settings className="w-5 h-5" />
+              <span>Settings</span>
+            </Link>
+          </div>
+        </nav>
+
+        <div className="p-4 border-t border-gray-200 flex-shrink-0">
+          <button onClick={handleLogout} className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 w-full">
+            <LogOut className="w-5 h-5" />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Bulk Email Checker</h1>
+                <p className="text-gray-600 mt-1">
+                  Upload CSV/TXT file or paste emails to validate in bulk
+                </p>
+              </div>
+              <div className="bg-white rounded-lg border border-gray-200 px-6 py-3">
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="w-5 h-5 text-indigo-600" />
+                  <div>
+                    <p className="text-xs text-gray-500">Available Credits</p>
+                    <p className="text-2xl font-bold text-gray-900">{credits}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
         {/* Upload Method Selector */}
         <div className="mb-6">
