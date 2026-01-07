@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Mail } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default function Navbar() {
@@ -38,9 +38,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Mail className="w-5 h-5 text-white" />
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-gray-900">EmailChecker</span>
+            <span className="font-bold text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Sugesto</span>
           </Link>
 
           {/* Desktop Menu */}

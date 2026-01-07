@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Github, Twitter, Linkedin } from 'lucide-react';
+import { Sparkles, Github, Twitter, Linkedin } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -8,7 +8,7 @@ export default function Footer() {
     product: [
       { href: '/#features', label: 'Features' },
       { href: '/pricing', label: 'Pricing' },
-      { href: '/', label: 'Email Checker' },
+      { href: '/tools', label: 'All Tools' },
     ],
     company: [
       { href: '/about', label: 'About' },
@@ -34,12 +34,12 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <Mail className="w-5 h-5 text-white" />
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-white text-xl">EmailChecker</span>
+              <span className="font-bold text-white text-xl">Sugesto</span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Professional email validation service for developers and businesses. Verify emails with syntax, DNS, SMTP, and disposable checks.
+              Professional email validation and SEO tools for developers and businesses. Verify emails, validate sitemaps, check blacklists and more.
             </p>
           </div>
 
@@ -89,7 +89,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-sm text-gray-400">
-            © {currentYear} EmailChecker. All rights reserved.
+            © {currentYear} Sugesto. All rights reserved.
           </p>
 
           <div className="flex space-x-6">
