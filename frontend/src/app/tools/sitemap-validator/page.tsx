@@ -15,7 +15,8 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  Globe
+  Globe,
+  Search
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
