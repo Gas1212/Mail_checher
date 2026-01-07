@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, FileType, Server, Sparkles } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, FileType, Server, Sparkles, Search, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -63,6 +63,30 @@ export default function ToolsPage() {
       href: '/tools/blacklist-checker',
       color: 'text-red-600',
       bgColor: 'bg-red-50',
+    },
+    {
+      name: 'Sitemap Generator',
+      description: 'Generate XML sitemaps for your website',
+      icon: FileText,
+      href: '/tools/sitemap-generator',
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+    },
+    {
+      name: 'Sitemap Validator',
+      description: 'Validate your XML sitemap for errors and best practices',
+      icon: CheckCircle,
+      href: '/tools/sitemap-validator',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+    },
+    {
+      name: 'Sitemap Finder',
+      description: 'Find and analyze sitemaps for any domain',
+      icon: Search,
+      href: '/tools/sitemap-finder',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
     },
     {
       name: 'DMARC Checker',

@@ -14,7 +14,10 @@ import {
   Server,
   Shield,
   Sparkles,
-  AlertTriangle
+  AlertTriangle,
+  FileText,
+  CheckCircle,
+  Search
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 
@@ -171,6 +174,30 @@ export default function DashboardPage() {
           >
             <AlertTriangle className="w-5 h-5" />
             <span>Blacklist Checker</span>
+          </Link>
+
+          <Link
+            href="/tools/sitemap-generator"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <FileText className="w-5 h-5" />
+            <span>Sitemap Generator</span>
+          </Link>
+
+          <Link
+            href="/tools/sitemap-validator"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <CheckCircle className="w-5 h-5" />
+            <span>Sitemap Validator</span>
+          </Link>
+
+          <Link
+            href="/tools/sitemap-finder"
+            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            <Search className="w-5 h-5" />
+            <span>Sitemap Finder</span>
           </Link>
 
           <Link
