@@ -142,7 +142,7 @@ export default function EmailCheckerPage() {
         <div className="p-6 border-b border-gray-200">
           <Link href="/">
             <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Mail Checker
+              Sugesto
             </h1>
           </Link>
         </div>

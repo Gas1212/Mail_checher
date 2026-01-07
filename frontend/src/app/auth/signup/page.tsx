@@ -62,7 +62,7 @@ export default function SignUpPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Mail Checker
+              Sugesto
             </h1>
           </Link>
           <p className="text-gray-600 mt-2">Create your free account</p>

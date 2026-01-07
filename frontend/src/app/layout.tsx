@@ -6,8 +6,8 @@ import GoogleOAuthProvider from '@/components/providers/GoogleOAuthProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Email Checker - Validate Email Addresses',
-  description: 'Professional email validation tool with syntax, DNS, SMTP verification and disposable email detection',
+  title: 'Sugesto - Professional Email Validation & SEO Tools',
+  description: 'Professional email validation and SEO tools with syntax, DNS, SMTP verification, sitemap validation and more',
 }
 
 export default function RootLayout({

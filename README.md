@@ -1,16 +1,29 @@
-# Email Checker - Full Stack Web Application
+# Sugesto - Professional Email Validation & SEO Tools
 
-Application web complète pour la validation d'emails avec backend Django et frontend Next.js.
+Application web complète pour la validation d'emails et d'outils SEO avec backend Django et frontend Next.js.
 
 ## 🚀 Fonctionnalités
 
+### Validation d'Emails
 - ✅ **Validation de syntaxe email** - Vérification du format de l'adresse email
 - 🌐 **Vérification DNS/MX records** - Validation du domaine et des enregistrements MX
 - 📧 **Vérification SMTP** - Test de l'existence réelle de la boîte email
 - 🚫 **Détection emails jetables** - Identification des services d'emails temporaires
-- 📊 **Statistiques** - Tableau de bord avec métriques de validation
-- 📜 **Historique** - Suivi de toutes les validations effectuées
-- 💾 **MongoDB** - Stockage des validations dans MongoDB
+- 📊 **Validation en masse** - Validation de plusieurs emails à la fois
+- 🧹 **Nettoyage de liste** - Suppression des doublons et emails invalides
+
+### Sécurité Email
+- 🛡️ **Générateur SPF** - Génération de records SPF personnalisés
+- ⚠️ **Vérification Blacklist** - Vérification des domaines/IPs sur les blacklists
+
+### Outils SEO
+- ✅ **Validateur Sitemap** - Validation des sitemaps XML
+- 🔍 **Découverte Sitemap** - Recherche automatique de sitemaps
+
+### Gestion
+- 📊 **Tableau de bord** - Statistiques et métriques détaillées
+- 📜 **Historique** - Suivi de toutes les opérations effectuées
+- 💾 **PostgreSQL** - Stockage sécurisé des données
 
 ## 🏗️ Architecture
 
