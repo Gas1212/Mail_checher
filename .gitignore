@@ -78,3 +78,10 @@ backend/static/
 *.pid
 *.seed
 *.pid.lock
+
+node_modules/
+.next/
+*.log
+.env
+.env.local
+.vercel
