@@ -177,14 +177,6 @@ export default function DashboardPage() {
           </Link>
 
           <Link
-            href="/tools/sitemap-generator"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <FileText className="w-5 h-5" />
-            <span>Sitemap Generator</span>
-          </Link>
-
-          <Link
             href="/tools/sitemap-validator"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
           >

@@ -65,14 +65,6 @@ export default function ToolsPage() {
       bgColor: 'bg-red-50',
     },
     {
-      name: 'Sitemap Generator',
-      description: 'Generate XML sitemaps for your website',
-      icon: FileText,
-      href: '/tools/sitemap-generator',
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
-    },
-    {
       name: 'Sitemap Validator',
       description: 'Validate your XML sitemap for errors and best practices',
       icon: CheckCircle,
