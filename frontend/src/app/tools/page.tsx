@@ -1,12 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, FileType, Server, Sparkles, Search, CheckCircle } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, ChevronDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
 export default function ToolsPage() {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  const categories = {
+    all: { name: 'All Tools', icon: Globe },
+    email: { name: 'Email Validation', icon: Mail },
+    security: { name: 'Email Security', icon: Shield },
+    seo: { name: 'SEO Tools', icon: Search },
+  };
+
   const tools = [
     {
       name: 'Email Validator',
@@ -15,6 +25,7 @@ export default function ToolsPage() {
       href: '/tools/email-checker',
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
+      category: 'email',
     },
     {
       name: 'Bulk Email Checker',
@@ -23,6 +34,7 @@ export default function ToolsPage() {
       href: '/tools/bulk-checker',
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
+      category: 'email',
     },
     {
       name: 'MX Lookup',
@@ -31,6 +43,7 @@ export default function ToolsPage() {
       href: '/tools/mx-lookup',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
+      category: 'email',
     },
     {
       name: 'Role Account Detector',
@@ -39,6 +52,7 @@ export default function ToolsPage() {
       href: '/tools/role-detector',
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
+      category: 'email',
     },
     {
       name: 'List Cleaner',
@@ -47,6 +61,7 @@ export default function ToolsPage() {
       href: '/tools/list-cleaner',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
+      category: 'email',
     },
     {
       name: 'SPF Generator',
@@ -55,6 +70,7 @@ export default function ToolsPage() {
       href: '/tools/spf-generator',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
+      category: 'security',
     },
     {
       name: 'Blacklist Checker',
@@ -63,6 +79,7 @@ export default function ToolsPage() {
       href: '/tools/blacklist-checker',
       color: 'text-red-600',
       bgColor: 'bg-red-50',
+      category: 'security',
     },
     {
       name: 'Sitemap Validator',
@@ -71,6 +88,7 @@ export default function ToolsPage() {
       href: '/tools/sitemap-validator',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
+      category: 'seo',
     },
     {
       name: 'Sitemap Finder',
@@ -79,78 +97,79 @@ export default function ToolsPage() {
       href: '/tools/sitemap-finder',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
-    },
-    {
-      name: 'DMARC Checker',
-      description: 'Check DMARC policies and email security settings',
-      icon: Mail,
-      href: '/tools/dmarc-checker',
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-    },
-    {
-      name: 'DNS Lookup',
-      description: 'Perform comprehensive DNS record lookups for any domain',
-      icon: Globe,
-      href: '/tools/dns-checker',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-    },
-    {
-      name: 'Header Analyzer',
-      description: 'Analyze email headers for security threats and authentication',
-      icon: FileText,
-      href: '/tools/header-analyzer',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-    },
-    {
-      name: 'Phishing Checker',
-      description: 'Detect potential phishing URLs and security threats',
-      icon: AlertTriangle,
-      href: '/tools/phishing-checker',
-      color: 'text-red-600',
-      bgColor: 'bg-red-50',
-    },
-    {
-      name: 'TXT Record Checker',
-      description: 'Check TXT records including SPF, DMARC, and DKIM',
-      icon: FileType,
-      href: '/tools/txt-checker',
-      color: 'text-indigo-600',
-      bgColor: 'bg-indigo-50',
+      category: 'seo',
     },
   ];
 
+  const filteredTools = selectedCategory === 'all'
+    ? tools
+    : tools.filter(tool => tool.category === selectedCategory);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Navbar />
-      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Email Security Tools</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Comprehensive suite of tools to validate email authentication, check DNS records,
-              and protect against phishing attacks.
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Our Tools
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Professional email validation, security, and SEO tools to enhance your workflow
             </p>
           </div>
 
+          {/* Category Filter */}
+          <div className="mb-8 flex justify-center">
+            <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
+              {Object.entries(categories).map(([key, category]) => {
+                const Icon = category.icon;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedCategory(key)}
+                    className={`
+                      flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all
+                      ${selectedCategory === key
+                        ? 'bg-indigo-600 text-white shadow-sm'
+                        : 'text-gray-700 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {category.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tools.map((tool) => {
+            {filteredTools.map((tool) => {
               const Icon = tool.icon;
               return (
-                <Link key={tool.name} href={tool.href} className="block group">
-                  <Card className="h-full transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+                <Link key={tool.name} href={tool.href}>
+                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group">
                     <CardHeader>
-                      <div className={`w-12 h-12 rounded-lg ${tool.bgColor} flex items-center justify-center mb-4`}>
+                      <div className={`w-12 h-12 rounded-lg ${tool.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                         <Icon className={`w-6 h-6 ${tool.color}`} />
                       </div>
-                      <CardTitle className="text-xl group-hover:text-indigo-600 transition-colors">
+                      <CardTitle className="text-xl font-semibold text-gray-900">
                         {tool.name}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-600">{tool.description}</p>
+                      <p className="text-gray-600 text-sm">
+                        {tool.description}
+                      </p>
+                      <div className="mt-4 flex items-center text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
+                        Try it now
+                        <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>
@@ -158,25 +177,15 @@ export default function ToolsPage() {
             })}
           </div>
 
-          <div className="mt-16 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Need Help?</h2>
-              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Our security tools help you validate email authentication, analyze headers,
-                and protect against phishing attacks. Each tool provides detailed analysis
-                and actionable recommendations.
-              </p>
-              <Link
-                href="/contact"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
-              >
-                Contact Support
-              </Link>
+          {/* Empty State */}
+          {filteredTools.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No tools found in this category</p>
             </div>
-          </div>
+          )}
         </div>
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

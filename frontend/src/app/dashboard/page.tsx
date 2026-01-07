@@ -85,7 +85,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
         {/* Logo */}
         <div className="p-6 border-b border-gray-200">
           <Link href="/">
@@ -111,7 +111,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           <Link
             href="/dashboard"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600"
@@ -202,7 +202,7 @@ export default function DashboardPage() {
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 flex-shrink-0">
           <button
             onClick={handleLogout}
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 w-full"
