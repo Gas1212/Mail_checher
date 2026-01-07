@@ -111,7 +111,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
           <Link
             href="/dashboard"
             className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600"
@@ -120,85 +120,106 @@ export default function DashboardPage() {
             <span>Dashboard</span>
           </Link>
 
-          <Link
-            href="/tools/email-checker"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Mail className="w-5 h-5" />
-            <span>Single Checker</span>
-          </Link>
+          {/* Email Validation Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Email Validation
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/email-checker"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Single Checker</span>
+              </Link>
+              <Link
+                href="/tools/bulk-checker"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Bulk Checker</span>
+              </Link>
+              <Link
+                href="/tools/mx-lookup"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Server className="w-5 h-5" />
+                <span>MX Lookup</span>
+              </Link>
+              <Link
+                href="/tools/role-detector"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Shield className="w-5 h-5" />
+                <span>Role Detector</span>
+              </Link>
+              <Link
+                href="/tools/list-cleaner"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>List Cleaner</span>
+              </Link>
+            </div>
+          </div>
 
-          <Link
-            href="/tools/bulk-checker"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Mail className="w-5 h-5" />
-            <span>Bulk Checker</span>
-          </Link>
+          {/* Email Security Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Email Security
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/spf-generator"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Shield className="w-5 h-5" />
+                <span>SPF Generator</span>
+              </Link>
+              <Link
+                href="/tools/blacklist-checker"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <AlertTriangle className="w-5 h-5" />
+                <span>Blacklist Checker</span>
+              </Link>
+            </div>
+          </div>
 
-          <Link
-            href="/tools/mx-lookup"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Server className="w-5 h-5" />
-            <span>MX Lookup</span>
-          </Link>
+          {/* SEO Tools Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              SEO Tools
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/sitemap-validator"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <CheckCircle className="w-5 h-5" />
+                <span>Sitemap Validator</span>
+              </Link>
+              <Link
+                href="/tools/sitemap-finder"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Search className="w-5 h-5" />
+                <span>Sitemap Finder</span>
+              </Link>
+            </div>
+          </div>
 
-          <Link
-            href="/tools/role-detector"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Shield className="w-5 h-5" />
-            <span>Role Detector</span>
-          </Link>
-
-          <Link
-            href="/tools/list-cleaner"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Sparkles className="w-5 h-5" />
-            <span>List Cleaner</span>
-          </Link>
-
-          <Link
-            href="/tools/spf-generator"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Shield className="w-5 h-5" />
-            <span>SPF Generator</span>
-          </Link>
-
-          <Link
-            href="/tools/blacklist-checker"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <AlertTriangle className="w-5 h-5" />
-            <span>Blacklist Checker</span>
-          </Link>
-
-          <Link
-            href="/tools/sitemap-validator"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <CheckCircle className="w-5 h-5" />
-            <span>Sitemap Validator</span>
-          </Link>
-
-          <Link
-            href="/tools/sitemap-finder"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Search className="w-5 h-5" />
-            <span>Sitemap Finder</span>
-          </Link>
-
-          <Link
-            href="/dashboard/settings"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            <Settings className="w-5 h-5" />
-            <span>Settings</span>
-          </Link>
+          {/* Settings */}
+          <div className="pt-2 border-t border-gray-200">
+            <Link
+              href="/dashboard/settings"
+              className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+            >
+              <Settings className="w-5 h-5" />
+              <span>Settings</span>
+            </Link>
+          </div>
         </nav>
 
         {/* Logout */}
