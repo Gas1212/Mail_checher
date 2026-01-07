@@ -634,6 +634,7 @@ export default function BulkCheckerPage() {
           </Card>
         )}
       </div>
-    </div>
-  );
+    </main>
+  </div>
+);
 }
