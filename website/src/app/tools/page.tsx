@@ -54,10 +54,11 @@ export default function ToolsPage() {
       name: 'Role Account Detector',
       description: 'Identify generic role-based email addresses vs personal accounts',
       icon: Shield,
-      href: getAppUrl('/tools/role-detector'),
+      href: '/tools/role-detector',
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
       category: 'email',
+      badge: 'Try Free',
     },
     {
       name: 'List Cleaner',
