@@ -34,10 +34,11 @@ export default function ToolsPage() {
       name: 'Bulk Email Checker',
       description: 'Validate multiple email addresses at once with CSV export',
       icon: Mail,
-      href: getAppUrl('/tools/bulk-checker'),
+      href: '/tools/bulk-checker',
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
       category: 'email',
+      badge: 'Try Free',
     },
     {
       name: 'MX Lookup',
