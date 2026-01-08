@@ -1,6 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { Check, X, Zap, Star, Crown } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -77,7 +76,6 @@ export default function PricingPage() {
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-indigo-50 to-purple-50 py-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -88,7 +86,6 @@ export default function PricingPage() {
               <p className="text-xl text-gray-600 leading-relaxed">
                 Choose the plan that fits your needs. All plans include our core validation features.
               </p>
-            </motion.div>
           </div>
         </section>
 
@@ -99,7 +96,6 @@ export default function PricingPage() {
               {plans.map((plan, index) => {
                 const Icon = plan.icon;
                 return (
-                  <motion.div
                     key={plan.name}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -176,7 +172,6 @@ export default function PricingPage() {
                         </Button>
                       </CardContent>
                     </Card>
-                  </motion.div>
                 );
               })}
             </div>
@@ -186,7 +181,6 @@ export default function PricingPage() {
         {/* FAQ Section */}
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4">
-            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -215,7 +209,6 @@ export default function PricingPage() {
                     answer: 'Yes! The Free plan lets you try our service with 100 validations per month. Pro plan includes a 14-day free trial.',
                   },
                 ].map((faq, index) => (
-                  <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -232,10 +225,8 @@ export default function PricingPage() {
                         </p>
                       </CardContent>
                     </Card>
-                  </motion.div>
                 ))}
               </div>
-            </motion.div>
           </div>
         </section>
       </main>

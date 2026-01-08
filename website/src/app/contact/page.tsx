@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Mail, Send, MapPin, Phone } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -69,7 +68,6 @@ export default function ContactPage() {
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-indigo-50 to-purple-50 py-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -80,7 +78,6 @@ export default function ContactPage() {
               <p className="text-xl text-gray-600 leading-relaxed">
                 Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
               </p>
-            </motion.div>
           </div>
         </section>
 
@@ -93,7 +90,6 @@ export default function ContactPage() {
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon;
                   return (
-                    <motion.div
                       key={info.title}
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
@@ -118,13 +114,11 @@ export default function ContactPage() {
                           </a>
                         </CardContent>
                       </Card>
-                    </motion.div>
                   );
                 })}
               </div>
 
               {/* Contact Form */}
-              <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -205,7 +199,6 @@ export default function ContactPage() {
                     </form>
                   </CardContent>
                 </Card>
-              </motion.div>
             </div>
           </div>
         </section>
