@@ -84,10 +84,11 @@ export default function ToolsPage() {
       name: 'Blacklist Checker',
       description: 'Check if your domain or IP is listed on spam blacklists',
       icon: AlertTriangle,
-      href: getAppUrl('/tools/blacklist-checker'),
+      href: '/tools/blacklist-checker',
       color: 'text-red-600',
       bgColor: 'bg-red-50',
       category: 'security',
+      badge: 'Try Free',
     },
     {
       name: 'Sitemap Validator',
