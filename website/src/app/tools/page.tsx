@@ -44,10 +44,11 @@ export default function ToolsPage() {
       name: 'MX Lookup',
       description: 'Check mail exchange records and DNS configuration for domains',
       icon: Server,
-      href: getAppUrl('/tools/mx-lookup'),
+      href: '/tools/mx-lookup',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       category: 'email',
+      badge: 'Try Free',
     },
     {
       name: 'Role Account Detector',
