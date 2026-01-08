@@ -94,10 +94,11 @@ export default function ToolsPage() {
       name: 'Sitemap Validator',
       description: 'Validate your XML sitemap for errors and best practices',
       icon: CheckCircle,
-      href: getAppUrl('/tools/sitemap-validator'),
+      href: '/tools/sitemap-validator',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       category: 'seo',
+      badge: 'Try Free',
     },
     {
       name: 'Sitemap Finder',
