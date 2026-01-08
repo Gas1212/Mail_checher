@@ -5,7 +5,7 @@ interface SEOMetadata {
   description: string
   canonical?: string
   ogImage?: string
-  ogType?: 'website' | 'article' | 'product'
+  ogType?: 'website' | 'article'
   keywords?: string[]
   noindex?: boolean
   author?: string
