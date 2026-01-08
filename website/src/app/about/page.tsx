@@ -1,7 +1,28 @@
+import { Metadata } from 'next';
 import { Check, Mail, Users, Zap } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
+
+export const metadata: Metadata = {
+  title: 'About Us',
+  description: 'Learn about Sugesto, our mission to provide reliable email validation and SEO tools for businesses and developers worldwide. Built with modern technology for accuracy and performance.',
+  keywords: ['about sugesto', 'email validation company', 'email verification service', 'our mission', 'email tools'],
+  openGraph: {
+    title: 'About Sugesto - Email Validation & SEO Tools',
+    description: 'Learn about Sugesto, our mission to provide reliable email validation and SEO tools for businesses and developers worldwide.',
+    url: 'https://sugesto.xyz/about',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Sugesto',
+    description: 'Our mission to provide reliable email validation and SEO tools.',
+  },
+  alternates: {
+    canonical: 'https://sugesto.xyz/about',
+  },
+};
 
 export default function AboutPage() {
   const stats = [
