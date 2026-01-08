@@ -74,10 +74,11 @@ export default function ToolsPage() {
       name: 'SPF Generator',
       description: 'Generate SPF records for your domain with custom configuration',
       icon: Shield,
-      href: getAppUrl('/tools/spf-generator'),
+      href: '/tools/spf-generator',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
       category: 'security',
+      badge: 'Try Free',
     },
     {
       name: 'Blacklist Checker',
