@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Sparkles, Github, Twitter, Linkedin } from 'lucide-react';
+import { getAppUrl } from '@/lib/config';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -15,8 +16,8 @@ export default function Footer() {
       { href: '/contact', label: 'Contact' },
     ],
     legal: [
-      { href: '/privacy', label: 'Privacy Policy' },
-      { href: '/terms', label: 'Terms of Service' },
+      { href: getAppUrl('/privacy'), label: 'Privacy Policy' },
+      { href: getAppUrl('/terms'), label: 'Terms of Service' },
     ],
   };
 

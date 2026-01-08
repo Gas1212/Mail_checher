@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Check, Mail, Shield, Zap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { getAppUrl } from '@/lib/config';
 
 export default function Hero() {
   const features = [
@@ -74,7 +75,7 @@ export default function Hero() {
             className="mb-12 flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link
-              href="/tools/email-checker"
+              href={getAppUrl('/tools/email-checker')}
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               Check Email Now
