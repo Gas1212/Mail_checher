@@ -1,6 +1,5 @@
 'use client';
 
-import { Metadata } from 'next';
 import { Check, X, Zap, Star, Crown } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -8,26 +7,6 @@ import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
-
-export const metadata: Metadata = {
-  title: 'Pricing Plans',
-  description: 'Choose the perfect plan for your email validation needs. Free tier available with premium features for power users. Flexible pricing for businesses of all sizes.',
-  keywords: ['pricing', 'email validation pricing', 'email checker plans', 'subscription', 'free email validation', 'premium plans'],
-  openGraph: {
-    title: 'Pricing Plans - Sugesto',
-    description: 'Choose the perfect plan for your email validation needs. Free tier available with premium features for power users.',
-    url: 'https://sugesto.xyz/pricing',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Pricing Plans - Sugesto',
-    description: 'Choose the perfect plan for your email validation needs.',
-  },
-  alternates: {
-    canonical: 'https://sugesto.xyz/pricing',
-  },
-};
 
 export default function PricingPage() {
   const plans = [
@@ -97,16 +76,14 @@ export default function PricingPage() {
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-indigo-50 to-purple-50 py-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
                 Simple, <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Transparent</span> Pricing
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
                 Choose the plan that fits your needs. All plans include our core validation features.
               </p>
+            </div>
           </div>
         </section>
 
@@ -117,13 +94,7 @@ export default function PricingPage() {
               {plans.map((plan, index) => {
                 const Icon = plan.icon;
                 return (
-                    key={plan.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
-                    className="relative"
-                  >
+                  <div key={plan.name} className="relative">
                     {plan.popular && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                         <Badge variant="success" className="px-4 py-1">
@@ -193,6 +164,7 @@ export default function PricingPage() {
                         </Button>
                       </CardContent>
                     </Card>
+                  </div>
                 );
               })}
             </div>
@@ -202,11 +174,7 @@ export default function PricingPage() {
         {/* FAQ Section */}
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4">
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
                 Frequently Asked Questions
               </h2>
@@ -230,12 +198,7 @@ export default function PricingPage() {
                     answer: 'Yes! The Free plan lets you try our service with 100 validations per month. Pro plan includes a 14-day free trial.',
                   },
                 ].map((faq, index) => (
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.4 }}
-                  >
+                  <div key={index}>
                     <Card>
                       <CardContent>
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -246,8 +209,10 @@ export default function PricingPage() {
                         </p>
                       </CardContent>
                     </Card>
+                  </div>
                 ))}
               </div>
+            </div>
           </div>
         </section>
       </main>

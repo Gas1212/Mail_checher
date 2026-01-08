@@ -1,6 +1,5 @@
 'use client';
 
-import { Metadata } from 'next';
 import { useState } from 'react';
 import { Mail, Send, MapPin, Phone } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
@@ -8,26 +7,6 @@ import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-
-export const metadata: Metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with the Sugesto team. We are here to help with your email validation and SEO tool needs. Contact us for support, questions, or feedback.',
-  keywords: ['contact', 'support', 'customer service', 'email support', 'get in touch', 'help'],
-  openGraph: {
-    title: 'Contact Us - Sugesto',
-    description: 'Get in touch with the Sugesto team. We are here to help with your email validation and SEO tool needs.',
-    url: 'https://sugesto.xyz/contact',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact Us - Sugesto',
-    description: 'Get in touch with the Sugesto team.',
-  },
-  alternates: {
-    canonical: 'https://sugesto.xyz/contact',
-  },
-};
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -89,16 +68,14 @@ export default function ContactPage() {
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-indigo-50 to-purple-50 py-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
                 Get in <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Touch</span>
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed">
                 Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
               </p>
+            </div>
           </div>
         </section>
 
@@ -111,12 +88,7 @@ export default function ContactPage() {
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon;
                   return (
-                      key={info.title}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1, duration: 0.5 }}
-                    >
+                    <div key={info.title}>
                       <Card hover>
                         <CardContent>
                           <a
@@ -135,17 +107,13 @@ export default function ContactPage() {
                           </a>
                         </CardContent>
                       </Card>
+                    </div>
                   );
                 })}
               </div>
 
               {/* Contact Form */}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="lg:col-span-2"
-              >
+              <div className="lg:col-span-2">
                 <Card>
                   <CardContent>
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">
@@ -220,6 +188,7 @@ export default function ContactPage() {
                     </form>
                   </CardContent>
                 </Card>
+              </div>
             </div>
           </div>
         </section>

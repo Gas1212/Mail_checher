@@ -1,32 +1,11 @@
 'use client';
 
-import { Metadata } from 'next';
 import { useState } from 'react';
 import Link from 'next/link';
 import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, ChevronDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-
-export const metadata: Metadata = {
-  title: 'Email & SEO Tools',
-  description: 'Explore our comprehensive suite of email validation and SEO tools including email checker, bulk validator, sitemap tools, SPF generator, blacklist checker and more.',
-  keywords: ['email tools', 'SEO tools', 'validation tools', 'webmaster tools', 'email checker', 'sitemap validator', 'SPF generator', 'blacklist checker'],
-  openGraph: {
-    title: 'Email & SEO Tools - Sugesto',
-    description: 'Explore our comprehensive suite of email validation and SEO tools including email checker, bulk validator, sitemap tools, and more.',
-    url: 'https://sugesto.xyz/tools',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Email & SEO Tools - Sugesto',
-    description: 'Comprehensive suite of email validation and SEO tools.',
-  },
-  alternates: {
-    canonical: 'https://sugesto.xyz/tools',
-  },
-};
 
 export default function ToolsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
