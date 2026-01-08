@@ -63,7 +63,6 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <GoogleTagManager />
-        <link rel="canonical" href="https://sugesto.xyz" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
       </head>
