@@ -63,10 +63,11 @@ export default function ToolsPage() {
       name: 'List Cleaner',
       description: 'Remove duplicates and invalid emails from your mailing lists',
       icon: Sparkles,
-      href: getAppUrl('/tools/list-cleaner'),
+      href: '/tools/list-cleaner',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
       category: 'email',
+      badge: 'Try Free',
     },
     {
       name: 'SPF Generator',
