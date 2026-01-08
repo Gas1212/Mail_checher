@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { getAppUrl } from '@/lib/config';
 
 export default function ToolsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -104,10 +103,11 @@ export default function ToolsPage() {
       name: 'Sitemap Finder',
       description: 'Find and analyze sitemaps for any domain',
       icon: Search,
-      href: getAppUrl('/tools/sitemap-finder'),
+      href: '/tools/sitemap-finder',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
       category: 'seo',
+      badge: 'Try Free',
     },
   ];
 
