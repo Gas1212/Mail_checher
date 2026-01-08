@@ -1,5 +1,6 @@
 'use client';
 
+import { Metadata } from 'next';
 import { Check, X, Zap, Star, Crown } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -7,6 +8,26 @@ import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+
+export const metadata: Metadata = {
+  title: 'Pricing Plans',
+  description: 'Choose the perfect plan for your email validation needs. Free tier available with premium features for power users. Flexible pricing for businesses of all sizes.',
+  keywords: ['pricing', 'email validation pricing', 'email checker plans', 'subscription', 'free email validation', 'premium plans'],
+  openGraph: {
+    title: 'Pricing Plans - Sugesto',
+    description: 'Choose the perfect plan for your email validation needs. Free tier available with premium features for power users.',
+    url: 'https://sugesto.xyz/pricing',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pricing Plans - Sugesto',
+    description: 'Choose the perfect plan for your email validation needs.',
+  },
+  alternates: {
+    canonical: 'https://sugesto.xyz/pricing',
+  },
+};
 
 export default function PricingPage() {
   const plans = [
