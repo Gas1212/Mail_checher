@@ -75,10 +75,10 @@ export default function Hero() {
             className="mb-12 flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link
-              href={getAppUrl('/tools/email-checker')}
+              href="/tools/email-checker"
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              Check Email Now
+              Check Email Now - Try Free
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
             <Link

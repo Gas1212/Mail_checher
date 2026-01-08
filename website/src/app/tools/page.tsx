@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, ChevronDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { getAppUrl } from '@/lib/config';
@@ -23,10 +24,11 @@ export default function ToolsPage() {
       name: 'Email Validator',
       description: 'Comprehensive email validation with syntax, DNS, SMTP checks',
       icon: Mail,
-      href: getAppUrl('/tools/email-checker'),
+      href: '/tools/email-checker',
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
       category: 'email',
+      badge: 'Try Free',
     },
     {
       name: 'Bulk Email Checker',
@@ -152,7 +154,14 @@ export default function ToolsPage() {
               const Icon = tool.icon;
               return (
                 <Link key={tool.name} href={tool.href}>
-                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group">
+                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group relative">
+                    {tool.badge && (
+                      <div className="absolute top-3 right-3 z-10">
+                        <Badge variant="success" className="text-xs px-2 py-1">
+                          {tool.badge}
+                        </Badge>
+                      </div>
+                    )}
                     <CardHeader>
                       <div className={`w-12 h-12 rounded-lg ${tool.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                         <Icon className={`w-6 h-6 ${tool.color}`} />
