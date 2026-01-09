@@ -12,8 +12,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Qwen 2.5 3B Content Generator",
-    description="AI Content Generation API using Qwen 2.5 3B Instruct (CPU-optimized)",
+    title="Qwen 2.5 1.5B Content Generator",
+    description="AI Content Generation API using Qwen 2.5 1.5B Instruct (Fast CPU inference)",
     version="1.0.0"
 )
 
@@ -26,9 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model and tokenizer - Optimized for CPU with INT8 quantization
-# Using Qwen2.5-3B-Instruct (no gated access, excellent quality)
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+# Load model and tokenizer - Optimized for CPU speed
+# Using Qwen2.5-1.5B-Instruct (2x faster than 3B, no gated access, excellent quality)
+MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
 print(f"Loading model: {MODEL_NAME}")
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
@@ -67,7 +67,7 @@ async def root():
     return {
         "status": "running",
         "model": MODEL_NAME,
-        "message": "Llama 3.2 11B Content Generator API is ready"
+        "message": "Qwen 2.5 1.5B Content Generator API is ready"
     }
 
 @app.post("/v1/chat/completions")
