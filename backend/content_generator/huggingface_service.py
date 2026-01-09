@@ -25,8 +25,8 @@ class HuggingFaceService:
     """Service for generating content using Hugging Face models"""
 
     # Model configuration
-    PRIMARY_MODEL = 'meta-llama/Llama-3.2-11B-Vision-Instruct'
-    FALLBACK_MODEL = 'meta-llama/Llama-3.2-3B-Instruct'
+    PRIMARY_MODEL = 'meta-llama/Llama-3.2-3B-Instruct'
+    FALLBACK_MODEL = 'meta-llama/Llama-3.2-1B-Instruct'
 
     # API endpoints - use custom Space if configured, otherwise use Router API
     ROUTER_API_URL = 'https://router.huggingface.co/v1/chat/completions'
