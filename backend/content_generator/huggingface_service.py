@@ -28,6 +28,7 @@ class HuggingFaceService:
     PRIMARY_MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
     FALLBACK_MODEL = 'mistralai/Mistral-7B-Instruct-v0.2'
     API_URL = 'https://api-inference.huggingface.co/models/'
+    ROUTER_API_URL = 'https://router.huggingface.co/v1/chat/completions'
 
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('HUGGINGFACE_API_KEY')
@@ -161,31 +162,32 @@ Return ONLY the email body content.""",
         return prompts.get(content_type, '')
 
     def _call_api(self, model: str, prompt: str) -> Dict:
-        """Make API call to Hugging Face with retry for model loading"""
+        """Make API call to Hugging Face Router API (OpenAI-compatible format)"""
         headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
         }
 
+        # Use OpenAI-compatible chat completions format
         payload = {
-            'inputs': prompt,
-            'parameters': {
-                'max_new_tokens': 500,
-                'temperature': 0.7,
-                'top_p': 0.9,
-                'do_sample': True,
-                'return_full_text': False,
-            },
-            'options': {
-                'wait_for_model': True,
-            }
+            'model': model,
+            'messages': [
+                {
+                    'role': 'user',
+                    'content': prompt
+                }
+            ],
+            'max_tokens': 500,
+            'temperature': 0.7,
+            'top_p': 0.9,
+            'stream': False
         }
 
         response = requests.post(
-            f'{self.API_URL}{model}',
+            self.ROUTER_API_URL,
             headers=headers,
             json=payload,
-            timeout=60  # Increased timeout for model loading
+            timeout=60
         )
 
         if not response.ok:
@@ -235,12 +237,17 @@ Return ONLY the email body content.""",
                 data = self._call_api(self.FALLBACK_MODEL, prompt)
                 model_used = self.FALLBACK_MODEL
 
-            # Extract generated text
+            # Extract generated text from chat completions response
             generated_text = ''
-            if isinstance(data, list) and len(data) > 0:
-                generated_text = data[0].get('generated_text', '')
-            elif isinstance(data, dict):
-                generated_text = data.get('generated_text', '')
+            if isinstance(data, dict):
+                # OpenAI-compatible format: data.choices[0].message.content
+                choices = data.get('choices', [])
+                if choices and len(choices) > 0:
+                    message = choices[0].get('message', {})
+                    generated_text = message.get('content', '')
+                # Fallback for old format
+                else:
+                    generated_text = data.get('generated_text', '')
 
             generated_text = generated_text.strip()
 
