@@ -8,9 +8,9 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', showText = true, className = '' }: LogoProps) {
   const sizes = {
-    sm: { dimensions: 24, text: 'text-base' },
-    md: { dimensions: 32, text: 'text-xl' },
-    lg: { dimensions: 48, text: 'text-3xl' },
+    sm: { dimensions: 24, text: 'text-base', src: '/favicon-16x16.png' },
+    md: { dimensions: 32, text: 'text-xl', src: '/favicon-32x32.png' },
+    lg: { dimensions: 48, text: 'text-3xl', src: '/android-chrome-192x192.png' },
   };
 
   const sizeConfig = sizes[size];
@@ -19,7 +19,7 @@ export default function Logo({ size = 'md', showText = true, className = '' }: L
     <div className={`flex items-center space-x-2 ${className}`}>
       <div className="group-hover:scale-110 transition-transform">
         <Image
-          src="/favicon48.png"
+          src={sizeConfig.src}
           alt="Sugesto Logo"
           width={sizeConfig.dimensions}
           height={sizeConfig.dimensions}
