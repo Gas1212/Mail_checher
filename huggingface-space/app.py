@@ -121,15 +121,21 @@ async def chat_completions(request: GenerateRequest):
                 early_stopping=True  # Stop when EOS token is generated
             )
 
-        # Decode and remove prompt
-        generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        # Decode ONLY the generated tokens (skip input prompt)
+        input_length = inputs.input_ids.shape[1]
+        generated_tokens = outputs[0][input_length:]
+        generated_text = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
 
-        # Remove the input prompt from the output
-        if prompt in generated_text:
-            generated_text = generated_text.replace(prompt, "").strip()
-
-        # Clean up any remaining special tokens
-        generated_text = generated_text.strip()
+        # Clean up system prompt artifacts if present
+        lines_to_remove = ["system", "You are Qwen", "created by Alibaba Cloud", "user", "assistant"]
+        for line_marker in lines_to_remove:
+            if generated_text.startswith(line_marker):
+                # Find the first line that doesn't start with these markers
+                lines = generated_text.split('\n')
+                for i, line in enumerate(lines):
+                    if not any(marker in line for marker in lines_to_remove):
+                        generated_text = '\n'.join(lines[i:]).strip()
+                        break
 
         # Return in OpenAI format
         return {
