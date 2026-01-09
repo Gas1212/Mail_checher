@@ -12,8 +12,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Llama 3.2 11B Content Generator",
-    description="AI Content Generation API using Llama 3.2 11B Vision Instruct",
+    title="Llama 3.2 3B Content Generator",
+    description="AI Content Generation API using Llama 3.2 3B Instruct (CPU-optimized)",
     version="1.0.0"
 )
 
@@ -26,15 +26,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model and tokenizer
-MODEL_NAME = "meta-llama/Llama-3.2-11B-Vision-Instruct"
+# Load model and tokenizer - Optimized for CPU
+MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"
 print(f"Loading model: {MODEL_NAME}")
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
-    torch_dtype=torch.float16,
-    device_map="auto",
+    torch_dtype=torch.float32,  # float32 for CPU
+    device_map="cpu",  # Force CPU
     low_cpu_mem_usage=True
 )
 
