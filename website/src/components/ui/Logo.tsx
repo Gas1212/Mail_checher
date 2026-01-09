@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
@@ -8,23 +8,27 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', showText = true, className = '' }: LogoProps) {
   const sizes = {
-    sm: { box: 'w-6 h-6', icon: 'w-4 h-4', text: 'text-base' },
-    md: { box: 'w-8 h-8', icon: 'w-5 h-5', text: 'text-xl' },
-    lg: { box: 'w-12 h-12', icon: 'w-7 h-7', text: 'text-3xl' },
+    sm: { dimensions: 24, text: 'text-base' },
+    md: { dimensions: 32, text: 'text-xl' },
+    lg: { dimensions: 48, text: 'text-3xl' },
   };
 
-  const sizeClasses = sizes[size];
+  const sizeConfig = sizes[size];
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      <div
-        className={`${sizeClasses.box} bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}
-      >
-        <Sparkles className={`${sizeClasses.icon} text-white`} />
+      <div className="group-hover:scale-110 transition-transform">
+        <Image
+          src="/favicon48.png"
+          alt="Sugesto Logo"
+          width={sizeConfig.dimensions}
+          height={sizeConfig.dimensions}
+          priority
+        />
       </div>
       {showText && (
         <span
-          className={`font-bold ${sizeClasses.text} bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent`}
+          className={`font-bold ${sizeConfig.text} bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent`}
         >
           Sugesto
         </span>
