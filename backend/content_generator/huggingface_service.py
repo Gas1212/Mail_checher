@@ -161,7 +161,7 @@ Return ONLY the email body content.""",
         return prompts.get(content_type, '')
 
     def _call_api(self, model: str, prompt: str) -> Dict:
-        """Make API call to Hugging Face"""
+        """Make API call to Hugging Face with retry for model loading"""
         headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
@@ -175,6 +175,9 @@ Return ONLY the email body content.""",
                 'top_p': 0.9,
                 'do_sample': True,
                 'return_full_text': False,
+            },
+            'options': {
+                'wait_for_model': True,
             }
         }
 
@@ -182,7 +185,7 @@ Return ONLY the email body content.""",
             f'{self.API_URL}{model}',
             headers=headers,
             json=payload,
-            timeout=30
+            timeout=60  # Increased timeout for model loading
         )
 
         if not response.ok:
