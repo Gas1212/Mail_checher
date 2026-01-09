@@ -151,7 +151,7 @@ export default function BulkCheckerPage() {
                     placeholder="example1@domain.com&#10;example2@domain.com&#10;example3@domain.com"
                     disabled={isValidating || hasExceededLimit}
                     rows={10}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed font-mono text-sm"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed font-mono text-sm text-gray-900 placeholder:text-gray-400 bg-white"
                   />
                   <p className="text-sm text-gray-500 mt-2">
                     {emails.split('\n').filter(e => e.trim().length > 0).length} emails entered

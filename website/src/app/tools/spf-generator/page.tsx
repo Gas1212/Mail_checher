@@ -294,7 +294,7 @@ export default function SPFGeneratorPage() {
                     value={policy}
                     onChange={(e) => setPolicy(e.target.value)}
                     disabled={isGenerating || hasExceededLimit}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100"
+                    className="w-full px-3 py-2.5 sm:px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 text-gray-900 bg-white min-h-[44px]"
                   >
                     <option value="~all">~all (Soft Fail - Recommended)</option>
                     <option value="-all">-all (Hard Fail - Strict)</option>

@@ -292,7 +292,7 @@ export default function ContentGeneratorPage() {
                         placeholder="Real-time validation, bulk checking, API access..."
                         disabled={isGenerating || hasExceededLimit}
                         rows={2}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-3 py-2.5 sm:px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 placeholder:text-gray-400 bg-white disabled:opacity-50"
                       />
                     </div>
 
@@ -305,14 +305,14 @@ export default function ContentGeneratorPage() {
                       disabled={isGenerating || hasExceededLimit}
                     />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Tone</label>
                         <select
                           value={tone}
                           onChange={(e) => setTone(e.target.value as ToneType)}
                           disabled={isGenerating || hasExceededLimit}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-3 py-2.5 sm:px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 bg-white disabled:opacity-50 min-h-[44px]"
                         >
                           <option value="professional">Professional</option>
                           <option value="casual">Casual</option>
@@ -327,7 +327,7 @@ export default function ContentGeneratorPage() {
                           value={language}
                           onChange={(e) => setLanguage(e.target.value as LanguageType)}
                           disabled={isGenerating || hasExceededLimit}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-3 py-2.5 sm:px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 bg-white disabled:opacity-50 min-h-[44px]"
                         >
                           <option value="en">English</option>
                           <option value="fr">Français</option>
@@ -345,7 +345,7 @@ export default function ContentGeneratorPage() {
                         placeholder="Any additional instructions or context..."
                         disabled={isGenerating || hasExceededLimit}
                         rows={2}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        className="w-full px-3 py-2.5 sm:px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 placeholder:text-gray-400 bg-white disabled:opacity-50"
                       />
                     </div>
 
