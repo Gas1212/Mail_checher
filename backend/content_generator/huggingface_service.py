@@ -27,7 +27,7 @@ class HuggingFaceService:
     # Model configuration
     PRIMARY_MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
     FALLBACK_MODEL = 'mistralai/Mistral-7B-Instruct-v0.2'
-    API_URL = 'https://router.huggingface.co/v1/models/'
+    API_URL = 'https://api-inference.huggingface.co/models/'
 
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('HUGGINGFACE_API_KEY')
