@@ -12,8 +12,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Llama 3.2 3B Content Generator",
-    description="AI Content Generation API using Llama 3.2 3B Instruct (CPU-optimized)",
+    title="Qwen 2.5 3B Content Generator",
+    description="AI Content Generation API using Qwen 2.5 3B Instruct (CPU-optimized)",
     version="1.0.0"
 )
 
@@ -27,7 +27,8 @@ app.add_middleware(
 )
 
 # Load model and tokenizer - Optimized for CPU
-MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"
+# Using Qwen2.5-3B-Instruct (no gated access, excellent quality)
+MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 print(f"Loading model: {MODEL_NAME}")
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
@@ -81,8 +82,13 @@ async def chat_completions(request: GenerateRequest):
         if not user_message:
             raise HTTPException(status_code=400, detail="No user message found")
 
-        # Prepare the prompt for Llama
-        prompt = f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{user_message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+        # Prepare the prompt for Qwen (uses chat template)
+        messages = [{"role": "user", "content": user_message}]
+        prompt = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True
+        )
 
         # Tokenize
         inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
@@ -98,12 +104,15 @@ async def chat_completions(request: GenerateRequest):
                 pad_token_id=tokenizer.eos_token_id
             )
 
-        # Decode
+        # Decode and remove prompt
         generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        # Extract only the assistant's response (remove the prompt)
-        if "<|start_header_id|>assistant<|end_header_id|>" in generated_text:
-            generated_text = generated_text.split("<|start_header_id|>assistant<|end_header_id|>")[-1].strip()
+        # Remove the input prompt from the output
+        if prompt in generated_text:
+            generated_text = generated_text.replace(prompt, "").strip()
+
+        # Clean up any remaining special tokens
+        generated_text = generated_text.strip()
 
         # Return in OpenAI format
         return {
