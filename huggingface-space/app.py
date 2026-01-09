@@ -33,23 +33,15 @@ print(f"Loading model: {MODEL_NAME}")
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-# Load with INT8 quantization for faster inference (2-3x speedup on CPU)
+# Load model optimized for CPU inference
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     torch_dtype=torch.float32,
     device_map="cpu",
-    low_cpu_mem_usage=True,
-    load_in_8bit=False  # 8-bit not available on CPU, using optimized float32
+    low_cpu_mem_usage=True
 )
 
-# Enable BetterTransformer for ~30% speedup
-try:
-    model = model.to_bettertransformer()
-    print("BetterTransformer optimization enabled!")
-except Exception as e:
-    print(f"BetterTransformer not available: {e}")
-
-# Set to eval mode for inference optimization
+# Set to eval mode for inference optimization (disables dropout, etc.)
 model.eval()
 
 print("Model loaded and optimized successfully!")
@@ -117,8 +109,7 @@ async def chat_completions(request: GenerateRequest):
                 do_sample=request.temperature > 0,  # Disable sampling if temp=0 (faster)
                 num_beams=1,  # Greedy decoding (fastest)
                 pad_token_id=tokenizer.eos_token_id,
-                use_cache=True,  # Enable KV cache
-                early_stopping=True  # Stop when EOS token is generated
+                use_cache=True  # Enable KV cache for faster inference
             )
 
         # Decode ONLY the generated tokens (skip input prompt)
