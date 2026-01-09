@@ -17,7 +17,7 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
     # Rate limiting configuration
-    RATE_LIMIT = 10  # requests per hour
+    RATE_LIMIT = 30  # requests per hour
     RATE_LIMIT_WINDOW = 3600  # 1 hour in seconds
 
     def _get_client_ip(self, request):
