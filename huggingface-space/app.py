@@ -1,0 +1,138 @@
+"""
+Hugging Face Space - Llama 3.2 11B Content Generator API
+FastAPI endpoint compatible with Django backend
+"""
+import os
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional, Literal
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+# Initialize FastAPI
+app = FastAPI(
+    title="Llama 3.2 11B Content Generator",
+    description="AI Content Generation API using Llama 3.2 11B Vision Instruct",
+    version="1.0.0"
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Load model and tokenizer
+MODEL_NAME = "meta-llama/Llama-3.2-11B-Vision-Instruct"
+print(f"Loading model: {MODEL_NAME}")
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    torch_dtype=torch.float16,
+    device_map="auto",
+    low_cpu_mem_usage=True
+)
+
+print("Model loaded successfully!")
+
+# Request model
+class GenerateRequest(BaseModel):
+    model: str
+    messages: list
+    max_tokens: Optional[int] = 500
+    temperature: Optional[float] = 0.7
+    top_p: Optional[float] = 0.9
+    stream: Optional[bool] = False
+
+# Response model
+class GenerateResponse(BaseModel):
+    choices: list
+    model: str
+    usage: dict
+
+@app.get("/")
+async def root():
+    """Health check endpoint"""
+    return {
+        "status": "running",
+        "model": MODEL_NAME,
+        "message": "Llama 3.2 11B Content Generator API is ready"
+    }
+
+@app.post("/v1/chat/completions")
+async def chat_completions(request: GenerateRequest):
+    """
+    OpenAI-compatible chat completions endpoint
+    Compatible with Django backend format
+    """
+    try:
+        # Extract the user prompt from messages
+        user_message = ""
+        for msg in request.messages:
+            if msg.get("role") == "user":
+                user_message = msg.get("content", "")
+                break
+
+        if not user_message:
+            raise HTTPException(status_code=400, detail="No user message found")
+
+        # Prepare the prompt for Llama
+        prompt = f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n{user_message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+
+        # Tokenize
+        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+        # Generate
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=request.max_tokens,
+                temperature=request.temperature,
+                top_p=request.top_p,
+                do_sample=True,
+                pad_token_id=tokenizer.eos_token_id
+            )
+
+        # Decode
+        generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        # Extract only the assistant's response (remove the prompt)
+        if "<|start_header_id|>assistant<|end_header_id|>" in generated_text:
+            generated_text = generated_text.split("<|start_header_id|>assistant<|end_header_id|>")[-1].strip()
+
+        # Return in OpenAI format
+        return {
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": generated_text
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "model": request.model,
+            "usage": {
+                "prompt_tokens": len(inputs.input_ids[0]),
+                "completion_tokens": len(outputs[0]) - len(inputs.input_ids[0]),
+                "total_tokens": len(outputs[0])
+            }
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+async def health():
+    """Health check for monitoring"""
+    return {"status": "healthy", "model_loaded": model is not None}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)

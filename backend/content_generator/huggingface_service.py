@@ -25,15 +25,25 @@ class HuggingFaceService:
     """Service for generating content using Hugging Face models"""
 
     # Model configuration
-    PRIMARY_MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
+    PRIMARY_MODEL = 'meta-llama/Llama-3.2-11B-Vision-Instruct'
     FALLBACK_MODEL = 'meta-llama/Llama-3.2-3B-Instruct'
-    API_URL = 'https://api-inference.huggingface.co/models/'
+
+    # API endpoints - use custom Space if configured, otherwise use Router API
     ROUTER_API_URL = 'https://router.huggingface.co/v1/chat/completions'
 
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('HUGGINGFACE_API_KEY')
-        if not self.api_key:
-            raise ValueError('HUGGINGFACE_API_KEY not configured')
+        self.custom_space_url = os.getenv('HUGGINGFACE_SPACE_URL', '')
+
+        # If using custom Space, API key is optional
+        if not self.custom_space_url and not self.api_key:
+            raise ValueError('Either HUGGINGFACE_SPACE_URL or HUGGINGFACE_API_KEY must be configured')
+
+        # Use custom Space if available, otherwise use Router API
+        self.api_url = f"{self.custom_space_url}/v1/chat/completions" if self.custom_space_url else self.ROUTER_API_URL
+        self.using_custom_space = bool(self.custom_space_url)
+
+        print(f"Content Generator configured: {'Custom Space' if self.using_custom_space else 'Router API'}")
 
     def _get_prompt(
         self,
@@ -162,11 +172,14 @@ Return ONLY the email body content.""",
         return prompts.get(content_type, '')
 
     def _call_api(self, model: str, prompt: str) -> Dict:
-        """Make API call to Hugging Face Router API (OpenAI-compatible format)"""
+        """Make API call to Hugging Face Space or Router API (OpenAI-compatible format)"""
         headers = {
-            'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json',
         }
+
+        # Add authorization only if using Router API (not needed for custom Space)
+        if not self.using_custom_space and self.api_key:
+            headers['Authorization'] = f'Bearer {self.api_key}'
 
         # Use OpenAI-compatible chat completions format
         payload = {
@@ -184,10 +197,10 @@ Return ONLY the email body content.""",
         }
 
         response = requests.post(
-            self.ROUTER_API_URL,
+            self.api_url,
             headers=headers,
             json=payload,
-            timeout=60
+            timeout=90  # Increased timeout for custom Space cold starts
         )
 
         if not response.ok:

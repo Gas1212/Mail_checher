@@ -100,12 +100,35 @@ Liste tous les types de contenu disponibles.
 
 ### Environment Variables
 
-Ajouter dans `.env`:
+Vous avez 2 options pour configurer l'IA:
+
+#### Option 1: Hugging Face Space Personnel (Recommandé - Sans Quota)
+
+Déployez votre propre Llama 3.2 11B sur HF Space (voir `/huggingface-space/DEPLOYMENT.md`):
+
+```bash
+HUGGINGFACE_SPACE_URL=https://YOUR-USERNAME-llama-content-generator.hf.space
+```
+
+**Avantages:**
+- ✅ Aucune limite de quota
+- ✅ Llama 3.2 11B (meilleure qualité)
+- ✅ Contrôle total
+- ⚠️ Coût: ~$3/heure (A10G) ou gratuit avec Llama 3B
+
+#### Option 2: Hugging Face Router API (Avec Limites)
+
+Utilisez l'API publique avec quota limité:
+
 ```bash
 HUGGINGFACE_API_KEY=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 Obtenir une clé API: https://huggingface.co/settings/tokens
+
+**Limites:**
+- ⚠️ Quota quotidien limité
+- ⚠️ Peut être lent aux heures de pointe
 
 ### Installation
 
