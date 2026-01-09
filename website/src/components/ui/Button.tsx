@@ -23,8 +23,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const sizes = {
       sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2 text-base',
-      lg: 'px-6 py-3 text-lg',
+      md: 'px-4 py-2.5 sm:py-2 text-base min-h-[44px] sm:min-h-0', // Touch target size on mobile
+      lg: 'px-6 py-3 text-base sm:text-lg min-h-[48px]',
     };
 
     const classes = cn(baseStyles, variants[variant], sizes[size], className);

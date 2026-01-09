@@ -11,7 +11,8 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'bg-white rounded-xl shadow-sm border border-gray-200 p-6',
+          'bg-white rounded-xl shadow-sm border border-gray-200',
+          'p-4 sm:p-6', // Responsive padding
           hover && 'hover:shadow-md transition-shadow duration-200',
           className
         )}
@@ -34,7 +35,7 @@ CardHeader.displayName = 'CardHeader';
 
 const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn('text-xl font-bold text-gray-900', className)} {...props} />
+    <h3 ref={ref} className={cn('text-lg sm:text-xl font-bold text-gray-900', className)} {...props} />
   )
 );
 CardTitle.displayName = 'CardTitle';

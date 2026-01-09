@@ -19,7 +19,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           className={cn(
-            'w-full px-4 py-2.5 rounded-lg border transition-all duration-200',
+            'w-full px-3 py-2.5 sm:px-4 rounded-lg border transition-all duration-200',
+            'text-gray-900 placeholder:text-gray-400 bg-white',
+            'text-base', // Force readable text size on mobile
             'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             error
