@@ -69,28 +69,29 @@ class HuggingFaceService:
 
         prompts = {
             'product-title': f"""{lang_instruction} Generate a compelling, SEO-optimized product title for: {product_name}.
-Keep it under 60 characters. Make it {selected_tone}.
+CRITICAL: The title must be between 55-65 characters long. Make it {selected_tone}.
 {f"Target audience: {target_audience}." if target_audience else ""}
 {f"Additional context: {additional_context}" if additional_context else ""}
 
-Return ONLY the title, nothing else.""",
+Write a complete, full-length title. Do not write anything short. Return ONLY the title text.""",
 
-            'meta-description': f"""{lang_instruction} Write a meta description (150-160 characters) for: {product_name}.
+            'meta-description': f"""{lang_instruction} Write a meta description for: {product_name}.
+CRITICAL: The description must be EXACTLY 150-160 characters long (not shorter).
 {f"Key features: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
 Make it {selected_tone} and include a call-to-action.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
-Return ONLY the meta description, nothing else.""",
+Write a complete, detailed description. Fill the 150-160 character requirement. Return ONLY the description text.""",
 
             'product-description': f"""{lang_instruction} Write a detailed product description for: {product_name}.
 {f"Key features: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
 Make it {selected_tone}. Include benefits, use cases, and value proposition.
-Aim for 150-200 words.
+CRITICAL: Write a MINIMUM of 150 words. Write multiple paragraphs if needed to reach 150 words.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
-Return ONLY the description, nothing else.""",
+Write a complete, comprehensive description. Return ONLY the description text.""",
 
             'linkedin-post': f"""{lang_instruction} Write a professional LinkedIn post about: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
