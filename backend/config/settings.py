@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'email_checker',
     'seo_tools',
+    'content_generator',
 ]
 
 MIDDLEWARE = [

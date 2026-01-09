@@ -5,4 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('email_checker.urls')),
     path('api/', include('seo_tools.urls')),
+    path('api/', include('content_generator.urls')),
 ]
