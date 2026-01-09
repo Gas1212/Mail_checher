@@ -26,7 +26,7 @@ class HuggingFaceService:
 
     # Model configuration
     PRIMARY_MODEL = 'meta-llama/Meta-Llama-3.1-8B-Instruct'
-    FALLBACK_MODEL = 'mistralai/Mistral-7B-Instruct-v0.2'
+    FALLBACK_MODEL = 'meta-llama/Llama-3.2-3B-Instruct'
     API_URL = 'https://api-inference.huggingface.co/models/'
     ROUTER_API_URL = 'https://router.huggingface.co/v1/chat/completions'
 
