@@ -114,7 +114,12 @@ class HuggingFaceService:
         }
 
         selected_tone = tone_map.get(tone, 'professional')
-        lang_instruction = 'Write in French.' if language == 'fr' else 'Write in English.'
+
+        # Strong language enforcement
+        if language == 'fr':
+            lang_instruction = 'IMPORTANT: You MUST write ENTIRELY in French language. Do NOT use English words or phrases.'
+        else:
+            lang_instruction = 'IMPORTANT: You MUST write ENTIRELY in English language. Do NOT use French words or phrases.'
 
         prompts = {
             'product-title': f"""{lang_instruction} Generate a compelling, SEO-optimized product title for: {product_name}.
