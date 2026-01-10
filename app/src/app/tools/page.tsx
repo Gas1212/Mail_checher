@@ -15,6 +15,7 @@ export default function ToolsPage() {
     email: { name: 'Email Validation', icon: Mail },
     security: { name: 'Email Security', icon: Shield },
     seo: { name: 'SEO Tools', icon: Search },
+    marketing: { name: 'Marketing', icon: Sparkles },
   };
 
   const tools = [
@@ -98,6 +99,15 @@ export default function ToolsPage() {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
       category: 'seo',
+    },
+    {
+      name: 'AI Content Generator',
+      description: 'Generate marketing content with AI for products, social media, and emails',
+      icon: Sparkles,
+      href: '/tools/content-generator',
+      color: 'text-fuchsia-600',
+      bgColor: 'bg-fuchsia-50',
+      category: 'marketing',
     },
   ];
 
