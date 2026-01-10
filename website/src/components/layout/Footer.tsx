@@ -17,8 +17,8 @@ export default function Footer() {
       { href: '/contact', label: 'Contact' },
     ],
     legal: [
-      { href: getAppUrl('/privacy'), label: 'Privacy Policy' },
-      { href: getAppUrl('/terms'), label: 'Terms of Service' },
+      { href: '/privacy', label: 'Privacy Policy' },
+      { href: '/terms', label: 'Terms of Service' },
     ],
   };
 
