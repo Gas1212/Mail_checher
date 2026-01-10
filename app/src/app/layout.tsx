@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Sugesto - Professional Email Validation & SEO Tools',
   description: 'Professional email validation and SEO tools with syntax, DNS, SMTP verification, sitemap validation and more',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({
