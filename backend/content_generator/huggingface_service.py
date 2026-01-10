@@ -44,27 +44,27 @@ class HuggingFaceService:
             'top_p': 0.9,
         },
         'product-description': {
-            'max_tokens': 400,      # Descriptions longues ~150-200 mots
+            'max_tokens': 250,      # Descriptions max 150 mots
             'temperature': 0.8,     # Plus créatif pour descriptions
             'top_p': 0.9,
         },
         'linkedin-post': {
-            'max_tokens': 350,      # Posts LinkedIn ~150-200 mots
+            'max_tokens': 80,       # Posts max 50 mots
             'temperature': 0.8,
             'top_p': 0.9,
         },
         'facebook-post': {
-            'max_tokens': 250,      # Posts Facebook ~100-150 mots
+            'max_tokens': 80,       # Posts max 50 mots
             'temperature': 0.8,
             'top_p': 0.9,
         },
         'instagram-post': {
-            'max_tokens': 300,      # Captions Instagram ~125-150 mots
+            'max_tokens': 80,       # Captions max 50 mots
             'temperature': 0.85,    # Plus créatif pour Instagram
             'top_p': 0.9,
         },
         'tiktok-post': {
-            'max_tokens': 150,      # Captions TikTok courtes ~50-100 mots
+            'max_tokens': 80,       # Captions max 50 mots
             'temperature': 0.9,     # Très créatif pour TikTok
             'top_p': 0.95,
         },
@@ -74,7 +74,7 @@ class HuggingFaceService:
             'top_p': 0.9,
         },
         'email-body': {
-            'max_tokens': 350,      # Corps email ~150-200 mots
+            'max_tokens': 150,      # Corps email max 100 mots
             'temperature': 0.75,
             'top_p': 0.9,
         },
@@ -137,7 +137,7 @@ Write a complete, detailed description. Fill the 150-160 character requirement. 
 {f"Key features: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
 Make it {selected_tone}. Include benefits, use cases, and value proposition.
-CRITICAL: Write a MINIMUM of 150 words. Write multiple paragraphs if needed to reach 150 words.
+CRITICAL: Write MAXIMUM 150 words. Keep it concise and impactful.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
 Write a complete, comprehensive description. Return ONLY the description text.""",
@@ -145,13 +145,8 @@ Write a complete, comprehensive description. Return ONLY the description text.""
             'linkedin-post': f"""{lang_instruction} Write a professional LinkedIn post about: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
-Make it {selected_tone}. Include:
-- Hook/opening line
-- Value proposition
-- Key insights
-- Call-to-action
-- 3-5 relevant hashtags
-Aim for 150-200 words.
+Make it {selected_tone}. Include a hook, value proposition, and call-to-action.
+CRITICAL: MAXIMUM 50 words. Keep it short and punchy. Add 3 hashtags.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
 Return ONLY the post content with hashtags at the end.""",
@@ -159,12 +154,8 @@ Return ONLY the post content with hashtags at the end.""",
             'facebook-post': f"""{lang_instruction} Write an engaging Facebook post about: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
-Make it {selected_tone} and conversational. Include:
-- Attention-grabbing opening
-- Engaging story or benefit
-- Clear call-to-action
-- 2-3 emojis
-Aim for 100-150 words.
+Make it {selected_tone} and conversational. Include a hook, benefit, and call-to-action with 2-3 emojis.
+CRITICAL: MAXIMUM 50 words. Keep it short and engaging.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
 Return ONLY the post content.""",
@@ -172,12 +163,8 @@ Return ONLY the post content.""",
             'instagram-post': f"""{lang_instruction} Create an Instagram caption for: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
-Make it {selected_tone} and visually engaging. Include:
-- Compelling caption
-- 5-8 emojis placed naturally
-- 8-12 relevant hashtags at the end
-- Call-to-action
-Aim for 125-150 words.
+Make it {selected_tone} and visually engaging. Include emojis and call-to-action.
+CRITICAL: MAXIMUM 50 words + 5-8 hashtags at the end.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
 Return ONLY the caption with emojis and hashtags.""",
@@ -185,12 +172,8 @@ Return ONLY the caption with emojis and hashtags.""",
             'tiktok-post': f"""{lang_instruction} Write a TikTok video caption/script for: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
-Make it {selected_tone}, catchy, and trend-worthy. Include:
-- Hook in first 3 seconds
-- Quick value proposition
-- Call-to-action
-- 5-8 trending/relevant hashtags
-Keep it short and punchy (50-100 words).
+Make it {selected_tone}, catchy, and trend-worthy. Include a hook, value proposition, and call-to-action.
+CRITICAL: MAXIMUM 50 words + 5-8 trending hashtags.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
 Return ONLY the caption with hashtags.""",
@@ -207,13 +190,8 @@ Return ONLY the subject line, nothing else.""",
             'email-body': f"""{lang_instruction} Write an email body for: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
-Make it {selected_tone}. Include:
-- Personalized greeting
-- Clear value proposition
-- Key benefits
-- Strong call-to-action
-- Professional closing
-Aim for 150-200 words.
+Make it {selected_tone}. Include greeting, value proposition, benefits, call-to-action, and closing.
+CRITICAL: MAXIMUM 100 words. Keep it concise and persuasive.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
 Return ONLY the email body content.""",
