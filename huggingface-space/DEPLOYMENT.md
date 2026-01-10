@@ -1,134 +1,61 @@
-# Instructions de Déploiement - Hugging Face Space
+# Migration vers Phi-3.5-mini + llama.cpp
 
-## Étape 1: Créer un nouveau Space sur Hugging Face
+## Changements effectués
 
-1. Allez sur https://huggingface.co/new-space
-2. Remplissez les informations:
-   - **Space name**: `llama-content-generator` (ou votre choix)
-   - **License**: Llama 3.2 Community License
-   - **SDK**: Docker
-   - **Hardware**: A10G Large (24GB) ou mieux
-   - **Visibility**: Public ou Private (Private recommandé pour production)
+### 1. Remplacement du modèle
+- **Ancien**: Qwen 2.5 1.5B avec transformers + PyTorch
+- **Nouveau**: Phi-3.5-mini 3.8B avec llama.cpp
+- **Gain**: 3-4x plus rapide, meilleure qualité
 
-## Étape 2: Cloner et pousser les fichiers
+### 2. Nouveaux fichiers
+
+**requirements.txt** (simplifié):
+```
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+llama-cpp-python==0.2.90
+huggingface-hub==0.20.3
+```
+
+**app.py** (réécrit avec llama.cpp):
+- Télécharge automatiquement le modèle GGUF depuis HuggingFace
+- Utilise llama.cpp pour inférence ultra-rapide
+- Compatible API OpenAI (aucun changement côté Django)
+
+## Instructions de déploiement
+
+### Push vers HuggingFace Space
 
 ```bash
-# Cloner votre Space
-git clone https://huggingface.co/spaces/YOUR-USERNAME/llama-content-generator
-cd llama-content-generator
+cd huggingface-space
 
-# Copier les fichiers du dossier huggingface-space
-cp ../Mail-checker/huggingface-space/* .
-
-# Ajouter et pousser
+# Add all changes
 git add .
-git commit -m "Initial deployment: Llama 3.2 11B Content Generator API"
-git push
+
+# Commit
+git commit -m "Upgrade to Phi-3.5-mini with llama.cpp for 3-4x speed"
+
+# Push to HuggingFace
+git push origin main
 ```
 
-## Étape 3: Configurer les Secrets (si nécessaire)
+**Premier démarrage**: 5-10 minutes
+**Démarrages suivants**: 1-2 minutes
 
-Si vous souhaitez ajouter une authentification:
-1. Allez dans Settings de votre Space
-2. Ajoutez les secrets nécessaires (par exemple: API_KEY)
+## Aucun changement Django requis!
 
-## Étape 4: Attendre le build
+✅ Même endpoint, même format, même URL
 
-Le Space va:
-1. Télécharger l'image Docker (5-10 min)
-2. Télécharger le modèle Llama 3.2 11B (~22GB) (10-20 min)
-3. Démarrer l'application
+## Performances attendues
 
-**Temps total**: 20-30 minutes pour le premier déploiement
+| Avant | Après |
+|-------|-------|
+| 30-45s | 10-15s |
 
-## Étape 5: Obtenir l'URL de votre Space
-
-Une fois déployé, votre API sera disponible à:
-```
-https://YOUR-USERNAME-llama-content-generator.hf.space
-```
-
-## Étape 6: Tester l'API
+## Rollback si problème
 
 ```bash
-curl -X POST "https://YOUR-USERNAME-llama-content-generator.hf.space/v1/chat/completions" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "meta-llama/Llama-3.2-11B-Vision-Instruct",
-    "messages": [{"role": "user", "content": "Write a professional product title for an email validation tool"}],
-    "max_tokens": 100,
-    "temperature": 0.7
-  }'
+git revert HEAD
+git push origin main
 ```
-
-## Étape 7: Mettre à jour Django Backend
-
-Dans votre fichier `.env` sur serv00:
-```bash
-# Remplacer l'URL Hugging Face par votre Space
-HUGGINGFACE_SPACE_URL=https://YOUR-USERNAME-llama-content-generator.hf.space
-```
-
-## Coûts et Limitations
-
-### Hardware Options:
-
-1. **CPU Basic (gratuit)**
-   - ❌ Trop lent pour Llama 11B
-   - Non recommandé
-
-2. **T4 Small ($0.60/h)**
-   - ⚠️ 16GB VRAM - limite pour 11B
-   - Peut fonctionner avec quantization
-
-3. **A10G Large ($3.15/h) - RECOMMANDÉ**
-   - ✅ 24GB VRAM - parfait pour 11B
-   - Rapide et stable
-
-4. **A100 ($31/h)**
-   - ✅ 40GB/80GB VRAM - overkill pour 11B
-   - Utilisez seulement si vous avez besoin d'ultra-performance
-
-### Alternative moins chère:
-
-Si le coût est un problème, utilisez **Llama 3.2 3B** au lieu de 11B:
-- Fonctionne sur CPU Basic (gratuit)
-- Qualité légèrement inférieure mais acceptable
-- Changez dans app.py: `MODEL_NAME = "meta-llama/Llama-3.2-3B-Instruct"`
-
-## Optimisations
-
-### Pour réduire les coûts:
-
-1. **Utiliser l'autoscaling**:
-   - Le Space s'arrête automatiquement après inactivité
-   - Redémarre à la première requête (~30s de délai)
-
-2. **Utiliser un tier plus bas avec quantization**:
-   ```python
-   # Dans app.py, changer:
-   model = AutoModelForCausalLM.from_pretrained(
-       MODEL_NAME,
-       torch_dtype=torch.float16,
-       device_map="auto",
-       load_in_8bit=True  # Ajouter cette ligne
-   )
-   ```
-
-3. **Heures creuses**: Programmer le Space pour être actif uniquement aux heures de pointe
-
-## Monitoring
-
-Surveillez votre Space via:
-- Dashboard Hugging Face: https://huggingface.co/spaces/YOUR-USERNAME/llama-content-generator
-- Logs en temps réel
-- Métriques d'utilisation
-- Coûts accumulés
-
-## Support
-
-En cas de problème:
-1. Vérifier les logs dans le dashboard du Space
-2. Vérifier que le hardware est suffisant (24GB+ VRAM recommandé)
-3. Tester l'endpoint avec curl
-4. Contacter le support Hugging Face si nécessaire

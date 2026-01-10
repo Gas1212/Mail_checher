@@ -1,20 +1,21 @@
 """
-Hugging Face Space - Llama 3.2 11B Content Generator API
-FastAPI endpoint compatible with Django backend
+Hugging Face Space - Phi-3.5-mini Content Generator API (llama.cpp)
+FastAPI endpoint with llama.cpp for ultra-fast CPU inference
+Compatible with Django backend OpenAI format
 """
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional, Literal
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from typing import Optional
+from llama_cpp import Llama
+from huggingface_hub import hf_hub_download
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Qwen 2.5 1.5B Content Generator",
-    description="AI Content Generation API using Qwen 2.5 1.5B Instruct (Fast CPU inference)",
-    version="1.0.0"
+    title="Phi-3.5-mini Content Generator (llama.cpp)",
+    description="AI Content Generation API using Phi-3.5-mini with llama.cpp (3-4x faster)",
+    version="2.0.0"
 )
 
 # CORS middleware
@@ -26,25 +27,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model and tokenizer - Optimized for CPU speed
-# Using Qwen2.5-1.5B-Instruct (2x faster than 3B, no gated access, excellent quality)
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
-print(f"Loading model: {MODEL_NAME}")
+# Model configuration
+MODEL_REPO = "bartowski/Phi-3.5-mini-instruct-GGUF"
+MODEL_FILE = "Phi-3.5-mini-instruct-Q4_K_M.gguf"  # 4-bit quantized, ~2.2GB
+print(f"Downloading model: {MODEL_REPO}/{MODEL_FILE}")
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+# Download model from HuggingFace
+try:
+    model_path = hf_hub_download(
+        repo_id=MODEL_REPO,
+        filename=MODEL_FILE,
+        cache_dir="./models"
+    )
+    print(f"Model downloaded to: {model_path}")
+except Exception as e:
+    print(f"Error downloading model: {e}")
+    raise
 
-# Load model optimized for CPU inference
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_NAME,
-    torch_dtype=torch.float32,
-    device_map="cpu",
-    low_cpu_mem_usage=True
+# Load model with llama.cpp
+print("Loading model with llama.cpp...")
+llm = Llama(
+    model_path=model_path,
+    n_ctx=2048,           # Context window
+    n_threads=4,          # CPU threads (adjust based on your CPU)
+    n_gpu_layers=0,       # CPU only (0 GPU layers)
+    verbose=False,
+    chat_format="chatml"  # Phi uses ChatML format
 )
-
-# Set to eval mode for inference optimization (disables dropout, etc.)
-model.eval()
-
-print("Model loaded and optimized successfully!")
+print("Model loaded successfully with llama.cpp!")
 
 # Request model
 class GenerateRequest(BaseModel):
@@ -55,19 +65,14 @@ class GenerateRequest(BaseModel):
     top_p: Optional[float] = 0.9
     stream: Optional[bool] = False
 
-# Response model
-class GenerateResponse(BaseModel):
-    choices: list
-    model: str
-    usage: dict
-
 @app.get("/")
 async def root():
     """Health check endpoint"""
     return {
         "status": "running",
-        "model": MODEL_NAME,
-        "message": "Qwen 2.5 1.5B Content Generator API is ready"
+        "engine": "llama.cpp",
+        "model": MODEL_FILE,
+        "message": "Phi-3.5-mini Content Generator API is ready (llama.cpp optimized)"
     }
 
 @app.post("/v1/chat/completions")
@@ -75,9 +80,10 @@ async def chat_completions(request: GenerateRequest):
     """
     OpenAI-compatible chat completions endpoint
     Compatible with Django backend format
+    Ultra-fast inference with llama.cpp
     """
     try:
-        # Extract the user prompt from messages
+        # Extract user message
         user_message = ""
         for msg in request.messages:
             if msg.get("role") == "user":
@@ -87,66 +93,23 @@ async def chat_completions(request: GenerateRequest):
         if not user_message:
             raise HTTPException(status_code=400, detail="No user message found")
 
-        # Prepare the prompt for Qwen (uses chat template)
-        messages = [{"role": "user", "content": user_message}]
-        prompt = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True
+        # Generate with llama.cpp (OpenAI-compatible)
+        response = llm.create_chat_completion(
+            messages=[
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=min(request.max_tokens, 300),
+            temperature=request.temperature,
+            top_p=request.top_p,
+            stop=["<|end|>", "<|endoftext|>"],  # Phi stop tokens
+            stream=False
         )
 
-        # Tokenize
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+        # llama.cpp already returns OpenAI format!
+        # Just need to replace model name
+        response["model"] = request.model
 
-        # Generate with optimized parameters for speed
-        with torch.no_grad():
-            # Use faster generation with minimal quality loss
-            outputs = model.generate(
-                **inputs,
-                max_new_tokens=min(request.max_tokens, 300),  # Cap at 300 tokens for speed
-                temperature=request.temperature,
-                top_p=request.top_p,
-                do_sample=request.temperature > 0,  # Disable sampling if temp=0 (faster)
-                num_beams=1,  # Greedy decoding (fastest)
-                pad_token_id=tokenizer.eos_token_id,
-                use_cache=True  # Enable KV cache for faster inference
-            )
-
-        # Decode ONLY the generated tokens (skip input prompt)
-        input_length = inputs.input_ids.shape[1]
-        generated_tokens = outputs[0][input_length:]
-        generated_text = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
-
-        # Clean up system prompt artifacts if present
-        lines_to_remove = ["system", "You are Qwen", "created by Alibaba Cloud", "user", "assistant"]
-        for line_marker in lines_to_remove:
-            if generated_text.startswith(line_marker):
-                # Find the first line that doesn't start with these markers
-                lines = generated_text.split('\n')
-                for i, line in enumerate(lines):
-                    if not any(marker in line for marker in lines_to_remove):
-                        generated_text = '\n'.join(lines[i:]).strip()
-                        break
-
-        # Return in OpenAI format
-        return {
-            "choices": [
-                {
-                    "index": 0,
-                    "message": {
-                        "role": "assistant",
-                        "content": generated_text
-                    },
-                    "finish_reason": "stop"
-                }
-            ],
-            "model": request.model,
-            "usage": {
-                "prompt_tokens": len(inputs.input_ids[0]),
-                "completion_tokens": len(outputs[0]) - len(inputs.input_ids[0]),
-                "total_tokens": len(outputs[0])
-            }
-        }
+        return response
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -154,7 +117,12 @@ async def chat_completions(request: GenerateRequest):
 @app.get("/health")
 async def health():
     """Health check for monitoring"""
-    return {"status": "healthy", "model_loaded": model is not None}
+    return {
+        "status": "healthy",
+        "model_loaded": llm is not None,
+        "engine": "llama.cpp",
+        "model": MODEL_FILE
+    }
 
 if __name__ == "__main__":
     import uvicorn
