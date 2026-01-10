@@ -44,9 +44,9 @@ class HuggingFaceService:
             'top_p': 0.9,
         },
         'product-description': {
-            'max_tokens': 180,      # Descriptions max 120 mots (~150 tokens)
-            'temperature': 0.7,     # Moins créatif = plus concis
-            'top_p': 0.85,          # Réduit pour plus de focus
+            'max_tokens': 300,      # Buffer suffisant pour texte complet
+            'temperature': 0.8,     # Plus créatif pour descriptions
+            'top_p': 0.9,
         },
         'linkedin-post': {
             'max_tokens': 80,       # Posts max 50 mots
@@ -138,20 +138,14 @@ Make it {selected_tone} and include a call-to-action.
 
 Write a complete, detailed description. Fill the 150-160 character requirement. Return ONLY the description text.""",
 
-            'product-description': f"""{lang_instruction} Write a product description for: {product_name}.
+            'product-description': f"""{lang_instruction} Write a detailed product description for: {product_name}.
 {f"Key features: {product_features}." if product_features else ""}
 {f"Target audience: {target_audience}." if target_audience else ""}
-Make it {selected_tone}. Include benefits and value proposition.
-
-STRICT REQUIREMENTS:
-- MAXIMUM 120 words (count carefully!)
-- Write 3-4 short paragraphs
-- Use short, clear sentences
-- Be concise and direct
-- Focus on key benefits only
+Make it {selected_tone}. Include benefits, use cases, and value proposition.
+CRITICAL: Write MAXIMUM 150 words. Keep it concise and impactful.
 {f"Additional context: {additional_context}" if additional_context else ""}
 
-Return ONLY the description text. NO extra content.""",
+Write a complete, comprehensive description. Return ONLY the description text.""",
 
             'linkedin-post': f"""{lang_instruction} Write a professional LinkedIn post about: {product_name}.
 {f"Key points: {product_features}." if product_features else ""}
