@@ -210,6 +210,22 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Marketing Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Marketing
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/content-generator"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>AI Content Generator</span>
+              </Link>
+            </div>
+          </div>
+
           {/* Settings */}
           <div className="pt-2 border-t border-gray-200">
             <Link
@@ -351,6 +367,15 @@ export default function DashboardPage() {
                   <Sparkles className="w-8 h-8 text-purple-600 mb-2" />
                   <h3 className="font-semibold text-gray-900 mb-1">List Cleaner</h3>
                   <p className="text-sm text-gray-600">Remove duplicates and invalid emails</p>
+                </Link>
+
+                <Link
+                  href="/tools/content-generator"
+                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-fuchsia-300 hover:bg-fuchsia-50 transition-all"
+                >
+                  <Sparkles className="w-8 h-8 text-fuchsia-600 mb-2" />
+                  <h3 className="font-semibold text-gray-900 mb-1">AI Content Generator</h3>
+                  <p className="text-sm text-gray-600">Generate marketing content with AI</p>
                 </Link>
               </div>
             </CardContent>
