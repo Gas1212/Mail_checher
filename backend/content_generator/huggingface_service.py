@@ -31,6 +31,55 @@ class HuggingFaceService:
     # API endpoints - use custom Space if configured, otherwise use Router API
     ROUTER_API_URL = 'https://router.huggingface.co/v1/chat/completions'
 
+    # Generation parameters per content type
+    GENERATION_CONFIGS = {
+        'product-title': {
+            'max_tokens': 80,       # Titles courts ~60 chars
+            'temperature': 0.7,
+            'top_p': 0.9,
+        },
+        'meta-description': {
+            'max_tokens': 200,      # Meta descriptions ~160 chars
+            'temperature': 0.7,
+            'top_p': 0.9,
+        },
+        'product-description': {
+            'max_tokens': 400,      # Descriptions longues ~150-200 mots
+            'temperature': 0.8,     # Plus créatif pour descriptions
+            'top_p': 0.9,
+        },
+        'linkedin-post': {
+            'max_tokens': 350,      # Posts LinkedIn ~150-200 mots
+            'temperature': 0.8,
+            'top_p': 0.9,
+        },
+        'facebook-post': {
+            'max_tokens': 250,      # Posts Facebook ~100-150 mots
+            'temperature': 0.8,
+            'top_p': 0.9,
+        },
+        'instagram-post': {
+            'max_tokens': 300,      # Captions Instagram ~125-150 mots
+            'temperature': 0.85,    # Plus créatif pour Instagram
+            'top_p': 0.9,
+        },
+        'tiktok-post': {
+            'max_tokens': 150,      # Captions TikTok courtes ~50-100 mots
+            'temperature': 0.9,     # Très créatif pour TikTok
+            'top_p': 0.95,
+        },
+        'email-subject': {
+            'max_tokens': 50,       # Sujets courts ~50 chars
+            'temperature': 0.7,
+            'top_p': 0.9,
+        },
+        'email-body': {
+            'max_tokens': 350,      # Corps email ~150-200 mots
+            'temperature': 0.75,
+            'top_p': 0.9,
+        },
+    }
+
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.getenv('HUGGINGFACE_API_KEY')
         self.custom_space_url = os.getenv('HUGGINGFACE_SPACE_URL', '')
@@ -172,7 +221,7 @@ Return ONLY the email body content.""",
 
         return prompts.get(content_type, '')
 
-    def _call_api(self, model: str, prompt: str) -> Dict:
+    def _call_api(self, model: str, prompt: str, content_type: ContentType) -> Dict:
         """Make API call to Hugging Face Space or Router API (OpenAI-compatible format)"""
         headers = {
             'Content-Type': 'application/json',
@@ -181,6 +230,13 @@ Return ONLY the email body content.""",
         # Add authorization only if using Router API (not needed for custom Space)
         if not self.using_custom_space and self.api_key:
             headers['Authorization'] = f'Bearer {self.api_key}'
+
+        # Get generation config for this content type
+        config = self.GENERATION_CONFIGS.get(content_type, {
+            'max_tokens': 300,
+            'temperature': 0.7,
+            'top_p': 0.9,
+        })
 
         # Use OpenAI-compatible chat completions format
         payload = {
@@ -191,9 +247,9 @@ Return ONLY the email body content.""",
                     'content': prompt
                 }
             ],
-            'max_tokens': 500,
-            'temperature': 0.7,
-            'top_p': 0.9,
+            'max_tokens': config['max_tokens'],
+            'temperature': config['temperature'],
+            'top_p': config['top_p'],
             'stream': False
         }
 
@@ -243,12 +299,12 @@ Return ONLY the email body content.""",
 
             # Try primary model
             try:
-                data = self._call_api(self.PRIMARY_MODEL, prompt)
+                data = self._call_api(self.PRIMARY_MODEL, prompt, content_type)
                 model_used = self.PRIMARY_MODEL
             except Exception as e:
                 print(f'Primary model failed: {e}, trying fallback...')
                 # Fallback to secondary model
-                data = self._call_api(self.FALLBACK_MODEL, prompt)
+                data = self._call_api(self.FALLBACK_MODEL, prompt, content_type)
                 model_used = self.FALLBACK_MODEL
 
             # Extract generated text from chat completions response
