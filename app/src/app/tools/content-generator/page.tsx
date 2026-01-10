@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sparkles, Copy, Check, Loader2, FileText, MessageSquare, Mail } from 'lucide-react';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import Sidebar from '@/components/layout/Sidebar';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -45,6 +45,11 @@ interface GeneratedResult {
 }
 
 export default function ContentGeneratorPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
   const [selectedType, setSelectedType] = useState<ContentType>('product-title');
   const [productName, setProductName] = useState('');
   const [productFeatures, setProductFeatures] = useState('');
@@ -60,6 +65,48 @@ export default function ContentGeneratorPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('content-generator');
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('access_token');
+    const userData = localStorage.getItem('user');
+
+    if (!token || !userData) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    setUser(JSON.parse(userData));
+    fetchUserProfile(token);
+  }, [router]);
+
+  const fetchUserProfile = async (token: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me/`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+
+      const data = await response.json();
+      setProfile(data.profile);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    router.push('/');
+  };
 
   const contentTypes: ContentTypeOption[] = [
     {
@@ -197,11 +244,23 @@ export default function ContentGeneratorPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-16">
-        <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-gray-50 flex">
+      <Sidebar user={user} profile={profile} onLogout={handleLogout} />
+
+      <main className="flex-1 p-8">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-6">
@@ -467,13 +526,12 @@ export default function ContentGeneratorPage() {
           </Card>
         </div>
       </main>
-      <Footer />
 
       <UpgradeModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
         toolName="AI Content Generator"
       />
-    </>
+    </div>
   );
 }
