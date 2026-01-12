@@ -1,0 +1,53 @@
+#!/bin/sh
+# Git post-receive hook for automatic deployment to production
+# This hook automatically deploys changes to the production directory when you push to serv00
+
+unset GIT_INDEX_FILE
+
+# Configuration
+export DOMAIN="gas1911.serv00.net"
+export PUBLIC="public_python"
+export LOGIN="Gas1911"
+export VISIBILITY="pub"
+export REPONAME="mail-checker"
+
+export GIT_WORK_TREE="/usr/home/$LOGIN/domains/$DOMAIN/$PUBLIC/"
+export GIT_DIR="/usr/home/$LOGIN/repo/git/$VISIBILITY/$REPONAME/"
+
+echo "======================================================================="
+echo "🚀 Deploying to Production: $DOMAIN"
+echo "======================================================================="
+echo ""
+
+# Checkout files to production directory
+echo "[1/3] Syncing files to production..."
+/usr/local/bin/git checkout -f
+
+if [ $? -eq 0 ]; then
+    echo "✓ Files synchronized successfully"
+else
+    echo "✗ Error during file synchronization"
+    exit 1
+fi
+
+# Restart Django application
+echo ""
+echo "[2/3] Restarting Django application..."
+devil www restart gas1911.serv00.net
+
+if [ $? -eq 0 ]; then
+    echo "✓ Application restarted successfully"
+else
+    echo "⚠ Warning: Restart command returned non-zero status"
+fi
+
+echo ""
+echo "======================================================================="
+echo "✅ DEPLOYMENT COMPLETE"
+echo "======================================================================="
+echo ""
+echo "📁 Files synchronized to: /usr/home/Gas1911/domains/gas1911.serv00.net/public_python/"
+echo ""
+echo "🔍 Verify deployment:"
+echo "  tail -50 ~/domains/gas1911.serv00.net/logs/django.log | grep -E '\\[OK\\]|\\[HYBRID\\]'"
+echo ""
