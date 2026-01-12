@@ -7,7 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 import hashlib
 
-from .huggingface_service import HuggingFaceService
+from .hybrid_service import HybridContentService
 
 
 class ContentGeneratorViewSet(viewsets.ViewSet):
@@ -161,9 +161,9 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
             if language not in valid_languages:
                 language = 'en'
 
-            # Initialize Hugging Face service
+            # Initialize Hybrid service (Groq + HuggingFace)
             try:
-                hf_service = HuggingFaceService()
+                content_service = HybridContentService()
             except ValueError as e:
                 return Response(
                     {
@@ -173,8 +173,8 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
-            # Generate content
-            result = hf_service.generate_content(
+            # Generate content using hybrid approach
+            result = content_service.generate_content(
                 content_type=content_type,
                 product_name=product_name,
                 product_features=product_features,
@@ -193,11 +193,12 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
-            # Return successful response
+            # Return successful response with provider info
             response_data = {
                 'success': True,
                 'content': result['content'],
                 'model': result['model'],
+                'provider': result.get('provider', 'unknown'),  # 'groq' or 'huggingface'
                 'metadata': {
                     'content_type': content_type,
                     'tone': tone,

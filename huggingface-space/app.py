@@ -28,8 +28,9 @@ app.add_middleware(
 )
 
 # Model configuration
+# Using Q4_0 instead of Q4_K_M for faster inference (less accurate but 2-3x faster)
 MODEL_REPO = "bartowski/Phi-3.5-mini-instruct-GGUF"
-MODEL_FILE = "Phi-3.5-mini-instruct-Q4_K_M.gguf"  # 4-bit quantized, ~2.2GB
+MODEL_FILE = "Phi-3.5-mini-instruct-Q4_0.gguf"  # Faster quantization, ~2.0GB
 print(f"Downloading model: {MODEL_REPO}/{MODEL_FILE}")
 
 # Download model from HuggingFace
@@ -49,7 +50,8 @@ print("Loading model with llama.cpp...")
 llm = Llama(
     model_path=model_path,
     n_ctx=2048,           # Context window
-    n_threads=4,          # CPU threads (adjust based on your CPU)
+    n_threads=2,          # CPU threads (HF Spaces has 2 CPUs)
+    n_batch=512,          # Batch size for prompt processing (faster)
     n_gpu_layers=0,       # CPU only (0 GPU layers)
     verbose=False,
     chat_format="chatml"  # Phi uses ChatML format

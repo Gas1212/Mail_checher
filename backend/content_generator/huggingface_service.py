@@ -24,11 +24,12 @@ LanguageType = Literal['en', 'fr']
 class HuggingFaceService:
     """Service for generating content using Hugging Face models"""
 
-    # Model configuration
-    PRIMARY_MODEL = 'meta-llama/Llama-3.2-3B-Instruct'
-    FALLBACK_MODEL = 'meta-llama/Llama-3.2-1B-Instruct'
+    # Model configuration - Using Phi-3.5-mini for better quality and speed
+    PRIMARY_MODEL = 'microsoft/Phi-3.5-mini-instruct'
+    FALLBACK_MODEL = 'microsoft/Phi-3-mini-4k-instruct'
 
-    # API endpoints - use custom Space if configured, otherwise use Router API
+    # API endpoints - use custom Space if configured, otherwise use Inference API
+    INFERENCE_API_URL = 'https://api-inference.huggingface.co/models/{model}/v1/chat/completions'
     ROUTER_API_URL = 'https://router.huggingface.co/v1/chat/completions'
 
     # Generation parameters per content type
@@ -84,15 +85,28 @@ class HuggingFaceService:
         self.api_key = api_key or os.getenv('HUGGINGFACE_API_KEY')
         self.custom_space_url = os.getenv('HUGGINGFACE_SPACE_URL', '')
 
+        # Use Inference API by default (faster, free, GPU-powered)
+        self.use_inference_api = os.getenv('USE_INFERENCE_API', 'true').lower() == 'true'
+
         # If using custom Space, API key is optional
-        if not self.custom_space_url and not self.api_key:
+        if not self.custom_space_url and not self.api_key and not self.use_inference_api:
             raise ValueError('Either HUGGINGFACE_SPACE_URL or HUGGINGFACE_API_KEY must be configured')
 
-        # Use custom Space if available, otherwise use Router API
-        self.api_url = f"{self.custom_space_url}/v1/chat/completions" if self.custom_space_url else self.ROUTER_API_URL
-        self.using_custom_space = bool(self.custom_space_url)
+        # Priority: Custom Space > Inference API > Router API
+        if self.custom_space_url:
+            self.api_url = f"{self.custom_space_url}/v1/chat/completions"
+            self.using_inference_api = False
+            mode = 'Custom Space'
+        elif self.use_inference_api:
+            self.api_url = self.INFERENCE_API_URL  # Will be formatted with model name
+            self.using_inference_api = True
+            mode = 'Inference API (GPU, Free)'
+        else:
+            self.api_url = self.ROUTER_API_URL
+            self.using_inference_api = False
+            mode = 'Router API'
 
-        print(f"Content Generator configured: {'Custom Space' if self.using_custom_space else 'Router API'}")
+        print(f"Content Generator configured: {mode}")
 
     def _get_prompt(
         self,
@@ -205,13 +219,13 @@ Return ONLY the email body content.""",
         return prompts.get(content_type, '')
 
     def _call_api(self, model: str, prompt: str, content_type: ContentType) -> Dict:
-        """Make API call to Hugging Face Space or Router API (OpenAI-compatible format)"""
+        """Make API call to Hugging Face Inference API, Space, or Router API"""
         headers = {
             'Content-Type': 'application/json',
         }
 
-        # Add authorization only if using Router API (not needed for custom Space)
-        if not self.using_custom_space and self.api_key:
+        # Add authorization (always needed for Inference API and Router API)
+        if self.api_key:
             headers['Authorization'] = f'Bearer {self.api_key}'
 
         # Get generation config for this content type
@@ -220,6 +234,9 @@ Return ONLY the email body content.""",
             'temperature': 0.7,
             'top_p': 0.9,
         })
+
+        # Format API URL with model name if using Inference API
+        api_url = self.api_url.format(model=model) if self.using_inference_api else self.api_url
 
         # Use OpenAI-compatible chat completions format
         payload = {
@@ -236,17 +253,20 @@ Return ONLY the email body content.""",
             'stream': False
         }
 
-        response = requests.post(
-            self.api_url,
-            headers=headers,
-            json=payload,
-            timeout=90  # Increased timeout for custom Space cold starts
-        )
+        try:
+            response = requests.post(
+                api_url,
+                headers=headers,
+                json=payload,
+                timeout=60  # Inference API is faster than custom Space
+            )
 
-        if not response.ok:
-            raise Exception(f'API request failed: {response.status_code} - {response.text}')
+            if not response.ok:
+                raise Exception(f'API request failed: {response.status_code} - {response.text}')
 
-        return response.json()
+            return response.json()
+        except requests.exceptions.Timeout:
+            raise Exception(f'API request timeout after 60s. Model may be loading (cold start).')
 
     def generate_content(
         self,

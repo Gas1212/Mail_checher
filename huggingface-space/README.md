@@ -4,8 +4,10 @@ emoji: 🚀
 colorFrom: blue
 colorTo: purple
 sdk: docker
+app_port: 7860
 pinned: false
 license: mit
+short_description: Ultra-fast AI content generation with Phi-3.5-mini
 ---
 
 # Phi-3.5-mini Content Generator API (llama.cpp)
