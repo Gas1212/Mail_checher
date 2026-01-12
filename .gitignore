@@ -84,4 +84,4 @@ node_modules/
 *.log
 .env
 .env.local
-.vercel
+.vercelDEPLOY_NOTES.txt
