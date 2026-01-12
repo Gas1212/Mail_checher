@@ -7,12 +7,12 @@ from django.utils import timezone
 from datetime import timedelta
 import hashlib
 
-from .hybrid_service import HybridContentService
+from .groq_service import GroqService
 
 
 class ContentGeneratorViewSet(viewsets.ViewSet):
     """
-    ViewSet for AI Content Generation using Hugging Face
+    ViewSet for AI Content Generation using Groq API (ultra-fast)
     """
     permission_classes = [AllowAny]
 
@@ -161,19 +161,19 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
             if language not in valid_languages:
                 language = 'en'
 
-            # Initialize Hybrid service (Groq + HuggingFace)
+            # Initialize Groq service
             try:
-                content_service = HybridContentService()
+                content_service = GroqService()
             except ValueError as e:
                 return Response(
                     {
                         'success': False,
-                        'error': 'AI service not configured'
+                        'error': 'Groq API not configured'
                     },
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
-            # Generate content using hybrid approach
+            # Generate content using Groq
             result = content_service.generate_content(
                 content_type=content_type,
                 product_name=product_name,
@@ -193,12 +193,12 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
-            # Return successful response with provider info
+            # Return successful response
             response_data = {
                 'success': True,
                 'content': result['content'],
                 'model': result['model'],
-                'provider': result.get('provider', 'unknown'),  # 'groq' or 'huggingface'
+                'provider': 'groq',
                 'metadata': {
                     'content_type': content_type,
                     'tone': tone,

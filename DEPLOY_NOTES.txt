@@ -1,0 +1,15 @@
+=== Configuration Déploiement serv00 ===
+
+Remote serv00: ssh://Gas1911@repo3.serv00.com:~/repo/git/pub/mail-checker/
+Hook actif: ~/repo/git/pub/mail-checker/hooks/post-receive
+Production: ~/domains/gas1911.serv00.net/public_python/
+
+WORKFLOW:
+git push serv00 main  → Déploiement automatique
+
+CREDENTIALS:
+User: Gas1911@s26.serv00.com / repo3.serv00.com
+Pass: mS^t^Gv($V)(JIxjB#4I
+
+Date: 2026-01-12
+Status: ✓ Actif et testé
