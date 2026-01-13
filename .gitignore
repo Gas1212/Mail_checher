@@ -79,9 +79,12 @@ backend/static/
 *.seed
 *.pid.lock
 
-node_modules/
-.next/
-*.log
-.env
-.env.local
-.vercelDEPLOY_NOTES.txt
+# Deployment files
+DEPLOY_NOTES.txt
+*.sh
+CONFIGURATION.md
+
+# Documentation (except README)
+SESSION_SUMMARY.md
+DEPLOYMENT_GUIDE.md
+HYBRID_SYSTEM_SETUP.md
