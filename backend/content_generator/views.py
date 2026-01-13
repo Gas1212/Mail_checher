@@ -224,10 +224,7 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
 
             return Response(
                 response_data,
-                status=status.HTTP_200_OK,
-                headers={
-                    'X-RateLimit-Remaining': str(remaining)
-                }
+                status=status.HTTP_200_OK
             )
 
         except Exception as e:
