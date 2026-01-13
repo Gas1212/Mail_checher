@@ -66,7 +66,7 @@ export default function ContentGeneratorPage() {
   const [copied, setCopied] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading: freeTrialLoading } = useFreeTrial('content-generator');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading: freeTrialLoading } = useFreeTrial('content-generator');
   const {
     credits,
     isRateLimited,
@@ -249,7 +249,7 @@ export default function ContentGeneratorPage() {
 
       // For non-authenticated users, use one trial after successful generation
       if (!user) {
-        const hasTrialsLeft = useOneTrial();
+        const hasTrialsLeft = consumeTrial();
         if (!hasTrialsLeft) {
           setTimeout(() => setShowUpgradeModal(true), 2000);
         }
