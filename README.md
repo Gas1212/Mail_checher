@@ -13,7 +13,8 @@ Mail-checker/
 │   ├── seo_tools/       # SEO utilities (sitemap finder/validator)
 │   ├── manage.py
 │   └── requirements.txt
-├── app/                 # Next.js dashboard (authenticated)
+├── app/                 # Next.js dashboard (app.sugesto.xyz - authenticated)
+├── website/             # Next.js frontend (sugesto.xyz - public marketing)
 ├── hooks/               # Git deployment hooks
 └── README.md
 ```
@@ -43,7 +44,7 @@ Mail-checker/
 
 ## Local Development
 
-### Backend (Django)
+### Backend (Django API)
 ```bash
 cd backend
 python -m venv venv
@@ -53,9 +54,16 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### Frontend (Next.js)
+### Dashboard (Next.js - app.sugesto.xyz)
 ```bash
 cd app
+npm install
+npm run dev
+```
+
+### Website Frontend (Next.js - sugesto.xyz)
+```bash
+cd website
 npm install
 npm run dev
 ```
