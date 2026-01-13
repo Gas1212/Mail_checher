@@ -360,6 +360,23 @@ export default function BulkCheckerPage() {
             </div>
           </div>
 
+
+          {/* Marketing Category */}
+          <div>
+            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Marketing
+            </div>
+            <div className="space-y-1 mt-1">
+              <Link
+                href="/tools/content-generator"
+                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>AI Content Generator</span>
+              </Link>
+            </div>
+          </div>
+
           {/* Settings */}
           <div className="pt-2 border-t border-gray-200">
             <Link
