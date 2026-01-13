@@ -307,7 +307,7 @@ export default function ContentGeneratorPage() {
               Generate professional marketing content with AI. Product descriptions, social media posts, and email content in seconds.
             </p>
 
-            {!isLoading && !hasExceededLimit && (
+            {!user && !freeTrialLoading && !hasExceededLimit && (
               <div className="mt-6">
                 <Badge variant="default" className="text-sm">
                   {remainingTrials} free {remainingTrials === 1 ? 'try' : 'tries'} remaining
