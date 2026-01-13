@@ -63,7 +63,7 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
 
         # Consume one credit
         try:
-            user_manager.use_credits(user['_id'], 1)
+            user_manager.deduct_credits(user['_id'], 1)
             return True, None
         except Exception as e:
             return False, str(e)
