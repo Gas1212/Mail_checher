@@ -50,11 +50,16 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
             return False, "Authentication required"
 
         user_manager = MongoUserManager()
-        profile = user.get('profile', {})
+
+        # Get profile from profiles collection (not from user object)
+        profile = user_manager.profiles.find_one({'user_id': user['_id']})
+        if not profile:
+            return False, "Profile not found"
+
         credits_remaining = profile.get('credits_remaining', 0)
 
         if credits_remaining < 1:
-            return False, "Insufficient credits. Credits will reset next month."
+            return False, "Insufficient credits. Your credits will reset next month."
 
         # Consume one credit
         try:
