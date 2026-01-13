@@ -127,4 +127,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'config.throttling.AuthenticatedUserThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '3/min',  # 3 requests per minute for authenticated users
+        'burst': '10/min',  # Burst rate
+        'sustained': '100/hour',  # Sustained rate
+    }
 }

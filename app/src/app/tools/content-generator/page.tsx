@@ -10,8 +10,6 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import UpgradeModal from '@/components/ui/UpgradeModal';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
-import { useGlobalCredits } from '@/hooks/useGlobalCredits';
-import CreditsDisplay from '@/components/ui/CreditsDisplay';
 
 type ContentType =
   | 'product-title'
@@ -67,14 +65,6 @@ export default function ContentGeneratorPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const { remainingTrials, hasExceededLimit, consumeTrial, isLoading: freeTrialLoading } = useFreeTrial('content-generator');
-  const {
-    credits,
-    isRateLimited,
-    rateLimitReset,
-    isLoading: creditsLoading,
-    consumeCredit,
-    rateLimit,
-  } = useGlobalCredits(user?.email || null, !!user);
 
   useEffect(() => {
     // Check if user is logged in
@@ -185,32 +175,10 @@ export default function ContentGeneratorPage() {
   ];
 
   const generateContent = async () => {
-    // Check if user is authenticated
-    if (user) {
-      // Authenticated user - use credit system
-      if (credits.available <= 0) {
-        setError('No credits available. Credits will reset next month.');
-        return;
-      }
-
-      if (isRateLimited) {
-        const waitSeconds = Math.ceil((rateLimitReset - Date.now()) / 1000);
-        setError(`Rate limit exceeded. Please wait ${waitSeconds} seconds.`);
-        return;
-      }
-
-      // Use credit before making request
-      const creditResult = consumeCredit();
-      if (!creditResult.success) {
-        setError(creditResult.message || 'Failed to use credit');
-        return;
-      }
-    } else {
-      // Non-authenticated user - use free trial
-      if (hasExceededLimit) {
-        setShowUpgradeModal(true);
-        return;
-      }
+    // Non-authenticated user - use free trial
+    if (!user && hasExceededLimit) {
+      setShowUpgradeModal(true);
+      return;
     }
 
     if (!productName.trim() && selectedType !== 'email-body') {
@@ -223,11 +191,19 @@ export default function ContentGeneratorPage() {
     setResult(null);
 
     try {
+      const token = localStorage.getItem('access_token');
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+
+      // Add authorization header if user is authenticated
+      if (user && token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch('https://gas1911.serv00.net/api/content-generator/generate/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           content_type: selectedType,
           product_name: productName,
@@ -241,11 +217,28 @@ export default function ContentGeneratorPage() {
 
       const data = await response.json();
 
+      // Handle rate limiting from backend
+      if (response.status === 429) {
+        setError('Rate limit exceeded. Please wait a moment before trying again.');
+        return;
+      }
+
+      // Handle insufficient credits from backend
+      if (response.status === 402 || (data.error && data.error.includes('credit'))) {
+        setError('Insufficient credits. Your credits will reset next month.');
+        return;
+      }
+
       if (!response.ok || !data.success) {
         throw new Error(data.error || 'Failed to generate content');
       }
 
       setResult(data);
+
+      // Refresh profile to update credit count
+      if (user && token) {
+        fetchUserProfile(token);
+      }
 
       // For non-authenticated users, use one trial after successful generation
       if (!user) {
@@ -315,20 +308,6 @@ export default function ContentGeneratorPage() {
               </div>
             )}
           </div>
-
-          {/* Credits Display - Only for authenticated users */}
-          {user && (
-            <div className="mb-8 max-w-md mx-auto">
-              <CreditsDisplay
-                available={credits.available}
-                total={credits.total}
-                used={credits.used}
-                isRateLimited={isRateLimited}
-                rateLimitReset={rateLimitReset}
-                rateLimit={rateLimit}
-              />
-            </div>
-          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left: Content Type Selection */}

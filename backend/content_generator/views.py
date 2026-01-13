@@ -2,67 +2,74 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.throttling import UserRateThrottle
 from django.core.cache import cache
 from django.utils import timezone
 from datetime import timedelta
 import hashlib
+import jwt
+from decouple import config
 
 from .groq_service import GroqService
+from email_checker.mongo_auth import MongoUserManager
+
+
+class ContentGeneratorThrottle(UserRateThrottle):
+    """3 requests per minute for content generation"""
+    rate = '3/min'
 
 
 class ContentGeneratorViewSet(viewsets.ViewSet):
     """
     ViewSet for AI Content Generation using Groq API (ultra-fast)
+    Rate limit: 3 requests per minute
     """
     permission_classes = [AllowAny]
+    throttle_classes = [ContentGeneratorThrottle]
 
-    # Rate limiting configuration
-    RATE_LIMIT = 30  # requests per hour
-    RATE_LIMIT_WINDOW = 3600  # 1 hour in seconds
+    def _get_user_from_token(self, request):
+        """Extract user from JWT token"""
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+        if not auth_header.startswith('Bearer '):
+            return None
 
-    def _get_client_ip(self, request):
-        """Get client IP address for rate limiting"""
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
+        token = auth_header.split(' ')[1]
+        try:
+            payload = jwt.decode(token, config('SECRET_KEY'), algorithms=['HS256'])
+            user_id = payload.get('user_id')
+            if user_id:
+                user_manager = MongoUserManager()
+                return user_manager.get_user_by_id(user_id)
+        except:
+            pass
+        return None
 
-    def _check_rate_limit(self, request):
-        """Check if client has exceeded rate limit"""
-        ip = self._get_client_ip(request)
-        cache_key = f'content_gen_rate_limit_{ip}'
+    def _check_and_consume_credit(self, user):
+        """Check if user has credits and consume one"""
+        if not user:
+            return False, "Authentication required"
 
-        # Get current count from cache
-        request_data = cache.get(cache_key)
+        user_manager = MongoUserManager()
+        profile = user.get('profile', {})
+        credits_remaining = profile.get('credits_remaining', 0)
 
-        if request_data is None:
-            # First request, initialize counter
-            cache.set(cache_key, {'count': 1, 'reset_time': timezone.now() + timedelta(seconds=self.RATE_LIMIT_WINDOW)}, self.RATE_LIMIT_WINDOW)
-            return True, self.RATE_LIMIT - 1
+        if credits_remaining < 1:
+            return False, "Insufficient credits. Credits will reset next month."
 
-        # Check if window has expired
-        if timezone.now() > request_data['reset_time']:
-            # Reset counter
-            cache.set(cache_key, {'count': 1, 'reset_time': timezone.now() + timedelta(seconds=self.RATE_LIMIT_WINDOW)}, self.RATE_LIMIT_WINDOW)
-            return True, self.RATE_LIMIT - 1
-
-        # Check if limit exceeded
-        if request_data['count'] >= self.RATE_LIMIT:
-            return False, 0
-
-        # Increment counter
-        request_data['count'] += 1
-        cache.set(cache_key, request_data, self.RATE_LIMIT_WINDOW)
-        return True, self.RATE_LIMIT - request_data['count']
+        # Consume one credit
+        try:
+            user_manager.use_credits(user['_id'], 1)
+            return True, None
+        except Exception as e:
+            return False, str(e)
 
     @action(detail=False, methods=['post'], url_path='generate')
     def generate_content(self, request):
         """
-        Generate content using Hugging Face AI models
+        Generate content using Groq AI
 
         POST /api/content-generator/generate/
+        Headers: Authorization: Bearer <token> (required for authenticated users)
 
         Body:
         {
@@ -79,7 +86,7 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
         {
             "success": true,
             "content": "Generated content here...",
-            "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+            "model": "llama-3.1-8b-instant",
             "metadata": {
                 "content_type": "product-title",
                 "tone": "professional",
@@ -89,16 +96,19 @@ class ContentGeneratorViewSet(viewsets.ViewSet):
         }
         """
         try:
-            # Check rate limit
-            allowed, remaining = self._check_rate_limit(request)
-            if not allowed:
-                return Response(
-                    {
-                        'success': False,
-                        'error': 'Rate limit exceeded. Please try again later.'
-                    },
-                    status=status.HTTP_429_TOO_MANY_REQUESTS
-                )
+            # Check if user is authenticated and has credits
+            user = self._get_user_from_token(request)
+            if user:
+                # Authenticated user - check and consume credit
+                has_credit, error_msg = self._check_and_consume_credit(user)
+                if not has_credit:
+                    return Response(
+                        {
+                            'success': False,
+                            'error': error_msg
+                        },
+                        status=status.HTTP_402_PAYMENT_REQUIRED
+                    )
 
             # Validate required fields
             content_type = request.data.get('content_type')
