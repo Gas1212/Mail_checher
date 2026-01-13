@@ -22,13 +22,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'config.cors_middleware.CorsMiddleware',  # Custom CORS handler for OPTIONS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # CSRF disabled for API - using JWT authentication
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -120,10 +118,6 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-
-# Additional CORS settings for preflight requests
-CORS_PREFLIGHT_MAX_AGE = 86400
-CORS_ALLOW_ALL_ORIGINS = False  # Keep this False for security
 
 # REST Framework settings
 REST_FRAMEWORK = {
