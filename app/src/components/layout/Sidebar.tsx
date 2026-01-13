@@ -56,7 +56,7 @@ export default function Sidebar({ user, profile, onLogout }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-3 overflow-y-auto pb-4">
         <Link
           href="/dashboard"
           className={`flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg ${

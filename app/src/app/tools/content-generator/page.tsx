@@ -10,6 +10,8 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import UpgradeModal from '@/components/ui/UpgradeModal';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
+import { useCredits } from '@/hooks/useCredits';
+import CreditsDisplay from '@/components/ui/CreditsDisplay';
 
 type ContentType =
   | 'product-title'
@@ -64,7 +66,15 @@ export default function ContentGeneratorPage() {
   const [copied, setCopied] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('content-generator');
+  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading: freeTrialLoading } = useFreeTrial('content-generator');
+  const {
+    credits,
+    isRateLimited,
+    rateLimitReset,
+    isLoading: creditsLoading,
+    useCredit,
+    rateLimit,
+  } = useCredits('content-generator', !!user);
 
   useEffect(() => {
     // Check if user is logged in
@@ -175,9 +185,31 @@ export default function ContentGeneratorPage() {
   ];
 
   const generateContent = async () => {
-    if (hasExceededLimit) {
-      setShowUpgradeModal(true);
-      return;
+    // Check if user is authenticated
+    if (user) {
+      // Authenticated user - use credit system
+      if (credits.available <= 0) {
+        setError('No credits available. Credits will reset next month.');
+        return;
+      }
+
+      if (isRateLimited) {
+        const waitSeconds = Math.ceil((rateLimitReset - Date.now()) / 1000);
+        setError(`Rate limit exceeded. Please wait ${waitSeconds} seconds.`);
+        return;
+      }
+
+      const creditResult = useCredit();
+      if (!creditResult.success) {
+        setError(creditResult.message || 'Failed to use credit');
+        return;
+      }
+    } else {
+      // Non-authenticated user - use free trial
+      if (hasExceededLimit) {
+        setShowUpgradeModal(true);
+        return;
+      }
     }
 
     if (!productName.trim() && selectedType !== 'email-body') {
@@ -215,11 +247,12 @@ export default function ContentGeneratorPage() {
       setResult(data);
       setIsGenerating(false);
 
-      // Use one trial
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const hasTrialsLeft = useOneTrial();
-      if (!hasTrialsLeft) {
-        setTimeout(() => setShowUpgradeModal(true), 2000);
+      // For non-authenticated users, use one trial
+      if (!user) {
+        const hasTrialsLeft = useOneTrial();
+        if (!hasTrialsLeft) {
+          setTimeout(() => setShowUpgradeModal(true), 2000);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -281,6 +314,20 @@ export default function ContentGeneratorPage() {
               </div>
             )}
           </div>
+
+          {/* Credits Display - Only for authenticated users */}
+          {user && (
+            <div className="mb-8 max-w-md mx-auto">
+              <CreditsDisplay
+                available={credits.available}
+                total={credits.total}
+                used={credits.used}
+                isRateLimited={isRateLimited}
+                rateLimitReset={rateLimitReset}
+                rateLimit={rateLimit}
+              />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left: Content Type Selection */}
