@@ -15,7 +15,8 @@ const RATE_LIMIT_WINDOW = 60000; // 1 minute in ms
 const STORAGE_KEY = 'sugesto_global_credits';
 
 export function useGlobalCredits(userEmail: string | null, isAuthenticated: boolean = false) {
-  const [credits, setCredits] = useState<CreditData>({
+  // Don't initialize with default values - wait for email to be available
+  const getInitialCredits = (): CreditData => ({
     available: INITIAL_CREDITS,
     used: 0,
     total: INITIAL_CREDITS,
@@ -23,22 +24,36 @@ export function useGlobalCredits(userEmail: string | null, isAuthenticated: bool
     requestHistory: [],
     email: userEmail || '',
   });
+
+  const [credits, setCredits] = useState<CreditData>(getInitialCredits);
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [rateLimitReset, setRateLimitReset] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load credits from localStorage
   useEffect(() => {
-    const loadCredits = () => {
+    const loadCreditsFromStorage = () => {
       try {
-        if (!isAuthenticated || !userEmail) {
+        if (!isAuthenticated) {
+          console.log('[Credits] Not authenticated, skipping load');
           setIsLoading(false);
+          return;
+        }
+
+        if (!userEmail) {
+          // Email not yet available, keep loading
+          console.log('[Credits] Email not yet available, waiting...');
+          setIsLoading(true);
           return;
         }
 
         // Use user email as key for persistence
         const storageKey = `${STORAGE_KEY}_${userEmail}`;
+        console.log(`[Credits] Loading credits for: ${userEmail}`);
+        console.log(`[Credits] Storage key: ${storageKey}`);
+
         const stored = localStorage.getItem(storageKey);
+        console.log(`[Credits] Stored data exists: ${!!stored}`);
 
         if (stored) {
           const data: CreditData = JSON.parse(stored);
@@ -58,6 +73,7 @@ export function useGlobalCredits(userEmail: string | null, isAuthenticated: bool
               requestHistory: [],
               email: userEmail,
             };
+            console.log('[Credits] Monthly reset triggered, resetting to', INITIAL_CREDITS);
             localStorage.setItem(storageKey, JSON.stringify(resetData));
             setCredits(resetData);
           } else {
@@ -68,6 +84,7 @@ export function useGlobalCredits(userEmail: string | null, isAuthenticated: bool
             );
 
             const updatedData = { ...data, requestHistory: cleanedHistory, email: userEmail };
+            console.log(`[Credits] Loaded existing credits: ${updatedData.available}/${updatedData.total}`);
             setCredits(updatedData);
 
             // Check if rate limited
@@ -87,17 +104,18 @@ export function useGlobalCredits(userEmail: string | null, isAuthenticated: bool
             requestHistory: [],
             email: userEmail,
           };
+          console.log('[Credits] No stored data found, initializing with', INITIAL_CREDITS, 'credits');
           localStorage.setItem(storageKey, JSON.stringify(initialData));
           setCredits(initialData);
         }
       } catch (error) {
-        console.error('Error loading credits:', error);
+        console.error('[Credits] Error loading credits:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadCredits();
+    loadCreditsFromStorage();
   }, [userEmail, isAuthenticated]);
 
   // Check and update rate limit status
@@ -170,6 +188,7 @@ export function useGlobalCredits(userEmail: string | null, isAuthenticated: bool
       };
 
       const storageKey = `${STORAGE_KEY}_${userEmail}`;
+      console.log(`[Credits] Consuming credit: ${credits.available} → ${newData.available}`);
       localStorage.setItem(storageKey, JSON.stringify(newData));
       setCredits(newData);
 
