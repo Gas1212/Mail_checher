@@ -73,12 +73,34 @@ class GroqService:
     }
 
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv('GROQ_API_KEY')
+        # Try multiple sources for API key
+        self.api_key = api_key or os.getenv('GROQ_API_KEY') or self._load_from_env_file()
 
         if not self.api_key:
             raise ValueError('GROQ_API_KEY must be configured')
 
         print(f"Content Generator configured: Groq API (Ultra-fast, Free)")
+
+    def _load_from_env_file(self) -> Optional[str]:
+        """Fallback: Load API key directly from .env file"""
+        try:
+            from pathlib import Path
+            # Try production path first
+            env_paths = [
+                Path('/usr/home/Gas1911/domains/gas1911.serv00.net/public_python/.env'),
+                Path(__file__).resolve().parent.parent.parent / '.env',
+                Path(__file__).resolve().parent.parent / '.env',
+            ]
+
+            for env_path in env_paths:
+                if env_path.exists():
+                    with open(env_path) as f:
+                        for line in f:
+                            if line.strip().startswith('GROQ_API_KEY='):
+                                return line.strip().split('=', 1)[1].strip('"\'')
+        except Exception:
+            pass
+        return None
 
     def _get_prompt(
         self,
