@@ -72,7 +72,7 @@ export default function ContentGeneratorPage() {
     isRateLimited,
     rateLimitReset,
     isLoading: creditsLoading,
-    useCredit,
+    consumeCredit,
     rateLimit,
   } = useCredits('content-generator', !!user);
 
@@ -199,7 +199,8 @@ export default function ContentGeneratorPage() {
         return;
       }
 
-      const creditResult = useCredit();
+      // Use credit before making request
+      const creditResult = consumeCredit();
       if (!creditResult.success) {
         setError(creditResult.message || 'Failed to use credit');
         return;
@@ -245,9 +246,8 @@ export default function ContentGeneratorPage() {
       }
 
       setResult(data);
-      setIsGenerating(false);
 
-      // For non-authenticated users, use one trial
+      // For non-authenticated users, use one trial after successful generation
       if (!user) {
         const hasTrialsLeft = useOneTrial();
         if (!hasTrialsLeft) {
@@ -256,6 +256,7 @@ export default function ContentGeneratorPage() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
       setIsGenerating(false);
     }
   };

@@ -117,7 +117,7 @@ export function useCredits(toolName: string, isAuthenticated: boolean = false) {
     return () => clearInterval(interval);
   }, [credits.requestHistory, isAuthenticated]);
 
-  const useCredit = useCallback((): { success: boolean; message?: string } => {
+  const consumeCredit = useCallback((): { success: boolean; message?: string } => {
     if (!isAuthenticated) {
       return { success: false, message: 'Authentication required' };
     }
@@ -195,7 +195,7 @@ export function useCredits(toolName: string, isAuthenticated: boolean = false) {
     isRateLimited,
     rateLimitReset,
     isLoading,
-    useCredit,
+    consumeCredit,
     resetCredits,
     rateLimit: {
       requests: RATE_LIMIT_REQUESTS,
