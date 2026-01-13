@@ -57,6 +57,12 @@ frontend/out/
 frontend/node_modules/
 frontend/.pnp
 frontend/.pnp.js
+app/.next/
+app/out/
+app/node_modules/
+website/.next/
+website/out/
+website/node_modules/
 
 # Testing
 .coverage

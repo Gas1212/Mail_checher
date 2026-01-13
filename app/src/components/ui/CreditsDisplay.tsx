@@ -54,7 +54,7 @@ export default function CreditsDisplay({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <CreditCard className="w-5 h-5 text-indigo-600" />
-          <h3 className="text-sm font-semibold text-gray-900">Available Credits</h3>
+          <h3 className="text-sm font-semibold text-gray-900">Global Credits</h3>
         </div>
         {getStatusBadge()}
       </div>
@@ -117,7 +117,7 @@ export default function CreditsDisplay({
       {/* Reset Info */}
       <div className="mt-3 pt-3 border-t border-gray-200">
         <p className="text-xs text-gray-500">
-          <span className="font-medium">Monthly allocation:</span> {total} credits
+          <span className="font-medium">Monthly allocation:</span> {total} credits (shared across all tools)
           <br />
           <span className="font-medium">Resets:</span> First day of each month
         </p>

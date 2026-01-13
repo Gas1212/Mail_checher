@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import UpgradeModal from '@/components/ui/UpgradeModal';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
-import { useCredits } from '@/hooks/useCredits';
+import { useGlobalCredits } from '@/hooks/useGlobalCredits';
 import CreditsDisplay from '@/components/ui/CreditsDisplay';
 
 type ContentType =
@@ -74,7 +74,7 @@ export default function ContentGeneratorPage() {
     isLoading: creditsLoading,
     consumeCredit,
     rateLimit,
-  } = useCredits('content-generator', !!user);
+  } = useGlobalCredits(user?.email || null, !!user);
 
   useEffect(() => {
     // Check if user is logged in
