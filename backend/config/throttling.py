@@ -1,42 +1,24 @@
 """
 Custom Throttling Classes for Rate Limiting
+Applied only to tool endpoints (Content Generator, Email tools, etc.)
+NOT applied to authentication endpoints
 """
-from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 
-class AuthenticatedUserThrottle(UserRateThrottle):
+class ToolsThrottle(UserRateThrottle):
     """
-    Rate limiting for authenticated users: 3 requests per minute
+    Rate limiting for authenticated users on tools: 3 requests per minute
+    Applied to: Content Generator, Email tools, SEO tools
+    NOT applied to: Auth, Profile, Dashboard endpoints
     """
+    scope = 'content_gen'
     rate = '3/min'
 
-    def get_cache_key(self, request, view):
-        """
-        Use user ID for authenticated requests
-        """
-        if request.user.is_authenticated:
-            ident = request.user.pk
-        else:
-            # For non-authenticated, use IP-based throttling
-            ident = self.get_ident(request)
 
-        return self.cache_format % {
-            'scope': self.scope,
-            'ident': ident
-        }
-
-
-class BurstRateThrottle(UserRateThrottle):
+class AnonymousToolsThrottle(AnonRateThrottle):
     """
-    Burst rate limiting: 10 requests per minute (for quick successive requests)
+    Rate limiting for anonymous users on tools: 3 requests per minute
     """
-    scope = 'burst'
-    rate = '10/min'
-
-
-class SustainedRateThrottle(UserRateThrottle):
-    """
-    Sustained rate limiting: 100 requests per hour
-    """
-    scope = 'sustained'
-    rate = '100/hour'
+    scope = 'content_gen'
+    rate = '3/min'

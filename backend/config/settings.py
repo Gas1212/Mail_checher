@@ -127,12 +127,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'config.throttling.AuthenticatedUserThrottle',
-    ],
+    # No global throttling - applied per-view only
+    'DEFAULT_THROTTLE_CLASSES': [],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '3/min',  # 3 requests per minute for authenticated users
-        'burst': '10/min',  # Burst rate
-        'sustained': '100/hour',  # Sustained rate
+        'user': '60/min',  # General authenticated users: 60 req/min
+        'anon': '30/min',  # Anonymous users: 30 req/min
+        'content_gen': '3/min',  # Content Generator only: 3 req/min
+        'burst': '100/min',  # Burst rate
+        'sustained': '1000/hour',  # Sustained rate per hour
     }
 }
