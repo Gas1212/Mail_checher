@@ -71,13 +71,14 @@ export default function ContentGeneratorPage() {
     const token = localStorage.getItem('access_token');
     const userData = localStorage.getItem('user');
 
-    if (!token || !userData) {
-      router.push('/auth/signin');
-      return;
+    if (token && userData) {
+      // User is authenticated - load profile
+      setUser(JSON.parse(userData));
+      fetchUserProfile(token);
+    } else {
+      // No user logged in - allow free trial usage
+      setLoading(false);
     }
-
-    setUser(JSON.parse(userData));
-    fetchUserProfile(token);
   }, [router]);
 
   const fetchUserProfile = async (token: string) => {
