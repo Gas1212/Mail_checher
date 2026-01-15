@@ -1,12 +1,13 @@
 'use client';
 
-import { Check, X, Zap, Star, Crown } from 'lucide-react';
+import { Check, X, Zap, Star } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import { getAppUrl } from '@/lib/config';
 
 export default function PricingPage() {
   const plans = [
@@ -22,17 +23,18 @@ export default function PricingPage() {
         { text: 'DNS verification', included: true },
         { text: 'SMTP check', included: false },
         { text: 'Disposable detection', included: true },
-        { text: 'API access', included: false },
+        { text: 'Bulk validation', included: false },
         { text: 'Email support', included: false },
         { text: 'Priority support', included: false },
       ],
       cta: 'Get Started',
+      ctaLink: getAppUrl('/auth/signup'),
       popular: false,
     },
     {
       name: 'Pro',
       icon: Star,
-      price: '$29',
+      price: '$20',
       period: '/month',
       description: 'For professionals and small teams',
       features: [
@@ -41,31 +43,13 @@ export default function PricingPage() {
         { text: 'DNS verification', included: true },
         { text: 'SMTP check', included: true },
         { text: 'Disposable detection', included: true },
-        { text: 'API access', included: true },
-        { text: 'Email support', included: true },
-        { text: 'Priority support', included: false },
-      ],
-      cta: 'Start Pro Trial',
-      popular: true,
-    },
-    {
-      name: 'Enterprise',
-      icon: Crown,
-      price: '$99',
-      period: '/month',
-      description: 'For large organizations',
-      features: [
-        { text: 'Unlimited validations', included: true },
-        { text: 'Syntax validation', included: true },
-        { text: 'DNS verification', included: true },
-        { text: 'SMTP check', included: true },
-        { text: 'Disposable detection', included: true },
-        { text: 'API access', included: true },
+        { text: 'Bulk validation', included: true },
         { text: 'Email support', included: true },
         { text: 'Priority support', included: true },
       ],
       cta: 'Contact Sales',
-      popular: false,
+      ctaLink: '/contact',
+      popular: true,
     },
   ];
 
@@ -89,9 +73,9 @@ export default function PricingPage() {
 
         {/* Pricing Cards */}
         <section className="py-20">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {plans.map((plan, index) => {
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {plans.map((plan) => {
                 const Icon = plan.icon;
                 return (
                   <div key={plan.name} className="relative">
@@ -160,7 +144,7 @@ export default function PricingPage() {
                           className="w-full"
                           asChild
                         >
-                          <Link href="/">{plan.cta}</Link>
+                          <Link href={plan.ctaLink}>{plan.cta}</Link>
                         </Button>
                       </CardContent>
                     </Card>
@@ -183,19 +167,23 @@ export default function PricingPage() {
                 {[
                   {
                     question: 'Can I change my plan later?',
-                    answer: 'Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.',
+                    answer: 'Yes, you can upgrade from Free to Pro at any time by contacting our sales team.',
                   },
                   {
                     question: 'What happens if I exceed my monthly limit?',
-                    answer: 'If you exceed your monthly validation limit, you can either upgrade to a higher plan or purchase additional validations.',
+                    answer: 'If you exceed your monthly validation limit on the Free plan, you can upgrade to Pro for higher limits and additional features.',
                   },
                   {
                     question: 'Do you offer refunds?',
-                    answer: 'We offer a 30-day money-back guarantee. If you\'re not satisfied with our service, contact us for a full refund.',
+                    answer: 'We offer a 30-day money-back guarantee on Pro plan. If you\'re not satisfied with our service, contact us for a full refund.',
                   },
                   {
                     question: 'Is there a free trial?',
-                    answer: 'Yes! The Free plan lets you try our service with 100 validations per month. Pro plan includes a 14-day free trial.',
+                    answer: 'Yes! The Free plan lets you try our service with 100 validations per month, no credit card required.',
+                  },
+                  {
+                    question: 'How do I subscribe to the Pro plan?',
+                    answer: 'Click "Contact Sales" on the Pro plan to send us your requirements. Our team will get back to you within 24 hours to set up your account.',
                   },
                 ].map((faq, index) => (
                   <div key={index}>
