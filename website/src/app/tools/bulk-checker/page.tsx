@@ -35,55 +35,70 @@ export default function BulkCheckerPage() {
       return;
     }
 
-    setIsValidating(true);
-    setResults([]);
-
-    // Simulate validation (replace with actual API call)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
     // Parse emails
     const emailList = emails
       .split('\n')
       .map(e => e.trim())
       .filter(e => e.length > 0);
 
-    // Basic validation logic
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const disposableDomains = ['tempmail.com', '10minutemail.com', 'guerrillamail.com'];
+    // Limit to 330 emails
+    if (emailList.length > 330) {
+      alert('Maximum 330 emails allowed. Please reduce the number of emails.');
+      return;
+    }
 
-    const validationResults: EmailResult[] = emailList.map(email => {
-      const syntaxValid = emailRegex.test(email);
-      const hasDomain = email.includes('@') && email.split('@')[1]?.includes('.');
-      const domain = email.split('@')[1]?.toLowerCase() || '';
-      const isDisposable = disposableDomains.some(d => domain.includes(d));
+    setIsValidating(true);
+    setResults([]);
 
-      let reason = '';
-      if (!syntaxValid) {
-        reason = 'Invalid syntax';
-      } else if (!hasDomain) {
-        reason = 'Invalid domain';
-      } else if (isDisposable) {
-        reason = 'Disposable email';
-      } else {
-        reason = 'Valid';
+    try {
+      // Call real API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/emails/bulk-validate/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ emails: emailList }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Validation failed');
       }
 
-      return {
-        email,
-        isValid: syntaxValid && hasDomain && !isDisposable,
-        reason,
-      };
-    });
+      const data = await response.json();
 
-    setResults(validationResults);
-    setIsValidating(false);
+      // Map API response to EmailResult[]
+      const validationResults: EmailResult[] = data.results.map((result: any) => ({
+        email: result.email,
+        isValid: result.is_valid || false,
+        reason: result.is_valid ? 'Valid' : (result.reason || 'Invalid'),
+      }));
 
-    // Use one trial
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
-    if (!hasTrialsLeft) {
-      // Show modal after displaying result
-      setTimeout(() => setShowUpgradeModal(true), 2000);
+      setResults(validationResults);
+
+      // Use one trial
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const hasTrialsLeft = useOneTrial();
+      if (!hasTrialsLeft) {
+        // Show modal after displaying result
+        setTimeout(() => setShowUpgradeModal(true), 2000);
+      }
+    } catch (error) {
+      console.error('Validation error:', error);
+      // Fallback to basic validation on error
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      const validationResults: EmailResult[] = emailList.map(email => {
+        const syntaxValid = emailRegex.test(email);
+        return {
+          email,
+          isValid: false,
+          reason: 'Validation service temporarily unavailable',
+        };
+      });
+
+      setResults(validationResults);
+    } finally {
+      setIsValidating(false);
     }
   };
 

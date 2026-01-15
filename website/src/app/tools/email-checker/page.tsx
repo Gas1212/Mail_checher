@@ -45,40 +45,68 @@ export default function EmailCheckerPage() {
     setIsValidating(true);
     setResult(null);
 
-    // Simulate validation (replace with actual API call)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Call real API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/emails/validate/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, check_smtp: true }),
+      });
 
-    // Basic validation logic
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const syntaxValid = emailRegex.test(email);
-    const hasDomain = email.includes('@') && email.split('@')[1]?.includes('.');
-    const disposableDomains = ['tempmail.com', '10minutemail.com', 'guerrillamail.com'];
-    const domain = email.split('@')[1]?.toLowerCase() || '';
-    const isDisposable = disposableDomains.some(d => domain.includes(d));
+      if (!response.ok) {
+        throw new Error('Validation failed');
+      }
 
-    const validationResult: ValidationResult = {
-      email,
-      isValid: syntaxValid && hasDomain && !isDisposable,
-      checks: {
-        syntax: syntaxValid,
-        domain: hasDomain,
-        mx: syntaxValid && hasDomain, // Simplified
-        disposable: !isDisposable,
-      },
-      message: syntaxValid && hasDomain && !isDisposable
-        ? 'Email is valid and deliverable'
-        : 'Email has validation issues',
-    };
+      const data = await response.json();
 
-    setResult(validationResult);
-    setIsValidating(false);
+      // Map API response to ValidationResult
+      const validationResult: ValidationResult = {
+        email,
+        isValid: data.is_valid || false,
+        checks: {
+          syntax: data.syntax_valid || false,
+          domain: data.domain_valid || false,
+          mx: data.mx_valid || false,
+          disposable: !data.is_disposable || false,
+        },
+        message: data.is_valid
+          ? 'Email is valid and deliverable'
+          : data.reason || 'Email has validation issues',
+      };
 
-    // Use one trial
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
-    if (!hasTrialsLeft) {
-      // Show modal after displaying result
-      setTimeout(() => setShowUpgradeModal(true), 2000);
+      setResult(validationResult);
+
+      // Use one trial
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const hasTrialsLeft = useOneTrial();
+      if (!hasTrialsLeft) {
+        // Show modal after displaying result
+        setTimeout(() => setShowUpgradeModal(true), 2000);
+      }
+    } catch (error) {
+      console.error('Validation error:', error);
+      // Fallback to basic validation on error
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const syntaxValid = emailRegex.test(email);
+      const hasDomain = email.includes('@') && email.split('@')[1]?.includes('.');
+
+      const validationResult: ValidationResult = {
+        email,
+        isValid: false,
+        checks: {
+          syntax: syntaxValid,
+          domain: hasDomain,
+          mx: false,
+          disposable: false,
+        },
+        message: 'Validation service temporarily unavailable',
+      };
+
+      setResult(validationResult);
+    } finally {
+      setIsValidating(false);
     }
   };
 

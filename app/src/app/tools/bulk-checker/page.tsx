@@ -118,6 +118,12 @@ export default function BulkCheckerPage() {
       return;
     }
 
+    // Limit to 330 emails
+    if (emailList.length > 330) {
+      setError('Maximum 330 emails allowed. Please reduce the number of emails.');
+      return;
+    }
+
     if (emailList.length > credits) {
       setError(`Not enough credits. You need ${emailList.length} credits but only have ${credits} remaining.`);
       return;
