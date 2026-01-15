@@ -16,12 +16,17 @@ export default function SignUpPage() {
     password: '',
     first_name: '',
     last_name: '',
+    marketing_consent: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,22 +137,38 @@ export default function SignUpPage() {
               required
             />
 
-            <div className="flex items-start text-sm">
-              <input
-                type="checkbox"
-                required
-                className="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-              />
-              <span className="ml-2 text-gray-600">
-                I agree to the{' '}
-                <Link href="/terms" className="text-indigo-600 hover:text-indigo-700">
-                  Terms of Service
-                </Link>
-                {' '}and{' '}
-                <Link href="/privacy" className="text-indigo-600 hover:text-indigo-700">
-                  Privacy Policy
-                </Link>
-              </span>
+            <div className="space-y-3">
+              <div className="flex items-start text-sm">
+                <input
+                  type="checkbox"
+                  required
+                  className="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="ml-2 text-gray-600">
+                  I agree to the{' '}
+                  <Link href="/terms" className="text-indigo-600 hover:text-indigo-700">
+                    Terms of Service
+                  </Link>
+                  {' '}and{' '}
+                  <Link href="/privacy" className="text-indigo-600 hover:text-indigo-700">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </div>
+
+              <div className="flex items-start text-sm">
+                <input
+                  type="checkbox"
+                  name="marketing_consent"
+                  checked={formData.marketing_consent}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="ml-2 text-gray-600">
+                  I agree to receive marketing emails about offers, promotions, and updates from Sugesto
+                </span>
+              </div>
             </div>
 
             <Button type="submit" isLoading={loading} className="w-full">
