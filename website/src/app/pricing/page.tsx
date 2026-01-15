@@ -203,6 +203,68 @@ export default function PricingPage() {
             </div>
           </div>
         </section>
+
+        {/* Marketing Section */}
+        <section className="py-16 bg-gradient-to-br from-indigo-50 to-purple-50">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Explore Our Tools
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/tools/email-checker" className="hover:text-indigo-600 transition-colors">
+                      Email Validator →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Try our single email validator to test the service before signing up.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/tools/bulk-checker" className="hover:text-indigo-600 transition-colors">
+                      Bulk Email Checker →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Validate multiple emails at once with our bulk validation tool.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/tools" className="hover:text-indigo-600 transition-colors">
+                      All Tools →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Explore our complete suite of email validation and SEO tools.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/contact" className="hover:text-indigo-600 transition-colors">
+                      Contact Sales →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Have questions? Our team is ready to help you choose the right plan.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </>

@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/components/sections/Hero';
 import Features from '@/components/sections/Features';
+import CTASection from '@/components/sections/CTASection';
 
 export const metadata: Metadata = {
   title: 'Sugesto - Professional Email Validation & SEO Tools',
@@ -31,6 +32,7 @@ export default function Home() {
       <main>
         <Hero />
         <Features />
+        <CTASection />
       </main>
       <Footer />
     </>
