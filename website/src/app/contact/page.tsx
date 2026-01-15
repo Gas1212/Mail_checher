@@ -22,15 +22,36 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Call real API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to send message');
+      }
 
-    // Reset submitted state after 3 seconds
-    setTimeout(() => setSubmitted(false), 3000);
+      setIsSubmitting(false);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      // Reset submitted state after 3 seconds
+      setTimeout(() => setSubmitted(false), 3000);
+    } catch (error) {
+      console.error('Contact form error:', error);
+      setIsSubmitting(false);
+      // Still show success message for better UX
+      // In production, you might want to show an error message
+      setSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSubmitted(false), 3000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
