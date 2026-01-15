@@ -120,12 +120,14 @@ export default function BulkCheckerPage() {
 
     // Limit to 330 emails
     if (emailList.length > 330) {
-      setError('Maximum 330 emails allowed. Please reduce the number of emails.');
+      setError('Maximum 330 emails allowed per verification. Please reduce the number of emails.');
       return;
     }
 
-    if (emailList.length > credits) {
-      setError(`Not enough credits. You need ${emailList.length} credits but only have ${credits} remaining.`);
+    // Check if user has enough credits (10 credits per bulk verification)
+    const requiredCredits = 10;
+    if (credits < requiredCredits) {
+      setError(`Not enough credits. Bulk verification requires ${requiredCredits} credits but you only have ${credits} remaining.`);
       return;
     }
 
@@ -427,6 +429,16 @@ export default function BulkCheckerPage() {
             </div>
           </div>
 
+          {/* Info Banner */}
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-3">
+            <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm text-blue-900">
+                <strong>Note:</strong> Each bulk verification costs <strong>10 credits</strong> and allows you to validate up to <strong>330 emails</strong> at once.
+              </p>
+            </div>
+          </div>
+
         {/* Upload Method Selector */}
         <div className="mb-6">
           <div className="flex space-x-4">
@@ -648,10 +660,14 @@ export default function BulkCheckerPage() {
                   </div>
                 </div>
                 <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                  <p className="text-sm text-indigo-900">
-                    <strong>💡 Pricing:</strong> 1 credit = 1 email validation.
-                    New users get 100 free credits!
-                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-indigo-900">
+                      <strong>💡 Pricing:</strong> Each bulk verification costs 10 credits (up to 330 emails per verification).
+                    </p>
+                    <p className="text-sm text-indigo-900">
+                      New users get 100 free credits to start!
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
