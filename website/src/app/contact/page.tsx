@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Send, MapPin, Phone } from 'lucide-react';
+import { Mail, Send, MapPin } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -44,14 +44,8 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: 'Email',
-      value: 'support@emailchecker.com',
-      link: 'mailto:support@emailchecker.com',
-    },
-    {
-      icon: Phone,
-      title: 'Phone',
-      value: '+1 (555) 123-4567',
-      link: 'tel:+15551234567',
+      value: 'contact@sugesto.xyz',
+      link: 'mailto:contact@sugesto.xyz',
     },
     {
       icon: MapPin,
