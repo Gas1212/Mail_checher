@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
-import { Check, Mail, Users, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { Check, Mail, Users, Zap, ArrowRight, Puzzle, Globe } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -167,6 +169,84 @@ export default function AboutPage() {
                   </li>
                 </ul>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Ready to Try Our Tools?
+              </h2>
+              <p className="text-xl text-gray-600">
+                Experience the power of accurate email validation and SEO tools
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              <Link href="/tools/email-checker">
+                <Card hover className="h-full group cursor-pointer">
+                  <CardContent className="text-center">
+                    <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                      <Mail className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
+                      Email Validator
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Verify single emails instantly
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link href="/tools/chrome-extensions">
+                <Card hover className="h-full group cursor-pointer">
+                  <CardContent className="text-center">
+                    <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                      <Puzzle className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
+                      Extensions Analyzer
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Check Chrome extension security
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link href="/tools">
+                <Card hover className="h-full group cursor-pointer">
+                  <CardContent className="text-center">
+                    <div className="w-14 h-14 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                      <Globe className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
+                      All Tools
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Explore our complete toolset
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" asChild>
+                <Link href="/pricing">
+                  View Pricing
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/contact">
+                  Contact Us
+                </Link>
+              </Button>
             </div>
           </div>
         </section>

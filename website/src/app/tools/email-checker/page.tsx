@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Check, X, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Check, X, AlertCircle, Loader2, Zap, Shield } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import UpgradeModal from '@/components/ui/UpgradeModal';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
+import RelatedTools from '@/components/tools/RelatedTools';
 
 interface ValidationResult {
   email: string;
@@ -295,6 +296,33 @@ export default function EmailCheckerPage() {
           </Card>
         </div>
       </main>
+
+      <RelatedTools
+        tools={[
+          {
+            name: 'Bulk Email Checker',
+            description: 'Validate multiple emails at once',
+            href: '/tools/bulk-checker',
+            icon: Zap,
+            color: 'from-blue-500 to-cyan-500',
+          },
+          {
+            name: 'MX Lookup',
+            description: 'Check mail exchange records',
+            href: '/tools/mx-lookup',
+            icon: Shield,
+            color: 'from-green-500 to-emerald-500',
+          },
+          {
+            name: 'All Tools',
+            description: 'Explore our complete toolset',
+            href: '/tools',
+            icon: Mail,
+            color: 'from-indigo-500 to-purple-500',
+          },
+        ]}
+      />
+
       <Footer />
 
       {/* Upgrade Modal */}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Puzzle, Check, X, AlertCircle, Loader2, Shield, Download, Star, Users, Calendar } from 'lucide-react';
+import { Puzzle, Check, X, AlertCircle, Loader2, Shield, Download, Star, Users, Calendar, Search, FileText } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import UpgradeModal from '@/components/ui/UpgradeModal';
 import { useFreeTrial } from '@/hooks/useFreeTrial';
+import RelatedTools from '@/components/tools/RelatedTools';
 
 interface ExtensionInfo {
   name: string;
@@ -430,6 +431,33 @@ export default function ChromeExtensionsPage() {
           </Card>
         </div>
       </main>
+
+      <RelatedTools
+        tools={[
+          {
+            name: 'Sitemap Validator',
+            description: 'Validate your XML sitemaps',
+            href: '/tools/sitemap-validator',
+            icon: FileText,
+            color: 'from-emerald-500 to-green-500',
+          },
+          {
+            name: 'Sitemap Finder',
+            description: 'Discover website sitemaps',
+            href: '/tools/sitemap-finder',
+            icon: Search,
+            color: 'from-cyan-500 to-blue-500',
+          },
+          {
+            name: 'All Tools',
+            description: 'Explore our complete toolset',
+            href: '/tools',
+            icon: Puzzle,
+            color: 'from-purple-500 to-pink-500',
+          },
+        ]}
+      />
+
       <Footer />
 
       {/* Upgrade Modal */}

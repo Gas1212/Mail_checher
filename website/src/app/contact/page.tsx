@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Send, MapPin } from 'lucide-react';
+import Link from 'next/link';
+import { Mail, Send, MapPin, Zap, FileText } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -204,6 +205,72 @@ export default function ContactPage() {
                   </CardContent>
                 </Card>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Links Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Explore Our Services
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/tools/email-checker" className="hover:text-indigo-600 transition-colors flex items-center">
+                      <Mail className="w-5 h-5 mr-2" />
+                      Email Validator →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Try our free email validation tool to verify email addresses instantly.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/tools/bulk-checker" className="hover:text-indigo-600 transition-colors flex items-center">
+                      <Zap className="w-5 h-5 mr-2" />
+                      Bulk Email Checker →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Validate hundreds of emails at once with our bulk validation tool.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/tools" className="hover:text-indigo-600 transition-colors flex items-center">
+                      <FileText className="w-5 h-5 mr-2" />
+                      All Tools →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Discover our complete suite of email validation and SEO tools.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card hover>
+                <CardContent>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    <Link href="/pricing" className="hover:text-indigo-600 transition-colors flex items-center">
+                      <Send className="w-5 h-5 mr-2" />
+                      View Pricing →
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Explore our pricing plans and find the perfect option for your needs.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>

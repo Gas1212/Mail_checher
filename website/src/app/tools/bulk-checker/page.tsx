@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Check, AlertCircle, Upload, Download } from 'lucide-react';
+import { Mail, Check, AlertCircle, Upload, Download, Sparkles, Shield } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import UpgradeModal from '@/components/ui/UpgradeModal';
+import RelatedTools from '@/components/tools/RelatedTools';
 
 export default function BulkCheckerPage() {
   const [emails, setEmails] = useState('');
@@ -104,6 +105,33 @@ export default function BulkCheckerPage() {
           </Card>
         </div>
       </main>
+
+      <RelatedTools
+        tools={[
+          {
+            name: 'Email Validator',
+            description: 'Verify single emails instantly',
+            href: '/tools/email-checker',
+            icon: Mail,
+            color: 'from-indigo-500 to-purple-500',
+          },
+          {
+            name: 'List Cleaner',
+            description: 'Remove duplicates from lists',
+            href: '/tools/list-cleaner',
+            icon: Sparkles,
+            color: 'from-purple-500 to-pink-500',
+          },
+          {
+            name: 'Blacklist Checker',
+            description: 'Check domain blacklist status',
+            href: '/tools/blacklist-checker',
+            icon: Shield,
+            color: 'from-red-500 to-orange-500',
+          },
+        ]}
+      />
+
       <Footer />
 
       {/* Upgrade Modal */}
