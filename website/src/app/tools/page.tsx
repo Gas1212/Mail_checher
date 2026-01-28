@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Free Email Validation & SEO Tools - Sugesto',
-  description: 'Comprehensive suite of free email validation, email security, and SEO tools. Validate emails, check MX records, analyze Chrome extensions, validate sitemaps, and more.',
+  description: 'Comprehensive suite of free email validation, email security, SEO, and marketing tools. Validate emails, generate QR codes, shorten URLs, analyze Chrome extensions, and more.',
 };
 
 export default function ToolsPage() {
@@ -111,6 +111,26 @@ export default function ToolsPage() {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
       category: 'SEO Tools',
+      badge: 'Try Free',
+    },
+    {
+      name: 'QR Code Generator',
+      description: 'Create custom QR codes for URLs, text, email, phone numbers, and more',
+      icon: QrCode,
+      href: '/tools/qr-generator',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      category: 'Marketing',
+      badge: 'New',
+    },
+    {
+      name: 'URL Shortener',
+      description: 'Create short, branded links with detailed analytics and tracking',
+      icon: LinkIcon,
+      href: '/tools/url-shortener',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      category: 'Marketing',
       badge: 'New',
     },
     {
@@ -121,7 +141,7 @@ export default function ToolsPage() {
       color: 'text-fuchsia-600',
       bgColor: 'bg-fuchsia-50',
       category: 'Marketing',
-      badge: 'New',
+      badge: 'Try Free',
     },
   ];
 
