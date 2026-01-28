@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
@@ -8,7 +8,7 @@ import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Free Email Validation & SEO Tools - Sugesto',
-  description: 'Comprehensive suite of free email validation, email security, and SEO tools. Validate emails, check MX records, generate SPF records, validate sitemaps, and more.',
+  description: 'Comprehensive suite of free email validation, email security, and SEO tools. Validate emails, check MX records, analyze Chrome extensions, validate sitemaps, and more.',
 };
 
 export default function ToolsPage() {
@@ -102,6 +102,16 @@ export default function ToolsPage() {
       bgColor: 'bg-cyan-50',
       category: 'SEO Tools',
       badge: 'Try Free',
+    },
+    {
+      name: 'Chrome Extensions Analyzer',
+      description: 'Analyze Chrome extensions for security, permissions, and privacy risks',
+      icon: Puzzle,
+      href: '/tools/chrome-extensions',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      category: 'SEO Tools',
+      badge: 'New',
     },
     {
       name: 'AI Content Generator',

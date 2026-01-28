@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Zap, Mail, FileText } from 'lucide-react';
+import { ArrowRight, Zap, Mail, FileText, Puzzle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { getAppUrl } from '@/lib/config';
