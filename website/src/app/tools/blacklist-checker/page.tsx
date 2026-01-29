@@ -26,7 +26,7 @@ export default function BlacklistCheckerPage() {
   const [isChecking, setIsChecking] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('blacklist-checker');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('blacklist-checker');
 
   // Common blacklists to check
   const blacklists = [
@@ -83,7 +83,7 @@ export default function BlacklistCheckerPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);

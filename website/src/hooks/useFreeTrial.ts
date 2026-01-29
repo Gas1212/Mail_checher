@@ -34,7 +34,7 @@ export function useFreeTrial(toolName: string) {
     loadTrialData();
   }, [toolName]);
 
-  const useOneTrial = () => {
+  const consumeTrial = () => {
     try {
       const stored = localStorage.getItem(`${STORAGE_KEY}_${toolName}`);
       const currentData: FreeTrialData = stored
@@ -76,7 +76,7 @@ export function useFreeTrial(toolName: string) {
   return {
     remainingTrials,
     hasExceededLimit,
-    useOneTrial,
+    consumeTrial,
     resetTrials,
     isLoading,
     maxTrials: MAX_FREE_TRIALS,

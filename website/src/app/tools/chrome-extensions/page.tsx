@@ -46,7 +46,7 @@ export default function ChromeExtensionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('chrome-extensions');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('chrome-extensions');
 
   const extractExtensionId = (url: string): string | null => {
     // Extract extension ID from Chrome Web Store URL
@@ -139,7 +139,7 @@ export default function ChromeExtensionsPage() {
       setResult(mockResult);
 
       // Use one trial
-      const hasTrialsLeft = useOneTrial();
+      const hasTrialsLeft = consumeTrial();
       if (!hasTrialsLeft) {
         setTimeout(() => setShowUpgradeModal(true), 2000);
       }

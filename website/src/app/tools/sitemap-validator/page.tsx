@@ -31,7 +31,7 @@ export default function SitemapValidatorPage() {
   const [isValidating, setIsValidating] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('sitemap-validator');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('sitemap-validator');
 
   const validateSitemap = async () => {
     // Check if user has exceeded limit
@@ -88,7 +88,7 @@ export default function SitemapValidatorPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);

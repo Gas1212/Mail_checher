@@ -30,7 +30,7 @@ export default function MXLookupPage() {
   const [isChecking, setIsChecking] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('mx-lookup');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('mx-lookup');
 
   const checkMXRecords = async () => {
     // Check if user has exceeded limit
@@ -73,7 +73,7 @@ export default function MXLookupPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);

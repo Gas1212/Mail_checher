@@ -34,7 +34,7 @@ export default function QRGeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('qr-generator');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('qr-generator');
 
   const qrTypes = [
     { value: 'url' as QRType, label: 'URL/Website', icon: LinkIcon, placeholder: 'https://example.com' },
@@ -70,7 +70,7 @@ export default function QRGeneratorPage() {
       setQrCodeUrl(apiUrl);
 
       // Use one trial
-      const hasTrialsLeft = useOneTrial();
+      const hasTrialsLeft = consumeTrial();
       if (!hasTrialsLeft) {
         setTimeout(() => setShowUpgradeModal(true), 2000);
       }

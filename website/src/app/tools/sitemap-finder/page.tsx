@@ -31,7 +31,7 @@ export default function SitemapFinderPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('sitemap-finder');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('sitemap-finder');
 
   const findSitemaps = async () => {
     // Check if user has exceeded limit
@@ -91,7 +91,7 @@ export default function SitemapFinderPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);

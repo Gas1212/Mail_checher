@@ -59,7 +59,7 @@ export default function ContentGeneratorPage() {
   const [copied, setCopied] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('content-generator');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('content-generator');
 
   const contentTypes: ContentTypeOption[] = [
     {
@@ -170,7 +170,7 @@ export default function ContentGeneratorPage() {
 
       // Use one trial
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const hasTrialsLeft = useOneTrial();
+      const hasTrialsLeft = consumeTrial();
       if (!hasTrialsLeft) {
         setTimeout(() => setShowUpgradeModal(true), 2000);
       }

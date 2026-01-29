@@ -25,7 +25,7 @@ export default function RoleDetectorPage() {
   const [isDetecting, setIsDetecting] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('role-detector');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('role-detector');
 
   const detectRoleAccount = async () => {
     // Check if user has exceeded limit
@@ -108,7 +108,7 @@ export default function RoleDetectorPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);

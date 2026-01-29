@@ -24,7 +24,7 @@ export default function ListCleanerPage() {
   const [isCleaning, setIsCleaning] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('list-cleaner');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('list-cleaner');
 
   const cleanList = async () => {
     // Check if user has exceeded limit
@@ -82,7 +82,7 @@ export default function ListCleanerPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);

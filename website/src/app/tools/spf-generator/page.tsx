@@ -29,7 +29,7 @@ export default function SPFGeneratorPage() {
   const [copied, setCopied] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
-  const { remainingTrials, hasExceededLimit, useOneTrial, isLoading } = useFreeTrial('spf-generator');
+  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('spf-generator');
 
   const addIP4 = () => setIp4Addresses([...ip4Addresses, '']);
   const removeIP4 = (index: number) => setIp4Addresses(ip4Addresses.filter((_, i) => i !== index));
@@ -114,7 +114,7 @@ export default function SPFGeneratorPage() {
 
     // Use one trial
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const hasTrialsLeft = useOneTrial();
+    const hasTrialsLeft = consumeTrial();
     if (!hasTrialsLeft) {
       // Show modal after displaying result
       setTimeout(() => setShowUpgradeModal(true), 2000);
