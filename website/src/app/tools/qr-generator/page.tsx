@@ -1,18 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { QrCode, Download, Check, Link as LinkIcon, Mail, Phone, Wifi, Calendar } from 'lucide-react';
+import { QrCode, Download, Check, Link as LinkIcon, Mail, Phone } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
-import UpgradeModal from '@/components/ui/UpgradeModal';
-import { useFreeTrial } from '@/hooks/useFreeTrial';
 import RelatedTools from '@/components/tools/RelatedTools';
 
-type QRType = 'url' | 'text' | 'email' | 'phone' | 'wifi' | 'vcard';
+type QRType = 'url' | 'text' | 'email' | 'phone';
 
 interface QROptions {
   type: QRType;
@@ -32,9 +29,6 @@ export default function QRGeneratorPage() {
   });
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
-  const { remainingTrials, hasExceededLimit, consumeTrial, isLoading } = useFreeTrial('qr-generator');
 
   const qrTypes = [
     { value: 'url' as QRType, label: 'URL/Website', icon: LinkIcon, placeholder: 'https://example.com' },
@@ -44,11 +38,6 @@ export default function QRGeneratorPage() {
   ];
 
   const generateQRCode = async () => {
-    if (hasExceededLimit) {
-      setShowUpgradeModal(true);
-      return;
-    }
-
     if (!qrOptions.data.trim()) {
       return;
     }
@@ -56,7 +45,6 @@ export default function QRGeneratorPage() {
     setIsGenerating(true);
 
     try {
-      // Format data based on type
       let formattedData = qrOptions.data;
       if (qrOptions.type === 'email') {
         formattedData = `mailto:${qrOptions.data}`;
@@ -64,16 +52,9 @@ export default function QRGeneratorPage() {
         formattedData = `tel:${qrOptions.data}`;
       }
 
-      // Use a QR code API service (example: goqr.me or qrserver.com)
       const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrOptions.size}x${qrOptions.size}&data=${encodeURIComponent(formattedData)}&color=${qrOptions.color.replace('#', '')}&bgcolor=${qrOptions.backgroundColor.replace('#', '')}`;
 
       setQrCodeUrl(apiUrl);
-
-      // Use one trial
-      const hasTrialsLeft = consumeTrial();
-      if (!hasTrialsLeft) {
-        setTimeout(() => setShowUpgradeModal(true), 2000);
-      }
     } catch (error) {
       console.error('QR generation error:', error);
     } finally {
@@ -112,17 +93,8 @@ export default function QRGeneratorPage() {
               QR Code Generator
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Create custom QR codes for URLs, text, email, phone numbers, and more. Free and easy to use.
+              Create custom QR codes for URLs, text, email, phone numbers, and more. 100% free, no account required.
             </p>
-
-            {/* Trial counter */}
-            {!isLoading && !hasExceededLimit && (
-              <div className="mt-6">
-                <Badge variant="default" className="text-sm">
-                  {remainingTrials} free {remainingTrials === 1 ? 'generation' : 'generations'} remaining
-                </Badge>
-              </div>
-            )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -173,7 +145,7 @@ export default function QRGeneratorPage() {
                       onChange={(e) => setQrOptions({ ...qrOptions, data: e.target.value })}
                       onKeyPress={handleKeyPress}
                       placeholder={qrTypes.find(t => t.value === qrOptions.type)?.placeholder}
-                      disabled={isGenerating || hasExceededLimit}
+                      disabled={isGenerating}
                     />
                   </div>
 
@@ -242,24 +214,13 @@ export default function QRGeneratorPage() {
                   <Button
                     onClick={generateQRCode}
                     isLoading={isGenerating}
-                    disabled={!qrOptions.data.trim() || isGenerating || hasExceededLimit}
+                    disabled={!qrOptions.data.trim() || isGenerating}
                     className="w-full"
                     size="lg"
                   >
                     <QrCode className="w-5 h-5 mr-2" />
                     Generate QR Code
                   </Button>
-
-                  {hasExceededLimit && (
-                    <div className="mt-4 text-center">
-                      <button
-                        onClick={() => setShowUpgradeModal(true)}
-                        className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
-                      >
-                        Create a free account to continue →
-                      </button>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             </div>
@@ -273,6 +234,7 @@ export default function QRGeneratorPage() {
                   {qrCodeUrl ? (
                     <div className="space-y-4">
                       <div className="flex justify-center p-6 bg-gray-50 rounded-lg">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={qrCodeUrl}
                           alt="Generated QR Code"
@@ -358,13 +320,6 @@ export default function QRGeneratorPage() {
       />
 
       <Footer />
-
-      {/* Upgrade Modal */}
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        toolName="QR Code Generator"
-      />
     </>
   );
 }
