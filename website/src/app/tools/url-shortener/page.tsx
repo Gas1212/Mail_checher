@@ -78,22 +78,22 @@ export default function URLShortenerPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-16">
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl mb-6">
-              <LinkIcon className="w-8 h-8 text-white" />
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl sm:rounded-2xl mb-4 sm:mb-6">
+              <LinkIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
               URL Shortener
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Create short, shareable links instantly. 100% free, no account required.
             </p>
           </div>
 
           {/* Input Section */}
-          <Card className="mb-8">
+          <Card className="mb-6 sm:mb-8">
             <CardContent>
               <div className="space-y-6">
                 <div>

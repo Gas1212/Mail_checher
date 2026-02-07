@@ -17,7 +17,9 @@ import {
   AlertTriangle,
   FileText,
   CheckCircle,
-  Search
+  Search,
+  Menu,
+  X
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 
@@ -26,6 +28,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -83,11 +86,36 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
-        {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
+        <Link href="/">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Sugesto
+          </h1>
+        </Link>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 rounded-lg hover:bg-gray-100"
+        >
+          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <div className="flex pt-16 lg:pt-0">
+        {/* Sidebar */}
+        <aside className={`fixed lg:sticky top-16 lg:top-0 left-0 h-[calc(100vh-4rem)] lg:h-screen w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out z-40 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+
+        {/* Logo - Hidden on mobile (shown in mobile header instead) */}
+        <div className="hidden lg:block p-6 border-b border-gray-200">
           <Link href="/">
             <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               Sugesto
@@ -251,18 +279,18 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Welcome back, {user?.first_name || 'User'}!
             </h1>
-            <p className="text-gray-600 mt-1">Here&apos;s what&apos;s happening with your account</p>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">Here&apos;s what&apos;s happening with your account</p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -320,68 +348,75 @@ export default function DashboardPage() {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <Link
                   href="/tools/email-checker"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <Mail className="w-8 h-8 text-indigo-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">Single Email Checker</h3>
-                  <p className="text-sm text-gray-600">Validate individual email addresses</p>
+                  <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-600 mb-2" />
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">Single Email Checker</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Validate individual email addresses</p>
                 </Link>
 
                 <Link
                   href="/tools/bulk-checker"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <Mail className="w-8 h-8 text-indigo-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">Bulk Email Checker</h3>
-                  <p className="text-sm text-gray-600">Validate multiple emails at once</p>
+                  <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-600 mb-2" />
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">Bulk Email Checker</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Validate multiple emails at once</p>
                 </Link>
 
                 <Link
                   href="/tools/mx-lookup"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all"
+                  className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <Server className="w-8 h-8 text-green-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">MX Lookup</h3>
-                  <p className="text-sm text-gray-600">Check mail exchange records</p>
+                  <Server className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mb-2" />
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">MX Lookup</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Check mail exchange records</p>
                 </Link>
 
                 <Link
                   href="/tools/role-detector"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-all"
+                  className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-all"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <Shield className="w-8 h-8 text-orange-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">Role Detector</h3>
-                  <p className="text-sm text-gray-600">Identify generic role accounts</p>
+                  <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 mb-2" />
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">Role Detector</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Identify generic role accounts</p>
                 </Link>
 
                 <Link
                   href="/tools/list-cleaner"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all"
+                  className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <Sparkles className="w-8 h-8 text-purple-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">List Cleaner</h3>
-                  <p className="text-sm text-gray-600">Remove duplicates and invalid emails</p>
+                  <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 mb-2" />
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">List Cleaner</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Remove duplicates and invalid emails</p>
                 </Link>
 
                 <Link
                   href="/tools/content-generator"
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-fuchsia-300 hover:bg-fuchsia-50 transition-all"
+                  className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-fuchsia-300 hover:bg-fuchsia-50 transition-all"
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <Sparkles className="w-8 h-8 text-fuchsia-600 mb-2" />
-                  <h3 className="font-semibold text-gray-900 mb-1">AI Content Generator</h3>
-                  <p className="text-sm text-gray-600">Generate marketing content with AI</p>
+                  <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-fuchsia-600 mb-2" />
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">AI Content Generator</h3>
+                  <p className="text-xs sm:text-sm text-gray-600">Generate marketing content with AI</p>
                 </Link>
               </div>
             </CardContent>
           </Card>
         </div>
       </main>
+      </div>
     </div>
   );
 }
