@@ -88,17 +88,17 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-12 sm:h-14 bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-4 z-50">
         <Link href="/">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Sugesto
           </h1>
         </Link>
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 rounded-lg hover:bg-gray-100"
+          className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100"
         >
-          {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isSidebarOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
         </button>
       </div>
 
@@ -110,9 +110,9 @@ export default function DashboardPage() {
         />
       )}
 
-      <div className="flex pt-16 lg:pt-0">
+      <div className="flex pt-12 sm:pt-14 lg:pt-0">
         {/* Sidebar */}
-        <aside className={`fixed lg:sticky top-16 lg:top-0 left-0 h-[calc(100vh-4rem)] lg:h-screen w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out z-40 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <aside className={`fixed lg:sticky top-12 sm:top-14 lg:top-0 left-0 h-[calc(100vh-3rem)] sm:h-[calc(100vh-3.5rem)] lg:h-screen w-56 sm:w-60 lg:w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out z-40 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
 
         {/* Logo - Hidden on mobile (shown in mobile header instead) */}
         <div className="hidden lg:block p-6 border-b border-gray-200">
@@ -124,69 +124,69 @@ export default function DashboardPage() {
         </div>
 
         {/* User Info */}
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-indigo-600" />
+        <div className="p-3 sm:p-4 lg:p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 lg:w-5 lg:h-5 text-indigo-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate">
+              <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
                 {user?.first_name || user?.email}
               </p>
-              <p className="text-xs text-gray-500 truncate">{profile?.plan_type || 'Free'} Plan</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 truncate">{profile?.plan_type || 'Free'} Plan</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
+        <nav className="flex-1 p-2 sm:p-3 lg:p-4 space-y-1.5 sm:space-y-2 lg:space-y-3 overflow-y-auto">
           <Link
             href="/dashboard"
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600"
+            className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg bg-indigo-50 text-indigo-600"
           >
-            <LayoutDashboard className="w-5 h-5" />
+            <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>Dashboard</span>
           </Link>
 
           {/* Email Validation Category */}
           <div>
-            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <div className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Email Validation
             </div>
-            <div className="space-y-1 mt-1">
+            <div className="space-y-0.5 sm:space-y-1 mt-0.5 sm:mt-1">
               <Link
                 href="/tools/email-checker"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Mail className="w-5 h-5" />
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Single Checker</span>
               </Link>
               <Link
                 href="/tools/bulk-checker"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Mail className="w-5 h-5" />
+                <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Bulk Checker</span>
               </Link>
               <Link
                 href="/tools/mx-lookup"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Server className="w-5 h-5" />
+                <Server className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>MX Lookup</span>
               </Link>
               <Link
                 href="/tools/role-detector"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Shield className="w-5 h-5" />
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Role Detector</span>
               </Link>
               <Link
                 href="/tools/list-cleaner"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>List Cleaner</span>
               </Link>
             </div>
@@ -194,22 +194,22 @@ export default function DashboardPage() {
 
           {/* Email Security Category */}
           <div>
-            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <div className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Email Security
             </div>
-            <div className="space-y-1 mt-1">
+            <div className="space-y-0.5 sm:space-y-1 mt-0.5 sm:mt-1">
               <Link
                 href="/tools/spf-generator"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Shield className="w-5 h-5" />
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>SPF Generator</span>
               </Link>
               <Link
                 href="/tools/blacklist-checker"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <AlertTriangle className="w-5 h-5" />
+                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Blacklist Checker</span>
               </Link>
             </div>
@@ -217,22 +217,22 @@ export default function DashboardPage() {
 
           {/* SEO Tools Category */}
           <div>
-            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <div className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">
               SEO Tools
             </div>
-            <div className="space-y-1 mt-1">
+            <div className="space-y-0.5 sm:space-y-1 mt-0.5 sm:mt-1">
               <Link
                 href="/tools/sitemap-validator"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <CheckCircle className="w-5 h-5" />
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Sitemap Validator</span>
               </Link>
               <Link
                 href="/tools/sitemap-finder"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Sitemap Finder</span>
               </Link>
             </div>
@@ -240,15 +240,15 @@ export default function DashboardPage() {
 
           {/* Marketing Category */}
           <div>
-            <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <div className="px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Marketing
             </div>
-            <div className="space-y-1 mt-1">
+            <div className="space-y-0.5 sm:space-y-1 mt-0.5 sm:mt-1">
               <Link
                 href="/tools/content-generator"
-                className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+                className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
               >
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>AI Content Generator</span>
               </Link>
             </div>
@@ -258,21 +258,21 @@ export default function DashboardPage() {
           <div className="pt-2 border-t border-gray-200">
             <Link
               href="/dashboard/settings"
-              className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
+              className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Settings</span>
             </Link>
           </div>
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-200 flex-shrink-0">
+        <div className="p-2 sm:p-3 lg:p-4 border-t border-gray-200 flex-shrink-0">
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 w-full"
+            className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 w-full"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
             <span>Logout</span>
           </button>
         </div>
@@ -282,29 +282,29 @@ export default function DashboardPage() {
       <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          <div className="mb-4 sm:mb-6 md:mb-8">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
               Welcome back, {user?.first_name || 'User'}!
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1">Here&apos;s what&apos;s happening with your account</p>
+            <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-0.5 sm:mt-1">Here&apos;s what&apos;s happening with your account</p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-gray-600">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                     Credits Remaining
                   </CardTitle>
-                  <CreditCard className="w-5 h-5 text-indigo-600" />
+                  <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {profile?.credits_remaining || 0}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">
                   {profile?.credits_used || 0} used this month
                 </p>
               </CardContent>
@@ -313,34 +313,34 @@ export default function DashboardPage() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-gray-600">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                     Total Checks
                   </CardTitle>
-                  <TrendingUp className="w-5 h-5 text-green-600" />
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {profile?.total_checks || 0}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">All time</p>
+                <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">All time</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-gray-600">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                     This Month
                   </CardTitle>
-                  <Mail className="w-5 h-5 text-purple-600" />
+                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {profile?.checks_this_month || 0}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">Email validations</p>
+                <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Email validations</p>
               </CardContent>
             </Card>
           </div>
@@ -348,10 +348,10 @@ export default function DashboardPage() {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">Quick Actions</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                 <Link
                   href="/tools/email-checker"
                   className="p-3 sm:p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all"

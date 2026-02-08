@@ -11,7 +11,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'bg-white rounded-xl shadow-sm border border-gray-200 p-6',
+          'bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6',
           hover && 'hover:shadow-md transition-shadow duration-200',
           className
         )}
@@ -27,7 +27,7 @@ Card.displayName = 'Card';
 
 const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('mb-4', className)} {...props} />
+    <div ref={ref} className={cn('mb-2 sm:mb-3 md:mb-4', className)} {...props} />
   )
 );
 CardHeader.displayName = 'CardHeader';
