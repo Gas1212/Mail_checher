@@ -124,7 +124,7 @@ export default function ContentGeneratorPage() {
         'Authorization': `Bearer ${groqApiKey.trim()}`,
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
+        model: 'llama-3.1-8b-instant',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.7,
         max_tokens: 500,
@@ -141,7 +141,7 @@ export default function ContentGeneratorPage() {
     const content = data.choices?.[0]?.message?.content?.trim() || '';
     return {
       content,
-      model: data.model || 'llama3-8b-8192',
+      model: data.model || 'llama-3.1-8b-instant',
       metadata: {
         content_type: selectedType,
         tone,
