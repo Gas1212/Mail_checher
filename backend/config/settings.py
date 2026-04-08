@@ -14,11 +14,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Wagtail
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail',
+    'modelcluster',
+    'taggit',
+    # Cloudinary
+    'cloudinary_storage',
+    'cloudinary',
+    # Apps
     'rest_framework',
     'corsheaders',
     'email_checker',
     'seo_tools',
     'content_generator',
+    'sugesto_blog',
 ]
 
 MIDDLEWARE = [
@@ -30,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -147,3 +167,8 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@sugesto.xyz')
 CONTACT_EMAIL = config('CONTACT_EMAIL', default='contact@sugesto.xyz')
+
+# Wagtail Configuration
+WAGTAILADMIN_BASE_URL = config('WAGTAILADMIN_BASE_URL', default='http://localhost:8000')
+WAGTAIL_SITE_NAME = 'Sugesto Blog'
+WAGTAIL_ENABLE_QUERY_SLIMMING = True

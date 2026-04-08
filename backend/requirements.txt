@@ -1,5 +1,5 @@
 Django==5.0.1
-djangorestframework==3.14.0
+djangorestframework==3.15.0
 django-cors-headers==4.3.1
 PyJWT==2.8.0
 pymongo==4.6.1
@@ -10,3 +10,13 @@ requests==2.31.0
 pytest==7.4.3
 pytest-django==4.7.0
 beautifulsoup4==4.12.3
+# Wagtail dependencies for blog
+wagtail==7.3.1
+pillow==12.0.0
+python-dotenv==1.1.0
+anthropic>=0.40.0
+google-auth==2.36.0
+google-api-python-client==2.158.0
+cloudinary==1.44.1
+django-cloudinary-storage==0.3.0
+openai==1.82.0
