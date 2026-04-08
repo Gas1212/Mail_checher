@@ -28,9 +28,9 @@ INSTALLED_APPS = [
     'wagtail',
     'modelcluster',
     'taggit',
-    # Cloudinary
-    'cloudinary_storage',
-    'cloudinary',
+    # Cloudinary - temporarily disabled (requires pip install django-cloudinary-storage)
+    # 'cloudinary_storage',
+    # 'cloudinary',
     # Apps
     'rest_framework',
     'corsheaders',
