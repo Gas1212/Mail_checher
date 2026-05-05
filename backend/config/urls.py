@@ -7,6 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('wagtail-admin/', include(wagtailadmin_urls)),
     path('api/blog/', include('sugesto_blog.urls')),
+    path('api/directory/', include('directory.urls')),
     path('api/', include('email_checker.urls')),
     path('api/', include('seo_tools.urls')),
     path('api/', include('content_generator.urls')),

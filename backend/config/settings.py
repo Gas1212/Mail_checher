@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'seo_tools',
     'content_generator',
     'sugesto_blog',
+    'directory',
 ]
 
 MIDDLEWARE = [
