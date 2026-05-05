@@ -78,11 +78,18 @@ def extract_info(request):
             info = ydl.extract_info(url, download=False)
     except Exception as e:
         msg = str(e)
-        if 'private' in msg.lower():
+        if 'impersonation' in msg.lower() or 'impersonate' in msg.lower():
+            return Response(
+                {'error': 'This platform requires browser emulation not available on this server. Try YouTube, Twitter, Instagram or Facebook instead.'},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+        if 'private' in msg.lower() or 'login' in msg.lower():
             return Response({'error': 'This content is private or requires login'}, status=status.HTTP_403_FORBIDDEN)
         if 'not available' in msg.lower() or 'unavailable' in msg.lower():
-            return Response({'error': 'Video not available'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'error': f'Could not extract video: {msg}'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Video not available in your region or has been removed'}, status=status.HTTP_404_NOT_FOUND)
+        if 'unsupported url' in msg.lower():
+            return Response({'error': 'This URL is not supported. Try YouTube, Twitter, Instagram or Facebook.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Could not extract video. The platform may be unsupported or the content unavailable.'}, status=status.HTTP_400_BAD_REQUEST)
 
     platform = detect_platform(url, info.get('extractor', ''))
 
