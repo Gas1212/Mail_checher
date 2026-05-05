@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'content_generator',
     'sugesto_blog',
     'directory',
+    'downloader',
 ]
 
 MIDDLEWARE = [

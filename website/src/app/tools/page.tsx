@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon, Download } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
@@ -142,6 +142,16 @@ export default function ToolsPage() {
       bgColor: 'bg-fuchsia-50',
       category: 'Marketing',
       badge: 'Try Free',
+    },
+    {
+      name: 'Video Downloader',
+      description: 'Download videos from YouTube, Twitter, Instagram, Facebook and 1000+ sites',
+      icon: Download,
+      href: '/tools/video-downloader',
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+      category: 'Media Tools',
+      badge: 'Free',
     },
   ];
 
