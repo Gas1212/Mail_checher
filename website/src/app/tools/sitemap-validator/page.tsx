@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CheckCircle, Check, X, AlertCircle, Loader2, FileText, Globe } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -360,6 +361,45 @@ export default function SitemapValidatorPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="sitemap-validator-faq"
+        sections={[
+          {
+            h2: "Why XML Sitemap Validation Matters for SEO",
+            content: "An XML sitemap serves as a communication channel between your website and search engine crawlers, telling them exactly which pages exist, how important they are, and when they were last updated. A properly formatted sitemap accelerates indexing and ensures newly published or updated content is discovered quickly. An invalid or malformed sitemap, however, can cause partial or complete indexing failures that are not immediately obvious — your site may appear functional to visitors while Google misses large sections entirely.\n\nCommon sitemap errors include malformed XML structure, URLs that do not return 200 status codes (returning 301 redirects or 404 errors instead), exceeding the 50,000 URL limit per sitemap file, invalid date formats in lastmod tags, and encoding issues with special characters in URLs. Each of these errors causes search engines to reject some or all of the sitemap's entries, potentially leaving pages undiscovered.\n\nGoogle Search Console reports sitemap errors, but only after Google has attempted to process the file. By the time errors appear in GSC, your content may have been missing from the index for days or weeks. Proactive validation before submission catches errors immediately, ensuring every sitemap submission is clean and effective.",
+          },
+          {
+            h2: "XML Sitemap Best Practices",
+            content: "A well-optimized XML sitemap includes only canonical, indexable URLs. This means excluding URLs with noindex directives, non-canonical URLs (those with canonical tags pointing elsewhere), duplicate content variations with query strings, and administrative or session-based URLs. Including non-indexable URLs in sitemaps creates confusion for search engines and dilutes the value of the sitemap as a crawling priority signal.\n\nThe priority and changefreq elements, while often used, have limited impact on actual crawl behavior. Google has stated publicly that it largely ignores these fields. More impactful are accurate lastmod timestamps — when lastmod values are kept current and accurate (only updating when content actually changes), Google learns to trust them and prioritizes crawling updated content. Systematically falsifying lastmod values trains crawlers to ignore them entirely.\n\nFor large sites with more than 50,000 URLs, a sitemap index file is required. This file lists multiple individual sitemap files, each containing up to 50,000 URLs. Sitemap index files can also be used to segment sitemaps by content type — blog posts, products, images, videos — making them easier to manage and allowing you to prioritize specific content areas for crawling.",
+          },
+          {
+            h2: "Sitemap Validation and Google Search Console",
+            content: "Submitting your sitemap to Google Search Console is the final step after validation. Search Console's sitemap tool shows how many URLs Google discovered versus how many were submitted, reports individual URL errors, and tracks crawl status over time. These metrics help identify patterns — for example, if only 60% of submitted URLs are being indexed, the unindexed URLs may have thin content, duplicate content issues, or other quality signals causing Google to deprioritize them.\n\nBeyond initial submission, monitor your sitemap status in Search Console regularly. Large sites should check weekly for newly appearing errors. After major site restructuring, republish and resubmit updated sitemaps to ensure new URL structures are discovered promptly. If you have removed significant content, update your sitemap to remove those URLs — leaving deleted pages in your sitemap causes crawl budget waste as Google repeatedly tries to access pages that no longer exist.\n\nSitemap validation before submission eliminates the most common error categories, ensuring your GSC data reflects genuine indexing decisions rather than technical rejection of malformed sitemaps. A validated, clean sitemap submitted to both Google Search Console and Bing Webmaster Tools gives your content the best possible chance of rapid discovery and indexing.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "How many URLs can an XML sitemap contain?",
+            a: "A single XML sitemap file can contain a maximum of 50,000 URLs and must be no larger than 50MB uncompressed. For sites exceeding this limit, use a sitemap index file that references multiple individual sitemap files. Most large e-commerce sites and news publishers use segmented sitemaps — one for products, one for blog posts, one for categories — making it easier to prioritize and manage crawling of different content types.",
+          },
+          {
+            q: "Should I include every page of my website in the sitemap?",
+            a: "No — include only canonical, indexable pages. Exclude pages with noindex meta tags, pages with canonical tags pointing elsewhere, thin or duplicate content pages, administrative pages, login and account pages, and URLs with parameters that create duplicate content. Including non-indexable URLs in your sitemap does not help indexing and may confuse crawlers by signaling importance for pages you do not actually want indexed.",
+          },
+          {
+            q: "How often should I update my XML sitemap?",
+            a: "Your sitemap should be updated automatically whenever content is published, updated, or removed. Most CMS platforms have sitemap plugins that regenerate the sitemap automatically on content changes. The lastmod timestamp should reflect actual content modification dates — this signal helps search engines prioritize crawling your freshest content. After updating your sitemap, ping Google and Bing to notify them of the change rather than waiting for scheduled crawls.",
+          },
+          {
+            q: "What is the difference between a sitemap index and a regular sitemap?",
+            a: "A regular XML sitemap is a file containing a list of URLs on your website. A sitemap index is a higher-level file that points to multiple individual sitemap files. Sitemap indexes are required when your total URL count exceeds 50,000, when you want to separate different content types into different sitemaps, or when you want to track indexing metrics per content category in Search Console. Google treats all URLs in all referenced sitemaps as part of the same submission.",
+          },
+          {
+            q: "Why does Google Search Console show fewer indexed URLs than my sitemap contains?",
+            a: "The gap between submitted URLs and indexed URLs is normal and reflects Google's content quality assessment. Non-indexed URLs may have thin content, duplicate content, slow load times, poor mobile experience, or insufficient external links. Google does not index every page it discovers — it selectively indexes pages that provide value to searchers. Improving content quality, building internal links, and acquiring external backlinks helps increase the proportion of submitted URLs that get indexed.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

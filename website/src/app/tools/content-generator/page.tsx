@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Sparkles, Copy, Check, Loader2, FileText, MessageSquare, Mail, Key, Zap, Lock, ExternalLink } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -560,6 +561,45 @@ export default function ContentGeneratorPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="content-generator-faq"
+        sections={[
+          {
+            h2: "AI-Powered Content Creation for Email Marketing",
+            content: "Artificial intelligence has fundamentally changed the economics of content creation. Tasks that previously required hours of writer time — researching email topics, drafting subject lines, writing full email sequences — can now be completed in minutes with AI assistance. For email marketers managing multiple campaigns simultaneously, AI-powered content generation creates the capacity to produce more personalized, targeted content without proportionally increasing costs.\n\nOur content generator uses advanced language models trained on high-performing email marketing copy to produce content that aligns with email marketing best practices: compelling subject lines with appropriate urgency and specificity, preview text optimized for open rates, body copy that focuses on recipient benefits rather than sender features, and clear calls-to-action that drive specific behaviors.\n\nThe generated content serves as a high-quality first draft — not necessarily final copy. Effective use of AI content generation treats the output as a starting point that a human editor reviews, personalizes with brand voice, and adapts with specific product details or customer context. This hybrid approach combines the speed of AI generation with the judgment and brand knowledge of experienced marketers.",
+          },
+          {
+            h2: "Creating Effective Email Copy with AI Assistance",
+            content: "Effective email copy follows specific structural principles that AI content generators are trained to implement. The subject line is the most critical element — the only part of an email many recipients ever read. High-performing subject lines create curiosity, communicate a specific benefit, use personalization when appropriate, and avoid spam trigger words. Our generator produces multiple subject line variations with different emotional angles, allowing A/B testing of approaches.\n\nEmail body copy benefits from the inverted pyramid structure: most important information first, supporting details below, call-to-action at multiple points. Recipients scan emails rather than reading linearly, so lead sentences carry disproportionate weight. AI generation trained on email copy structure automatically applies these principles, creating scannable content with short paragraphs and clear hierarchy.\n\nPersonalization beyond first name insertion significantly impacts email performance. Content that references the recipient's industry, role, past behavior, or specific pain points performs measurably better than generic content. Our generator supports template personalization variables that let you inject specific recipient context into AI-generated base content, scaling personalization across thousands of recipients.",
+          },
+          {
+            h2: "Content Generation Best Practices and Quality Control",
+            content: "AI-generated content requires human oversight for quality control, brand alignment, and factual accuracy. Language models can produce fluent, professional-sounding text that contains incorrect information, inappropriate brand voice, or subtle logical errors. Establishing a review process that checks generated content before sending is essential — particularly for claims about products, pricing, legal terms, or anything requiring factual accuracy.\n\nBrand voice calibration improves AI content quality significantly. Providing the generator with example emails that represent your ideal voice and tone allows the AI to produce output that sounds like your brand rather than generic marketing copy. Some content generators support system prompts that encode brand voice instructions, making successive generations more consistent.\n\nContent generation works best for scalable tasks: welcome sequences, re-engagement campaigns, promotional emails, product announcement templates, and follow-up sequences. For highly personalized one-to-one communications, unique thought leadership content, or content requiring specific expertise and original research, human writing remains more effective. Understanding which use cases AI generation excels at helps marketers allocate their content production resources optimally.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "What types of email content can the AI generator create?",
+            a: "The content generator creates various email types: welcome sequences, promotional announcements, product updates, re-engagement campaigns, cold outreach emails, follow-up sequences, newsletter content, transactional email copy, and subject line variations. It also generates email components separately: subject lines, preview text, opening lines, calls-to-action, and PS lines. Different email types require different tones and structures, and our generator adapts its output to the specific email type you specify.",
+          },
+          {
+            q: "How do I ensure generated content matches my brand voice?",
+            a: "To align generated content with your brand voice, provide examples of your existing email copy as reference, specify tone parameters (formal/casual, serious/playful, technical/accessible), and include brand-specific terminology or phrases to include or avoid. Review initial outputs and provide feedback about what to adjust — most generators improve with iteration. Creating a brand voice guide document with specific examples helps ensure consistent output across all generated content.",
+          },
+          {
+            q: "Can AI-generated email content avoid spam filters?",
+            a: "AI generators can be trained to avoid common spam trigger words and patterns, but spam filtering has evolved well beyond word-matching. Modern spam filters analyze sender reputation, authentication status (SPF, DKIM, DMARC), recipient engagement history, and content-image ratio alongside content signals. Clean email copy from AI generation helps, but inbox placement ultimately depends primarily on sender reputation and authentication infrastructure, not content alone.",
+          },
+          {
+            q: "How many variations should I generate for A/B testing?",
+            a: "For subject line A/B testing, 2-4 variations with different emotional angles (curiosity, benefit, urgency, social proof) provides actionable test data. For body copy, 2 variations are typically sufficient — testing more simultaneously requires larger audience segments to achieve statistical significance. The most important tests are those addressing the highest-impact elements: subject line first (biggest impact on open rate), then primary CTA (biggest impact on click rate).",
+          },
+          {
+            q: "Is AI-generated email content detectable by spam filters?",
+            a: "Current spam filters do not specifically target AI-generated content — they analyze signals like sender reputation, authentication, engagement patterns, and specific content characteristics rather than whether text was human or AI-written. The content quality from modern AI generators typically performs similarly to human-written content in spam filter evaluation. The primary risk with AI-generated content is generic, impersonal copy that results in low engagement, which indirectly affects sender reputation through spam reports and inactivity.",
+          },
+        ]}
+      />
       <Footer />
 
       <UpgradeModal

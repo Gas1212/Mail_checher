@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Server, Check, X, AlertCircle, Loader2, Globe, Shield } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -306,6 +307,45 @@ export default function MXLookupPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="mx-lookup-faq"
+        sections={[
+          {
+            h2: "Understanding MX Records and Email Routing",
+            content: "Mail Exchange (MX) records are DNS entries that define which mail servers are responsible for receiving email on behalf of a domain. When someone sends you an email, the sending server performs an MX lookup to discover which server to deliver the message to. Without valid MX records, a domain cannot receive any email — making MX lookup a fundamental step in email infrastructure diagnosis.\n\nEach MX record contains two components: the mail server hostname and a priority number. Lower priority numbers indicate preferred servers — if the primary server is unavailable, the sending server automatically tries the next one in priority order. This built-in redundancy is why professional email setups typically have multiple MX records from different servers.\n\nCommon mail providers have distinctive MX record patterns: Google Workspace uses aspmx.l.google.com, Microsoft 365 uses *.mail.protection.outlook.com, and independent servers typically show the domain itself or a mail subdomain. Recognizing these patterns quickly identifies which email infrastructure a domain uses.",
+          },
+          {
+            h2: "Diagnosing Email Delivery Problems with MX Lookup",
+            content: "MX lookup is the starting point for diagnosing email delivery failures. When emails to a domain consistently fail to deliver, checking MX records immediately reveals whether the issue is DNS configuration or mail server availability. A domain with no MX records has no email capability — any address on that domain is guaranteed to bounce. Misconfigured MX records pointing to non-existent servers produce similar delivery failures.\n\nFor email marketers and administrators, MX lookup provides insight into the email infrastructure used by recipient domains before sending. Knowing that a domain uses Google Workspace, Microsoft 365, or a specific regional provider helps predict how email will be handled — including filtering policies, authentication requirements, and typical delivery speeds.\n\nWhen setting up email for a new domain, MX lookup verification confirms that DNS changes have propagated correctly. DNS propagation can take up to 48 hours, and MX lookup allows you to check progress in real-time rather than waiting for delivery failures to confirm whether records are active.",
+          },
+          {
+            h2: "MX Records and Email Authentication",
+            content: "MX records work in conjunction with other DNS-based email authentication standards — SPF, DKIM, and DMARC — to establish domain email legitimacy. While MX records define where to deliver email, SPF records specify which servers are authorized to send email from your domain. Together, these records create a complete email security framework that protects against spoofing and phishing.\n\nFor system administrators setting up email, verifying MX records is just the beginning of a complete DNS audit. SPF records should list all authorized sending servers, DKIM public keys should be published in TXT records, and DMARC policies should specify how receivers handle authentication failures. MX lookup is therefore typically used alongside SPF, DKIM, and DMARC checking tools as part of a comprehensive email infrastructure audit.\n\nUnderstanding which mail provider handles a domain's MX records also informs authentication setup — each provider has specific requirements for SPF includes and DKIM selector configurations. Our tool displays the full MX record set with priorities, giving you everything needed for accurate infrastructure assessment.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "What happens if a domain has no MX records?",
+            a: "If a domain has no MX records, it cannot receive email. Emails sent to any address on that domain will bounce with a DNS error — typically an MX lookup failed or no route to host error. Some legacy configurations use an A record as a fallback mail server when no MX record exists, but this is not standard and most modern mail servers will reject the delivery attempt.",
+          },
+          {
+            q: "Can a domain have multiple MX records?",
+            a: "Yes, and it is recommended. Multiple MX records with different priority values create redundancy — if the primary mail server (lowest priority number) is unavailable, sending servers automatically try the next one. Most professional email setups have 2-5 MX records for reliability. Google Workspace, for example, uses 5 MX records with priorities 1, 5, 5, 10, and 10 across multiple data centers.",
+          },
+          {
+            q: "How long does it take for MX record changes to propagate?",
+            a: "MX record changes propagate across the global DNS system within minutes to 48 hours, depending on the TTL (Time To Live) value set on the previous records. Most modern DNS setups use TTL values of 3,600 seconds (1 hour) or less, meaning changes typically propagate within a few hours. During migration, it is common to reduce TTL to 300 seconds before making changes to speed up propagation.",
+          },
+          {
+            q: "What is MX record priority and how does it work?",
+            a: "MX record priority is a numerical value that determines the order in which mail servers are tried during delivery. Lower numbers indicate higher priority — a server with priority 10 is preferred over one with priority 20. When the preferred server is unavailable, the sending server automatically tries the next priority server. Equal priority values result in random selection between those servers for load balancing.",
+          },
+          {
+            q: "How do I identify which email provider a domain uses from MX records?",
+            a: "MX record hostnames follow provider-specific patterns: Google Workspace records end in .google.com or .googlemail.com, Microsoft 365 uses *.mail.protection.outlook.com, Zoho Mail uses *.zoho.com, and ProtonMail uses *.protonmail.ch. Hosting companies often show their own domain in MX records. Our MX lookup displays the full hostname for each record, making provider identification straightforward.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

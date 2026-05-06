@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Link as LinkIcon, Copy, Check, BarChart3, Calendar, ExternalLink, AlertCircle } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -350,6 +351,45 @@ export default function URLShortenerPage() {
         ]}
       />
 
+      <ToolContent
+        schemaId="url-shortener-faq"
+        sections={[
+          {
+            h2: "Why URL Shortening Matters Beyond Character Counts",
+            content: "URL shorteners began as utilities for fitting long links into character-limited platforms like early Twitter. Today their value extends far beyond convenience — short URLs are essential for print and offline media, enable comprehensive link analytics, create professional branded experiences, and simplify campaign management across multiple channels.\n\nLong URLs are unwieldy in professional contexts. A 200-character URL filled with tracking parameters looks unprofessional in email signatures, business presentations, and verbal communication. Short URLs are memorable, typeable, and shareable — qualities that matter for any link that leaves the digital environment. QR codes generated from short URLs are also simpler and more reliably scannable than those encoding long URLs.\n\nFor campaign management, short URLs provide a centralized control point. Changing the destination URL after publishing is possible with dynamic short URLs, allowing you to redirect a link that appears in printed materials, social posts, or email campaigns to updated content without republishing or reprinting. This flexibility is particularly valuable when campaigns evolve, content moves, or landing pages are updated after links have already been distributed.",
+          },
+          {
+            h2: "Link Analytics and Attribution with URL Shorteners",
+            content: "Every click on a short URL is a measurable event. URL shorteners capture detailed analytics: total clicks, unique clicks, geographic location by country and city, device type (desktop/mobile/tablet), operating system, browser, referrer URL, and timestamp. This data transforms links from simple navigational tools into analytics assets that reveal how, where, and when audiences engage with your content.\n\nFor marketing attribution, short URL analytics complement UTM parameter tracking. The combination provides both aggregate click data from the shortener and session-level analytics in Google Analytics from UTM parameters passed to the destination. Short URL click data is particularly valuable for attribution of clicks from platforms where UTM parameters are sometimes stripped — some social networks remove query parameters before following links.\n\nA/B testing landing pages becomes straightforward with short URLs. Create two short URLs pointing to two landing page variants and split traffic by distributing each link to different audience segments. Compare click volumes and conversion data to determine which variant performs better. This testing methodology works across any channel — email, social, print, or paid advertising.",
+          },
+          {
+            h2: "Branded Short Domains and Professional Link Management",
+            content: "Branded short domains (using your own domain for short URLs like brand.co/abc123 instead of bit.ly/xyz) create a consistent brand experience across all links your organization shares. Recipients see your brand name in the URL before clicking, which builds trust and improves click-through rates compared to generic short URLs from third-party services.\n\nFor organizations managing hundreds of campaigns, professional URL management features become essential. Custom URL slugs allow creating memorable short URLs that are easier to remember, track, and reference in conversations. Organized link libraries with tagging and search capability keep campaigns manageable as link volume grows.\n\nLink security is an important consideration. Branded short URLs with your own domain ensure that your links always resolve correctly — you are not dependent on a third-party service's uptime or policy changes. This eliminates the risk that a free short URL service goes offline or introduces ads, breaking links in historical content. For businesses where link reliability matters, self-hosted or managed short URL services provide the necessary control and permanence.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "Are short URLs safe to click?",
+            a: "Short URLs can obscure the true destination, which is used by some malicious actors to hide phishing or malware links. To check where a short URL leads before clicking, use a URL expander service or add a + to the end of bit.ly links to see a preview. For links you share, using a branded short domain with your own domain name makes your links instantly recognizable as coming from you, building recipient trust.",
+          },
+          {
+            q: "Do short URLs affect SEO?",
+            a: "Short URLs are redirect links — typically 301 (permanent) or 302 (temporary) redirects. Google follows redirects and passes most link equity through 301 redirects, so short URLs used in backlinks are not inherently harmful to SEO. However, for internal linking within your own site, use full canonical URLs rather than short URLs to avoid unnecessary redirect chains. For external backlinks, whether they pass through a short URL redirect does not significantly impact SEO value if the redirects resolve correctly.",
+          },
+          {
+            q: "Can I customize the short URL slug?",
+            a: "Yes — custom slugs let you create branded, memorable short URLs instead of random character strings. For example, yoursite.co/summer-sale instead of yoursite.co/a8K3p. Custom slugs are particularly useful for links shared in verbal, print, or offline contexts where the URL needs to be memorable and typeable. They also make link management easier when reviewing analytics, as descriptive slugs are self-explanatory without looking up the destination.",
+          },
+          {
+            q: "What happens to short URLs if the shortener service shuts down?",
+            a: "If a free URL shortener service shuts down, all links using that service's domain will break permanently — returning 404 errors or not resolving at all. This has happened historically with several services. For links intended to remain active long-term — in evergreen content, permanent print materials, or important campaigns — use either a self-hosted URL shortener or a paid service with SLA guarantees. Always include the destination URL as a fallback in important communications.",
+          },
+          {
+            q: "How do I track clicks from email campaigns using short URLs?",
+            a: "Combine short URL click tracking with UTM parameters for comprehensive attribution. Create a short URL with UTM parameters appended to the destination: yoursite.co/campaign-abc pointing to yourdomain.com/landing?utm_source=email&utm_medium=newsletter&utm_campaign=offer. The shortener logs total clicks, while Google Analytics logs sessions with full attribution data. This combination provides both immediate click feedback from the shortener dashboard and conversion attribution from Analytics.",
+          },
+        ]}
+      />
       <Footer />
     </>
   );

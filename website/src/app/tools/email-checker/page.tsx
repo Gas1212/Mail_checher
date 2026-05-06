@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Mail, Check, X, AlertCircle, Loader2, Zap, Shield } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -323,6 +324,45 @@ export default function EmailCheckerPage() {
         ]}
       />
 
+      <ToolContent
+        schemaId="email-checker-faq"
+        sections={[
+          {
+            h2: "How Email Validation Works",
+            content: "Email validation is a systematic process that verifies whether an email address is genuine, reachable, and safe to contact. It begins with syntax analysis, confirming the address follows RFC 5321 format rules. Next, DNS queries check that the domain has active MX records — the server addresses that receive incoming mail. Without valid MX records, no message can ever be delivered to that address.\n\nThe most powerful step is SMTP verification: our tool connects to the recipient mail server and simulates a delivery handshake without sending any actual email. The server response reveals whether the specific mailbox exists and is accepting messages. This step alone eliminates the majority of hard bounces before they happen.\n\nAdditionally, the checker scans against databases of known disposable email providers — services that generate temporary addresses used to bypass sign-up requirements. Catching these ensures your list contains only genuine contacts who want to receive your communications.",
+          },
+          {
+            h2: "Why High Bounce Rates Damage Your Sender Reputation",
+            content: "Email service providers — including Mailchimp, SendGrid, and Amazon SES — continuously monitor your bounce rates. When invalid addresses consistently bounce, ISPs interpret this as a signal that you are not managing your list responsibly. A bounce rate above 2% triggers warnings, and rates above 5% can cause account suspension, cutting off all email marketing capabilities.\n\nBeyond account health, bounce rates directly affect inbox placement for your valid subscribers. ISPs use engagement signals to decide whether your emails land in the inbox or spam folder. High bounce percentages lower your sender score, meaning even your legitimate emails face increased scrutiny. This creates a cascading problem where poor list hygiene affects your entire audience, not just the invalid addresses.\n\nCleaning your list with email validation removes invalid contacts before sending, protecting your sender reputation and ensuring your important messages reach people who want them. Lower bounce rates translate directly into better deliverability, higher open rates, and more effective campaigns.",
+          },
+          {
+            h2: "Best Practices for Maintaining a Clean Email List",
+            content: "The most effective approach combines real-time validation at the point of email capture with periodic bulk verification of your existing database. Validating at sign-up forms prevents bad data from entering your system in the first place — catching typos like @gmial.com or @yahooo.com immediately, before they propagate through your CRM and marketing tools.\n\nFor existing lists, quarterly validation is the recommended baseline for active marketing databases. Higher-frequency senders should validate monthly. Always validate before importing contacts from external sources, after periods of inactivity, or before major campaign launches where deliverability is critical.\n\nSegmentation based on validation results gives you granular control. Keep confirmed valid addresses in your primary sending segments. Handle catch-all domain addresses separately — they may be valid but cannot be individually confirmed. Remove hard invalids immediately and set up automated suppression for addresses that hard bounce after sending. This systematic approach keeps your list healthy without requiring manual intervention.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "What is the difference between a hard bounce and a soft bounce?",
+            a: "A hard bounce means the email is permanently undeliverable — the address does not exist, the domain is invalid, or the server has blocked delivery permanently. A soft bounce is temporary, caused by a full mailbox, server downtime, or message size limits. Email validation primarily prevents hard bounces by identifying invalid addresses before sending. Addresses that soft bounce repeatedly should also be suppressed, as they represent unreachable contacts.",
+          },
+          {
+            q: "Can the validator check Gmail, Outlook, and Yahoo addresses?",
+            a: "Major providers like Gmail, Yahoo, and Outlook block SMTP verification probes to prevent user enumeration. Our validator confirms these domains are valid and properly configured, but cannot verify individual mailbox existence via SMTP. These addresses are returned as unknown or accept-all. Domain-level checks still catch common typos like @gmai.com or @outook.com, eliminating a significant portion of errors.",
+          },
+          {
+            q: "What is a catch-all email domain?",
+            a: "A catch-all or accept-all domain accepts every email sent to it, regardless of whether the specific mailbox exists. This makes per-address SMTP verification impossible since the server always responds positively. Catch-all addresses are common in corporate email setups. Our validator flags these so you can decide how to handle them — typically worth keeping for established company domains but safer to suppress for unknown domains.",
+          },
+          {
+            q: "How does disposable email detection work?",
+            a: "Our validator maintains a continuously updated database of 2,000+ known disposable email domains including Mailinator, Guerrilla Mail, 10MinuteMail, and hundreds of others. When an email address matches a known disposable domain, it is flagged immediately without needing SMTP verification. We update this database regularly as new disposable services emerge, ensuring high detection rates for newly created throwaway services.",
+          },
+          {
+            q: "How accurate is email validation?",
+            a: "Our email validator achieves approximately 95-98% accuracy for deliverability prediction. Uncertainty comes mainly from catch-all domains and major consumer providers that block SMTP probes. For B2B lists with corporate domains, accuracy is typically higher at 97-99% since most corporate mail servers respond to verification. We continuously update our detection algorithms and databases to maintain accuracy as email infrastructure evolves.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

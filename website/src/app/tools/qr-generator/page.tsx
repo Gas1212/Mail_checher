@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { QrCode, Download, Check, Link as LinkIcon, Mail, Phone } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -319,6 +320,45 @@ export default function QRGeneratorPage() {
         ]}
       />
 
+      <ToolContent
+        schemaId="qr-generator-faq"
+        sections={[
+          {
+            h2: "How QR Codes Work and Why They Matter",
+            content: "QR (Quick Response) codes are two-dimensional barcodes that encode data in a matrix of black and white squares. Originally developed in 1994 for automotive manufacturing, QR codes became ubiquitous in marketing after smartphone cameras gained native scanning capability without requiring dedicated apps. A single scan instantly connects a physical medium — print, packaging, signage, displays — to digital content, bridging the gap between offline and online experiences.\n\nQR codes can encode various data types: URLs (the most common use), plain text, contact information as vCard, WiFi credentials, phone numbers, email addresses, and SMS messages. The version of the QR code determines its data capacity, ranging from 41 characters in the smallest version to 4,296 alphanumeric characters in the largest. Error correction levels (L, M, Q, H) allow QR codes to remain scannable even when partially damaged or obscured.\n\nFor marketers, QR codes solve the fundamental problem of connecting print media to digital tracking. A QR code on a magazine ad, business card, or product package provides instant access to landing pages while enabling attribution — tracking exactly how many scans came from which physical placement. This attribution capability makes QR codes more measurable than traditional print advertising.",
+          },
+          {
+            h2: "Creating Effective QR Codes for Marketing",
+            content: "QR code effectiveness depends on design choices that balance aesthetics with scannability. The minimum recommended size for reliable scanning is 2cm by 2cm (about 0.8 inches), though larger is better for scanning from a distance. Always include a quiet zone — the blank border surrounding the QR code — of at least 4 modules wide. Insufficient quiet zones are a common cause of scanning failures.\n\nColor customization is possible within limits. Foreground data modules must be significantly darker than the background — maintaining sufficient contrast ratio is non-negotiable for reliable scanning. Adding a logo in the center of a QR code is achievable because error correction allows reconstruction of obscured data, but the logo should cover no more than 30% of the code area with high error correction (level H) enabled.\n\nAlways test QR codes in print size and at scanning distance before production. What looks readable on screen may fail when printed at small size or with certain color combinations. Test with multiple device types — different phone cameras and QR scanner apps sometimes handle edge cases differently. Including a short URL below the QR code serves as a fallback for users who prefer typing.",
+          },
+          {
+            h2: "Tracking and Analytics for QR Codes",
+            content: "A static QR code encodes a fixed URL that cannot be changed after printing. Dynamic QR codes, by contrast, encode a redirect URL that can be updated and tracked without reprinting the code. The QR code itself always points to the same redirect service, which then forwards scanners to the destination URL you control.\n\nDynamic QR codes provide detailed analytics: total scan count, unique scanners, scan date and time, geographic location by country and city, device type, and scan source context. These metrics provide proof of campaign performance for print and out-of-home advertising that traditionally lacks measurement capabilities.\n\nFor UTM parameter tracking, appending UTM parameters to the URL encoded in your QR code passes campaign attribution data directly to Google Analytics. Adding ?utm_source=print&utm_medium=brochure&utm_campaign=q4-launch allows you to see exactly how many sessions and conversions came from a specific printed brochure. Combined with dynamic QR code scan analytics, this creates comprehensive physical-to-digital conversion attribution.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "What is the best size for a QR code in print?",
+            a: "The minimum reliable print size for indoor scanning is 2cm x 2cm (0.8 x 0.8 inches) when the scanner will be within 30cm. For scanning from 1 meter distance, use at least 4cm x 4cm. Outdoor signage scanned from 3+ meters requires 10cm x 10cm or larger. Business cards can use a 1.5cm x 1.5cm code but should use high error correction. When in doubt, make QR codes larger — there is no meaningful downside to oversizing.",
+          },
+          {
+            q: "Can I customize the design and colors of a QR code?",
+            a: "Yes, within constraints. The foreground (dark modules) must maintain strong contrast against the background — test your color combination with actual scanning rather than relying on visual judgment alone. Adding logos is supported when using high error correction (level H), but keep the logo under 30% of the code area. Rounded corners, gradient fills, and custom module shapes are possible but can reduce scannability. Always scan-test any customized QR code before production.",
+          },
+          {
+            q: "What is the difference between static and dynamic QR codes?",
+            a: "Static QR codes permanently encode the destination URL — changing the destination requires reprinting the code. Dynamic QR codes encode a short redirect URL that can be updated anytime without reprinting. Dynamic codes also provide analytics: scan counts, geographic distribution, device types, and time patterns. For campaigns or packaging with long print runs, dynamic QR codes provide essential flexibility and measurement capabilities that static codes cannot offer.",
+          },
+          {
+            q: "Do QR codes expire?",
+            a: "Static QR codes never expire — they encode data permanently. Dynamic QR codes depend on the redirect service remaining operational. Free dynamic QR code services sometimes discontinue or impose scan limits after a free trial period, causing the redirect to fail. For permanent applications like product packaging or permanent signage, either use static QR codes or choose a reliable paid dynamic QR service with guaranteed uptime.",
+          },
+          {
+            q: "How much data can a QR code store?",
+            a: "QR code storage capacity varies by version and data type. The maximum capacity is 7,089 numeric characters, 4,296 alphanumeric characters, or 2,953 bytes of binary data. In practice, URLs of typical marketing landing pages are 50-150 characters, well within comfortable QR code capacity. Using a URL shortener reduces URL length, making the QR code simpler (fewer modules) and more reliable to scan, especially at smaller print sizes.",
+          },
+        ]}
+      />
       <Footer />
     </>
   );

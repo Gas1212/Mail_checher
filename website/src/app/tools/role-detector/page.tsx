@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Shield, Check, X, AlertCircle, Loader2, User, Users } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -359,6 +360,45 @@ export default function RoleDetectorPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="role-detector-faq"
+        sections={[
+          {
+            h2: "What Are Role-Based Email Accounts?",
+            content: "Role-based email accounts are generic addresses associated with a function or department rather than a specific individual. Common examples include info@, support@, admin@, sales@, billing@, noreply@, and contact@ — addresses typically monitored by multiple people or automated systems rather than a single person. These accounts serve important operational purposes but behave very differently from personal email addresses in marketing contexts.\n\nFrom an email marketing perspective, role accounts present several challenges. They are often monitored by multiple team members, meaning the decision to engage with marketing content is not made by a single person. Automated filtering is frequently applied — many role accounts route incoming messages through ticketing systems or shared inboxes that may deprioritize marketing content.\n\nUnder some email regulations, role-based accounts are treated differently from personal accounts. GDPR, for example, distinguishes between organizational emails and individual email addresses. Understanding which addresses on your list are role accounts helps you apply appropriate treatment and compliance handling.",
+          },
+          {
+            h2: "Why Role Account Detection Improves Campaign Performance",
+            content: "Filtering role-based accounts from personalized outreach campaigns typically improves engagement metrics significantly. Personal accounts, assigned to specific individuals who chose to receive your communications, consistently show higher open rates, click-through rates, and conversion rates than generic organizational inboxes. By targeting personal accounts, your engagement rates more accurately reflect genuine interest in your content.\n\nFor cold email outreach specifically, role accounts are particularly problematic. A message personalized with a recipient name sent to an info@ or admin@ address appears generic and poorly researched — damaging your credibility with the entire organization. Sending to the right person's direct address demonstrates that you have done your homework and creates a more favorable first impression.\n\nRole account detection also helps with deliverability. Some ISPs and mail servers apply stricter filtering to bulk messages sent to role addresses, treating them as potential spam. Targeting primarily personal accounts reduces this filtering risk and keeps your sender reputation healthy by concentrating sends on addresses more likely to engage.",
+          },
+          {
+            h2: "How Role Account Detection Works",
+            content: "Our detection engine analyzes the local part of an email address (the portion before the @ symbol) against a comprehensive list of role-based prefixes, patterns, and common organizational naming conventions. This includes exact matches like info, admin, support, as well as prefix matches like admin.john@ and suffix matches like john.billing@.\n\nThe detection applies confidence scoring to account for ambiguous cases. High-confidence role detections match known generic prefixes exactly. Medium-confidence detections apply when the local part contains role-like terms combined with personal elements, suggesting it could be either a personal account or a hybrid. Low-confidence results indicate addresses where the classification is genuinely uncertain.\n\nFor B2B email lists, combining role detection with job title data from your CRM provides the most accurate targeting. A direct@company.com address might seem personal but be a role account, while a firstname.lastname@company.com address is almost certainly personal. Using both signals together creates more reliable segmentation than either alone.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "Which email prefixes are considered role-based accounts?",
+            a: "Common role-based prefixes include: info, contact, hello, hi, support, help, helpdesk, service, customerservice, sales, marketing, billing, invoice, accounts, hr, jobs, careers, recruitment, admin, administrator, webmaster, postmaster, hostmaster, abuse, security, privacy, legal, compliance, noreply, no-reply, donotreply, team, office, and news. Our detector matches these as exact matches and combined with separators like dots and hyphens.",
+          },
+          {
+            q: "Can role account detection give false positives?",
+            a: "Yes, edge cases exist. A person genuinely named Mark Info might have an email like mark.info@domain.com that gets flagged as a role account. Our confidence scoring system flags these ambiguous cases as medium or low confidence rather than high confidence, allowing you to apply different handling rules for each confidence tier rather than treating all detections equally.",
+          },
+          {
+            q: "Should I completely exclude role accounts from all email campaigns?",
+            a: "Not necessarily — the right approach depends on campaign type. For personalized outreach, cold email, and campaigns designed to build individual relationships, excluding role accounts improves performance. For general announcements, partnership inquiries, or communications about company-wide services, role accounts like info@ or partnerships@ may be appropriate recipients. Consider maintaining segmented lists that allow including or excluding role accounts based on campaign objectives.",
+          },
+          {
+            q: "Does role account detection work for all email domains?",
+            a: "Yes — role account detection is purely prefix-based and works across all email domains regardless of provider. The same analysis applies whether the domain is Gmail, Microsoft 365, a corporate domain, or any other provider. The domain itself is not relevant to role classification — only the local part before the @ determines whether an address matches role-based patterns.",
+          },
+          {
+            q: "How does role account status affect GDPR compliance?",
+            a: "Under GDPR, personal email addresses are classified as personal data and require appropriate legal basis for processing. Generic organizational addresses like info@ may not constitute personal data since they are not linked to a specific individual, while individual@company.com is clearly personal data. Role account detection helps identify which addresses in your list may require different legal treatment, though you should consult legal counsel for specific compliance decisions.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Search, Check, X, Loader2, Globe, FileText, ExternalLink } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -321,6 +322,45 @@ export default function SitemapFinderPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="sitemap-finder-faq"
+        sections={[
+          {
+            h2: "How Search Engines Discover Sitemaps",
+            content: "Sitemaps can be discovered by search engines through several methods, not just direct submission in Search Console. The most reliable method is specifying the sitemap location in your robots.txt file using the Sitemap: directive — search engine crawlers read robots.txt early in the crawl process, making this a universal discovery mechanism that works for all crawlers without requiring active submission.\n\nSearch engines also follow common sitemap naming conventions, automatically checking well-known URLs like /sitemap.xml, /sitemap_index.xml, /sitemap.xml.gz, and /sitemaps/sitemap.xml. Our sitemap finder tool checks all these locations along with references in your robots.txt, giving you a complete picture of all sitemaps associated with your domain.\n\nFor websites running common CMS platforms, sitemaps are often generated automatically. WordPress sites using Yoast SEO, All in One SEO, or Rank Math publish sitemaps at predictable locations. Shopify generates sitemaps at /sitemap.xml automatically. Knowing where to find these sitemaps is the first step in auditing and optimizing them for search performance.",
+          },
+          {
+            h2: "Auditing Found Sitemaps for SEO Issues",
+            content: "Once you have discovered all sitemaps associated with a domain, systematic auditing reveals opportunities and issues that affect search performance. The audit begins with URL count and format verification — ensuring the sitemap is valid XML, within size limits, and contains only the URLs you intend to include.\n\nCompetitor sitemap analysis is a valuable SEO research technique. When you find a competitor's sitemap, you gain insight into their complete site structure, total indexed page count, content categories and priorities, and publication frequency from lastmod timestamps. This intelligence informs content strategy decisions — identifying gaps in their coverage that represent opportunities for your content.\n\nFor technical SEO audits, sitemap finder is an early step in the site assessment process. Sitemaps that reference pages returning 404 errors, 301 redirects, or noindex directives indicate site structure problems that need correction. Finding multiple conflicting sitemaps (common after CMS migrations) reveals historical site structure that may be confusing crawlers and diluting crawl budget.",
+          },
+          {
+            h2: "Optimizing Sitemap Structure for Better Crawl Coverage",
+            content: "The relationship between your sitemap and robots.txt is critical for crawl efficiency. Your robots.txt should always reference your sitemap location, but must not disallow access to the sitemap file itself — a common configuration error where sites accidentally block crawlers from reading their sitemap. Checking both files together reveals these types of conflicts.\n\nFor large sites, segmented sitemaps organized by content type improve crawl efficiency significantly. When Google can attribute indexing metrics to specific sitemap files in Search Console, you gain actionable visibility into which content sections are being indexed versus ignored. A dedicated news sitemap for recent articles, product sitemap for e-commerce inventory, and blog sitemap for editorial content gives you granular control and reporting.\n\nSitemap freshness signals matter. Search engines track how often sitemaps change and calibrate crawl frequency accordingly. Sites that update sitemaps regularly with accurate lastmod dates for genuinely changed content train crawlers to check frequently. The combination of a discoverable sitemap via robots.txt, accurate change frequency signals, and clean URL lists creates optimal conditions for comprehensive and timely indexing.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "Where are sitemaps typically located on a website?",
+            a: "The most common sitemap locations are /sitemap.xml (by far the most standard), /sitemap_index.xml for sites using a sitemap index, /sitemap.xml.gz for the compressed version, /wp-sitemap.xml for WordPress core, and /sitemaps/sitemap.xml. The most reliable way to find all sitemaps is to check both these standard locations and the Sitemap: directive in the site's robots.txt file. Our tool checks all these sources automatically.",
+          },
+          {
+            q: "Can I view a competitor's sitemap?",
+            a: "Yes — sitemaps are public files accessible to anyone, not just search engines. Viewing a competitor's sitemap reveals their complete site structure, total URL count, content categories, product listings, and publishing frequency from lastmod timestamps. This competitive intelligence is particularly valuable for content gap analysis, understanding competitor site architecture, and benchmarking your own content depth against theirs. Our sitemap finder works on any public domain.",
+          },
+          {
+            q: "What should I do if my sitemap does not appear in robots.txt?",
+            a: "Add a Sitemap: directive to your robots.txt file pointing to your sitemap URL. For example: Sitemap: https://yourdomain.com/sitemap.xml. This is the most reliable way to ensure all search engine crawlers discover your sitemap, since all well-behaved crawlers read robots.txt. You can reference multiple sitemaps with multiple Sitemap: lines. After adding the directive, submit the sitemap URL to Google Search Console and Bing Webmaster Tools for faster indexing.",
+          },
+          {
+            q: "Why might a website have multiple sitemaps?",
+            a: "Multiple sitemaps serve several purposes. Large sites exceeding 50,000 URLs are required to split into multiple files referenced by a sitemap index. Content-type segmentation allows separate tracking in Search Console. Historical sitemaps from CMS migrations may persist alongside new ones. Some platforms generate both a main sitemap and specialized sitemaps, like Google News sitemaps for news publishers or video sitemaps for sites with embedded video content.",
+          },
+          {
+            q: "How do I submit a discovered sitemap to Google?",
+            a: "To submit a sitemap to Google Search Console: navigate to your property in GSC, click Sitemaps in the left sidebar under Indexing, enter the sitemap URL in the Add a new sitemap field, and click Submit. Google will begin processing the sitemap within minutes. You can track submission status, URL counts, and any errors in the Sitemaps report. For Bing, use Bing Webmaster Tools with a similar submission process.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Shield, Check, Copy, Loader2, Plus, X, AlertCircle } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -441,6 +442,45 @@ export default function SPFGeneratorPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="spf-generator-faq"
+        sections={[
+          {
+            h2: "Understanding SPF Records and Email Authentication",
+            content: "Sender Policy Framework (SPF) is a DNS-based email authentication standard that allows domain owners to specify which mail servers are authorized to send email on their behalf. Published as a TXT record in your domain's DNS zone, SPF records are checked by receiving mail servers when processing incoming email from your domain. When the sending server's IP address matches an authorized entry in your SPF record, authentication passes — helping establish your email as legitimate.\n\nSPF addresses one of email's fundamental security weaknesses: anyone can claim to be sending from any domain. Without SPF, phishing attacks can use your domain name in the From address of malicious emails, damaging your reputation with recipients. SPF specifically validates the technical envelope-from address used during SMTP delivery, not the displayed From header.\n\nAn SPF record consists of a version indicator (v=spf1), authorization mechanisms (ip4, ip6, include, a, mx), and a qualifying directive (all). The -all directive tells receiving servers to reject email from unauthorized senders, while ~all marks it as suspicious without rejecting. Most security recommendations favor -all for maximum protection.",
+          },
+          {
+            h2: "Building a Complete SPF Record",
+            content: "A complete SPF record must include all systems authorized to send email from your domain. This includes your primary mail server (via ip4 or a mechanism), your email service provider (via include: mechanism), and any third-party services like CRM systems, marketing automation platforms, transactional email services, or help desk software that send email using your domain.\n\nThe include: mechanism references SPF records published by third-party services. For Google Workspace, use include:_spf.google.com. For Microsoft 365, use include:spf.protection.outlook.com. For SendGrid, use include:sendgrid.net. Each include fetches that provider's SPF record and merges their authorized IPs into your evaluation chain.\n\nSPF has a critical limitation: the 10 DNS lookup limit. Each include:, a, mx, and exists mechanism counts toward this limit, and exceeding it causes SPF evaluation to return permerror — equivalent to a failure. If you use many third-party email services, you may need to use SPF flattening to stay within the limit. Our generator counts your lookups in real-time as you add mechanisms.",
+          },
+          {
+            h2: "SPF as Part of Complete Email Security",
+            content: "SPF alone is insufficient for comprehensive email authentication. It should be deployed alongside DKIM (DomainKeys Identified Mail) and DMARC (Domain-based Message Authentication, Reporting and Conformance) for complete protection. SPF validates the sending server, DKIM validates message integrity via cryptographic signatures, and DMARC ties both together with a policy that tells receivers what to do when authentication fails.\n\nDMARC alignment requires that SPF authentication aligns with the From header domain — meaning the domain in the envelope-from address that SPF checks must match or be a subdomain of the From header domain visible to recipients. This alignment requirement closes the loophole where SPF can pass for a different domain than the one displayed.\n\nFor email deliverability, all three authentication standards work together. Google, Yahoo, and Microsoft have all announced stricter enforcement of DMARC-aligned authentication for bulk senders, making SPF, DKIM, and DMARC requirements for inbox placement. Our SPF generator creates a properly formatted record as the foundation of your complete authentication setup.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "What happens to email when SPF fails?",
+            a: "The outcome of an SPF failure depends on your DMARC policy and the receiving mail server's configuration. Without DMARC, SPF failure alone typically results in the email being marked as suspicious or given a higher spam score. With a DMARC policy of p=reject, SPF failure combined with DKIM failure will cause the receiving server to reject the message entirely. With p=quarantine, failing messages go to spam. With p=none, there is no automatic action but you receive forensic reports.",
+          },
+          {
+            q: "How many mechanisms can I include in an SPF record?",
+            a: "SPF has a hard limit of 10 DNS-querying mechanisms (include, a, mx, ptr, exists) per evaluation. Exceeding this limit results in a permerror result, which many receiving servers treat as a failure. The total character length of a TXT record is also limited. If you use many email services, SPF flattening — replacing include: references with their direct IP ranges — helps stay within the 10-lookup limit.",
+          },
+          {
+            q: "What is the difference between ~all and -all in SPF?",
+            a: "The -all (hard fail) directive instructs receiving servers to reject email from any sender not listed in the SPF record. The ~all (soft fail) marks unauthorized senders as suspicious but does not reject the message. For maximum security, -all is recommended. However, many organizations start with ~all during rollout to avoid accidentally blocking legitimate email while discovering all authorized senders, then switch to -all once the record is confirmed complete.",
+          },
+          {
+            q: "Does SPF protect against all email spoofing?",
+            a: "SPF protects against spoofing of the envelope-from address used during SMTP delivery. However, it does NOT protect against display name spoofing, cousin domain attacks, or attacks where SPF passes for a relay domain. DMARC addresses SPF's gap by requiring alignment between the envelope-from domain and the visible From header domain. Full protection requires SPF + DKIM + DMARC together.",
+          },
+          {
+            q: "How do I add SPF records for multiple email services?",
+            a: "Add an include: mechanism for each email service. For example, if you use Google Workspace and SendGrid: v=spf1 include:_spf.google.com include:sendgrid.net ~all. Most major email providers publish their SPF includes in their setup documentation. Our SPF generator has pre-configured includes for the most common providers — simply select which services you use and the generator builds the correct record automatically, tracking your DNS lookup count to keep you within the 10-mechanism limit.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

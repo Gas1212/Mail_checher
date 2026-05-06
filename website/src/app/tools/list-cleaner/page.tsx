@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Sparkles, Check, X, Loader2, Upload, Download, Trash2 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -318,6 +319,45 @@ export default function ListCleanerPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="list-cleaner-faq"
+        sections={[
+          {
+            h2: "What Email List Cleaning Removes",
+            content: "Email list cleaning is the process of removing addresses that will harm your deliverability or violate compliance requirements before sending. A clean list is not just one without obvious errors — it is a carefully filtered dataset that maximizes the chance of every send reaching an engaged, real recipient.\n\nThe cleaning process addresses multiple categories of problematic addresses. Syntactically invalid addresses (missing @, invalid characters, malformed domains) are the most obvious category. Invalid domains — those without MX records or that have been suspended — represent the next layer. Addresses from known disposable email services indicate users who wanted to avoid contact. Spam trap addresses, planted by ISPs and anti-spam organizations to catch senders with poor list practices, are particularly dangerous.\n\nBeyond these hard categories, soft suppression decisions include removing role accounts from personalized campaigns, excluding addresses with repeated soft bounces, and culling addresses with extended periods of inactivity. Each cleaning decision trades some list size for improved quality and deliverability.",
+          },
+          {
+            h2: "The Business Case for Regular List Hygiene",
+            content: "Unclean email lists create compounding costs. ISPs measure sender reputation using engagement and bounce metrics, and a degraded reputation affects every message you send — not just those to invalid addresses. Once ISPs begin routing your email to spam folders, re-establishing inbox placement can take weeks of careful, low-volume sending to rebuild trust.\n\nFrom a pure cost perspective, most email platforms charge by the number of subscribers or emails sent. Maintaining invalid contacts that can never convert wastes budget on every send. A list that is 20% invalid addresses effectively inflates your email costs by 20% with zero corresponding benefit. Cleaning returns that wasted spend to productive use.\n\nEngagement metrics also suffer with dirty lists. Open rate, click rate, and conversion rate calculations become misleading when invalid addresses are included in the denominator but can never contribute to the numerator. Clean list metrics give you accurate signals about what content resonates with your actual audience, enabling better decisions about campaign strategy and audience segmentation.",
+          },
+          {
+            h2: "Automating List Hygiene at Scale",
+            content: "Manual list cleaning does not scale — it is a one-time fix that gradually degrades until the next cleaning cycle. Automated hygiene, integrated into your collection and sending workflows, maintains list quality continuously without requiring periodic manual intervention.\n\nReal-time validation at sign-up forms is the most impactful automation: every new addition is verified before it enters your database, preventing the accumulation of invalid addresses. Form-level validation catches immediate typos and invalid domains, while server-side validation can be more thorough, catching disposable emails and verifying mailbox existence.\n\nEngagement-based suppression automation removes subscribers who consistently fail to engage over a defined period. Most sophisticated email platforms allow automated suppression rules: if a subscriber has not opened any of the last 10 campaigns in 6 months, suppress them or trigger a re-engagement campaign first. Combining validation-based cleaning with engagement-based suppression creates a self-maintaining list that improves over time rather than degrading.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "How is email list cleaning different from email validation?",
+            a: "Email validation focuses on technical verification — checking if an address is correctly formatted, if the domain has MX records, and if the mailbox responds to SMTP probes. Email list cleaning is a broader process that includes validation plus additional quality filtering: removing addresses based on engagement history, spam trap avoidance, suppression list matching, and business rules like role account removal. Cleaning produces a sending-ready list, while validation produces a technically-valid list.",
+          },
+          {
+            q: "What are spam traps and why are they dangerous?",
+            a: "Spam traps are email addresses operated by ISPs and anti-spam organizations specifically to catch senders who acquire addresses without permission or fail to maintain clean lists. Pristine spam traps are addresses that have never been used for legitimate registration. Recycled spam traps are old abandoned addresses repurposed for catching senders who keep contacts too long. Triggering either type can result in immediate blacklisting or severe sender reputation damage.",
+          },
+          {
+            q: "How often should I clean my email list?",
+            a: "As a baseline, quarterly full validation is recommended for active marketing lists. Additionally, clean before any major campaign launch, after importing contacts from external sources, and after extended periods of not mailing the list. Setting up real-time validation at point of capture reduces the burden of periodic bulk cleaning since new additions always enter clean.",
+          },
+          {
+            q: "What percentage of email addresses typically become invalid?",
+            a: "Industry data suggests that 22-30% of email addresses become invalid within 12 months. People change jobs losing their corporate email, switch providers, abandon old accounts, or delete accounts created for specific purposes. B2B lists tend to degrade faster than B2C lists because job changes are frequent and corporate email access ends immediately with employment. This decay rate makes regular validation essential for maintaining deliverability.",
+          },
+          {
+            q: "Can cleaning my list improve open rates?",
+            a: "Yes, in two ways. First, removing invalid addresses means open rate calculations are based on a more accurate denominator of reachable recipients, which typically raises the reported percentage. Second, ISPs use engagement signals to score your sender reputation. A cleaner list with higher proportional engagement signals demonstrates to ISPs that you are a quality sender, which improves inbox placement — ensuring your emails are actually seen rather than filtered to spam.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}

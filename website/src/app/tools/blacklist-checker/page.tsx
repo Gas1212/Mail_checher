@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AlertTriangle, Check, X, Loader2, Globe, Shield } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import ToolContent from '@/components/tools/ToolContent';
 import { Card, CardContent } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -350,6 +351,45 @@ export default function BlacklistCheckerPage() {
           </Card>
         </div>
       </main>
+      <ToolContent
+        schemaId="blacklist-checker-faq"
+        sections={[
+          {
+            h2: "How Email Blacklists Work",
+            content: "Email blacklists (also called DNSBLs — DNS-based Block Lists) are real-time databases maintained by anti-spam organizations, ISPs, and security companies that track IP addresses and domains associated with spam, phishing, malware distribution, or other malicious email behavior. When a receiving mail server processes an incoming message, it queries multiple blacklist databases in milliseconds to check whether the sending IP or domain has been reported.\n\nBlacklists collect data through several mechanisms: spam trap networks, user spam reports (when recipients manually mark messages as spam), honeypot networks, and analysis of email sending patterns. Different blacklists have different standards for listing — some are aggressive and list IPs based on a single spam trap hit, while others require sustained patterns of abuse before listing.\n\nThe impact of a blacklist listing varies by which list you appear on. Major operational blacklists like Spamhaus SBL, Spamhaus ZEN, SpamCop, or Barracuda Central are consulted by most mail servers globally. Being listed on one of these can cause widespread delivery failures. Smaller or more specialized lists may only affect delivery to specific ISPs or countries.",
+          },
+          {
+            h2: "Common Causes of Blacklisting",
+            content: "Understanding what triggers blacklisting helps you avoid it. The most common causes are sending unsolicited email, having a compromised server or account that sends spam without your knowledge, poor list hygiene that results in hitting spam traps, unusually high complaint rates from recipients, and sudden large increases in sending volume that trigger automated abuse detection.\n\nCompromised accounts and servers are a particularly insidious cause because you may not know it is happening. If your email server or a user account on your domain is compromised, attackers can use it to send thousands of spam messages while you are unaware. Monitoring your outbound mail logs for unusual sending patterns and setting up DMARC with reporting lets you detect and stop unauthorized sending quickly.\n\nShared IP addresses present unique blacklisting risks. If you use a shared IP pool (common with lower-tier email service provider accounts), another sender's bad behavior can get your shared IP listed. Dedicated IP addresses eliminate this risk but require careful warming — sending at gradually increasing volumes to build the IP's reputation before ramping to full sending volume.",
+          },
+          {
+            h2: "Removing Yourself from Blacklists",
+            content: "The removal process varies significantly by blacklist operator. Most major blacklists have a self-service delisting request process accessible through their website. Before requesting removal, you must understand and fix the root cause of the listing — submitting a removal request while still sending spam or with a compromised server will result in re-listing, and some lists impose time penalties for repeated listing and delisting cycles.\n\nSpamhaus requires that you fix the underlying issue and provide a detailed explanation of what caused the listing and what steps were taken to prevent recurrence. SpamCop listings expire automatically after a period of clean sending. Barracuda Central requires an account creation and explanation. Each blacklist has its own timeline — removals can happen within hours or take several days.\n\nPreventing re-listing is more important than removal speed. After delisting, implement proper list hygiene, monitor complaint rates, set up feedback loops with major ISPs, and authenticate email with SPF, DKIM, and DMARC. These practices demonstrate responsible sending to both blacklist operators and ISPs and significantly reduce the risk of future listings.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "Which blacklists should I check for email deliverability?",
+            a: "The most impactful blacklists for email deliverability are Spamhaus SBL (Spamhaus Block List), Spamhaus XBL (Exploits Block List), Spamhaus DBL (Domain Block List), SpamCop, Barracuda Central, and SORBS. Our checker queries all major operational blacklists simultaneously, returning a comprehensive status across all databases in a single check. We recommend checking both your sending IP address and your sending domain for complete coverage.",
+          },
+          {
+            q: "How quickly do blacklist removals take effect?",
+            a: "Removal timelines vary by blacklist. SpamCop listings expire automatically after 24 hours of clean sending without manual intervention. Spamhaus removals are typically processed within hours once approved. Barracuda Central usually processes requests within 12-24 hours. Once the listing is removed from the blacklist database, mail server caches may take an additional 2-4 hours to refresh, after which delivery to previously affected recipients should normalize.",
+          },
+          {
+            q: "Can I be blacklisted even if I only send legitimate email?",
+            a: "Yes, several scenarios can cause innocent senders to be blacklisted. Your IP may be shared with a bad sender on the same mail server. A compromised account on your domain may have sent spam without your knowledge. Your list may contain spam trap addresses collected through scraped or purchased contacts. You may have acquired a previously blacklisted IP address. Regular blacklist monitoring helps you detect these situations quickly before they significantly impact deliverability.",
+          },
+          {
+            q: "How often should I check my IP and domain against blacklists?",
+            a: "High-volume senders should check blacklist status daily — automated monitoring with alerts is ideal. Lower-volume senders should check weekly at minimum, and immediately whenever deliverability issues are suspected such as increased bounce rates, low inbox placement, or recipient reports of not receiving email. Setting up a monitoring schedule ensures you detect listings quickly, before they cause significant campaign damage.",
+          },
+          {
+            q: "What is the difference between an IP blacklist and a domain blacklist?",
+            a: "IP blacklists flag specific IP addresses used by mail servers to send email. Domain blacklists flag domain names found in spam message content — either in the From address, links within the email body, or the envelope sender domain. You can have a clean IP but a blacklisted domain, or a clean domain but a blacklisted IP. Comprehensive deliverability protection requires checking both your sending IP and your domain.",
+          },
+        ]}
+      />
       <Footer />
 
       {/* Upgrade Modal */}
