@@ -118,7 +118,7 @@ export default function TextToSpeechPage() {
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Text to Speech</h1>
             <p className="text-gray-500 text-sm">
-              Powered by <span className="font-medium text-purple-600">facebook/mms-tts</span> · Arabic · English · French · German
+              Powered by <span className="font-medium text-purple-600">Microsoft Neural Voices</span> · Arabic · English · French · German
             </p>
           </div>
 
@@ -253,7 +253,7 @@ export default function TextToSpeechPage() {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-sm">
             {[
               { icon: '✍️', title: 'Choose language', desc: 'Arabic, English, French or German' },
-              { icon: '🤖', title: 'AI generates audio', desc: 'facebook/mms-tts via HuggingFace' },
+              { icon: '🤖', title: 'AI generates audio', desc: 'Microsoft Neural voices (edge-tts)' },
               { icon: '🔊', title: 'Play & download', desc: 'Listen instantly, save as WAV' },
             ].map((s, i) => (
               <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">

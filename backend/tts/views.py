@@ -1,24 +1,34 @@
-import requests
+import asyncio
 import base64
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.throttling import AnonRateThrottle
-from django.conf import settings
 
 
 class TTSThrottle(AnonRateThrottle):
     rate = '10/min'
 
 
-LANGUAGE_MODELS = {
-    'arabic':  'facebook/mms-tts-ara',
-    'english': 'facebook/mms-tts-eng',
-    'german':  'facebook/mms-tts-deu',
-    'french':  'facebook/mms-tts-fra',
+# Microsoft Edge Neural voices — high quality, free, no API key
+VOICES = {
+    'arabic':  'ar-SA-ZariyahNeural',
+    'english': 'en-US-JennyNeural',
+    'french':  'fr-FR-DeniseNeural',
+    'german':  'de-DE-KatjaNeural',
 }
 
 MAX_CHARS = 500
+
+
+async def _edge_tts(text: str, voice: str) -> bytes:
+    import edge_tts
+    communicate = edge_tts.Communicate(text, voice)
+    chunks = []
+    async for chunk in communicate.stream():
+        if chunk['type'] == 'audio':
+            chunks.append(chunk['data'])
+    return b''.join(chunks)
 
 
 @api_view(['POST'])
@@ -36,59 +46,33 @@ def tts_generate(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    if language not in LANGUAGE_MODELS:
+    if language not in VOICES:
         return Response({'error': f'Unsupported language: {language}.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    model_id = LANGUAGE_MODELS[language]
-    hf_token = getattr(settings, 'HF_API_TOKEN', '').strip()
-
-    headers = {'Content-Type': 'application/json'}
-    if hf_token:
-        headers['Authorization'] = f'Bearer {hf_token}'
+    voice = VOICES[language]
 
     try:
-        resp = requests.post(
-            f'https://api-inference.huggingface.co/models/{model_id}',
-            headers=headers,
-            json={'inputs': text},
-            timeout=40,
-        )
-    except requests.Timeout:
-        return Response({'error': 'Request timed out. Please try again.'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
-    except Exception:
-        return Response({'error': 'Network error connecting to TTS service.'}, status=status.HTTP_502_BAD_GATEWAY)
-
-    if resp.status_code == 503:
+        audio_bytes = asyncio.run(_edge_tts(text, voice))
+    except RuntimeError:
+        # Fallback if event loop already running (unlikely in WSGI but safe)
+        loop = asyncio.new_event_loop()
         try:
-            retry_after = int(resp.json().get('estimated_time', 20))
-        except Exception:
-            retry_after = 20
+            audio_bytes = loop.run_until_complete(_edge_tts(text, voice))
+        finally:
+            loop.close()
+    except Exception as e:
         return Response(
-            {'error': f'Model is loading, please retry in {retry_after}s.', 'retry_after': retry_after},
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            {'error': f'TTS generation failed: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-    if resp.status_code == 401:
-        return Response({'error': 'Invalid HuggingFace API token.'}, status=status.HTTP_502_BAD_GATEWAY)
+    if not audio_bytes:
+        return Response({'error': 'No audio generated. Please try again.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    if resp.status_code != 200:
-        return Response(
-            {'error': f'TTS service returned error {resp.status_code}. Please try again.'},
-            status=status.HTTP_502_BAD_GATEWAY,
-        )
-
-    # Determine audio content type
-    content_type = resp.headers.get('Content-Type', 'audio/wav')
-    audio_format = 'wav'
-    if 'flac' in content_type:
-        audio_format = 'flac'
-    elif 'mpeg' in content_type or 'mp3' in content_type:
-        audio_format = 'mp3'
-
-    audio_b64 = base64.b64encode(resp.content).decode('utf-8')
+    audio_b64 = base64.b64encode(audio_bytes).decode('utf-8')
 
     return Response({
         'audio': audio_b64,
-        'format': audio_format,
-        'model': model_id,
+        'format': 'mp3',
+        'voice': voice,
     })
