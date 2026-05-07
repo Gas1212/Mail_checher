@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon, Download } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon, Download, Volume2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
@@ -152,6 +152,16 @@ export default function ToolsPage() {
       bgColor: 'bg-red-50',
       category: 'Media Tools',
       badge: 'Free',
+    },
+    {
+      name: 'Text to Speech',
+      description: 'AI-powered TTS in Arabic, English, French and German via HuggingFace MMS',
+      icon: Volume2,
+      href: '/tools/text-to-speech',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      category: 'Media Tools',
+      badge: 'AI',
     },
   ];
 

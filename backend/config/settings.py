@@ -43,7 +43,11 @@ INSTALLED_APPS = [
     'sugesto_blog',
     'directory',
     'downloader',
+    'tts',
 ]
+
+# HuggingFace API token for TTS (mms-tts models)
+HF_API_TOKEN = config('HF_API_TOKEN', default='')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
