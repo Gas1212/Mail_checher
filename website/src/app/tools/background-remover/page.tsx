@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { Upload, Download, ImageIcon, Loader2, Scissors } from 'lucide-react'
+import ToolContent from '@/components/tools/ToolContent'
 
 const MAX_SIZE_MB = 5
 const ACCEPTED = 'image/jpeg,image/png,image/webp'
@@ -189,6 +190,46 @@ export default function BackgroundRemoverPage() {
           )}
         </div>
       </main>
+
+      <ToolContent
+        schemaId="bgremover-faq"
+        sections={[
+          {
+            h2: "How AI Background Removal Works",
+            content: "Our Background Remover uses BRIA RMBG-1.4, a specialized image matting model developed by BRIA AI. Unlike earlier background removal approaches that relied on semantic segmentation (classifying each pixel as foreground or background based on object categories), RMBG-1.4 uses a hybrid architecture combining salient object detection with high-resolution detail preservation — enabling it to accurately separate fine details like hair strands, semi-transparent objects, and intricate edges from complex backgrounds.\n\nThe model runs entirely in your browser using ONNX Runtime Web, a WebAssembly-based inference engine. When you click 'Remove Background', the ONNX model weights are downloaded once (~80 MB) and cached in your browser — subsequent uses are instant. The image is processed locally on your device using your CPU and available GPU acceleration: no image data is ever sent to our servers, making this tool completely private.\n\nProcessing generates an alpha matte — a greyscale mask indicating pixel-by-pixel transparency — which is applied to the original image to produce a transparent PNG. The output preserves full original resolution and color accuracy.",
+          },
+          {
+            h2: "Best Practices for Background Removal",
+            content: "Background removal quality depends significantly on the input image characteristics. For optimal results: use images with clear contrast between the subject and background; ensure the subject is well-lit without harsh shadows blending into the background; use images of at least 500×500 pixels (higher resolution produces better edge detail); and prefer subjects with defined, non-transparent boundaries.\n\nThe model excels with product photography (items on plain backgrounds), portrait photography (person against any background), and food/object shots. It performs well with complex subjects including hair, fur, and fine clothing details. Images where the subject and background have similar colors, or images with very low contrast, may produce less accurate results.\n\nAfter removal, review the edges of your exported PNG. For professional use cases, zoom in to 100% to check for fringing (color contamination from the original background appearing at the edges) or missed areas in complex regions like hair. Most results are ready to use without further editing, particularly for common photography subjects.",
+          },
+          {
+            h2: "Output Format and Usage",
+            content: "Processed images are exported as PNG (Portable Network Graphics) with an alpha channel for transparency. PNG is the correct format for images requiring transparency — JPEG does not support alpha channels and would replace transparent areas with white. The exported file uses lossless compression, preserving every detail of the original image without encoding artifacts.\n\nThe transparent PNG can be used in any graphics application (Photoshop, Figma, Canva, GIMP), placed on any background in presentation software (PowerPoint, Keynote), used directly on websites with CSS backgrounds, or composited in video editing software. Transparent PNGs are the standard input format for most AI image generation and editing tools when you want to place a subject on a new background.\n\nAll processing happens locally in your browser — the model runs on your device using WebAssembly, and no image data leaves your computer. This means your images remain completely private, there are no usage limits, and processing speed depends only on your device's processing capability.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "Does background removal happen on my device or on a server?",
+            a: "Entirely on your device. The BRIA RMBG-1.4 model runs in your browser using ONNX Runtime Web (WebAssembly). Your images are never uploaded to any server — processing happens locally on your CPU/GPU. The first use downloads the model weights (~80 MB) which are then cached in your browser for instant future use.",
+          },
+          {
+            q: "What image formats are supported?",
+            a: "JPEG, PNG, and WebP images up to 5 MB are supported. For best results, use images with at least 500×500 pixel resolution. The output is always a transparent PNG regardless of the input format, since PNG is the only common web format that supports transparency.",
+          },
+          {
+            q: "Why does the first use take longer?",
+            a: "The first time you use the tool, the browser downloads and caches the RMBG-1.4 ONNX model weights (~80 MB). This download happens once — subsequent uses load the cached model instantly. Processing time after loading depends on your device's CPU speed and image resolution, typically taking 2–10 seconds.",
+          },
+          {
+            q: "What types of images work best?",
+            a: "The tool works best on product photos (items on plain or studio backgrounds), portrait photos, food photography, and any subject with reasonably clear separation from the background. It handles fine details like hair and fur well. Images with very similar foreground and background colors, or subjects that blend into backgrounds, may produce less accurate results.",
+          },
+          {
+            q: "Can I use the processed images commercially?",
+            a: "Yes — the background removal processing itself adds no restrictions to your images. Your original image's copyright and licensing terms remain unchanged. The tool simply removes the background; you retain all rights to the resulting image that you had to the original.",
+          },
+        ]}
+      />
 
       <Footer />
     </div>

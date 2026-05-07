@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { Mic, Upload, Copy, Check, FileAudio, Loader2 } from 'lucide-react'
+import ToolContent from '@/components/tools/ToolContent'
 
 const API = process.env.NEXT_PUBLIC_API_URL
 
@@ -159,6 +160,46 @@ export default function VoiceToTextPage() {
           )}
         </div>
       </main>
+
+      <ToolContent
+        schemaId="stt-faq"
+        sections={[
+          {
+            h2: "How AI Speech-to-Text Works with Whisper",
+            content: "Our Voice to Text tool uses OpenAI's Whisper Large V3, one of the most capable open-source automatic speech recognition (ASR) models available. Whisper was trained by OpenAI on 680,000 hours of multilingual audio data collected from the internet, making it exceptionally robust to accents, background noise, technical jargon, and informal speech — conditions where earlier ASR systems struggled significantly.\n\nWhisper uses an encoder-decoder Transformer architecture. The audio is first converted to a log-Mel spectrogram (a frequency representation of sound over time), which the encoder processes to extract acoustic features. The decoder then autoregressively generates the transcript token by token, using attention to focus on the relevant audio segments for each word.\n\nWhen you upload a file, the audio bytes are sent directly to the HuggingFace Inference API running Whisper Large V3. The model transcribes the audio and returns the text. No audio data is stored after processing — the file is sent, transcribed, and the response returned to your browser.",
+          },
+          {
+            h2: "Supported Audio Formats and Languages",
+            content: "The tool accepts the most common audio formats: MP3 (audio/mpeg), WAV, OGG Vorbis, FLAC, M4A, and WebM — covering virtually all audio files you might encounter. The maximum file size is 10 MB, which corresponds to approximately 8–10 minutes of speech at typical MP3 bitrates (128 kbps).\n\nWhisper Large V3 supports transcription in 99 languages without requiring you to specify the language — it automatically detects the spoken language from the audio content. Supported languages include all major European languages, Arabic, Chinese (Mandarin), Japanese, Korean, Hindi, Turkish, and many more. Detection works reliably when at least 30 seconds of speech are present; very short clips may be misidentified.\n\nFor best results, use clear recordings with minimal background noise and one primary speaker. Whisper handles multiple speakers but does not distinguish between them (speaker diarization). Background music, overlapping speech, and very heavy accents can reduce accuracy, though Whisper is more resilient to these conditions than most competing models.",
+          },
+          {
+            h2: "Accuracy, Limitations and Privacy",
+            content: "Whisper Large V3 achieves state-of-the-art word error rates across most benchmark languages, often matching or approaching human-level accuracy for clear speech in well-supported languages. English achieves the lowest error rates given its dominance in training data. Languages with less internet audio representation — including many African and indigenous languages — may have higher error rates despite being technically supported.\n\nThe model performs punctuation and capitalization automatically, producing ready-to-use text without requiring manual formatting. Technical vocabulary, proper nouns, and domain-specific terms are generally handled well if they appear in the training data.\n\nPrivacy is maintained by design: your audio file is transmitted to the API for processing and the transcript is returned to your browser. No audio files are stored on our servers after processing. For highly sensitive recordings, consider the privacy policies of all services in the processing chain.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "What audio formats are supported for transcription?",
+            a: "The tool supports MP3, WAV, OGG, FLAC, M4A, WebM, and most common audio formats. The maximum file size is 10 MB. For longer recordings, consider splitting the audio into segments. Files recorded at standard quality (44.1 kHz, 128 kbps or higher) produce the best transcription results.",
+          },
+          {
+            q: "Which languages can Whisper transcribe?",
+            a: "Whisper Large V3 supports 99 languages automatically detected from the audio content — you don't need to specify the language. This includes English, French, Arabic, Spanish, German, Chinese, Japanese, Portuguese, Russian, Italian, Korean, Turkish, Hindi, and many more. Accuracy is highest for languages with large amounts of audio training data, particularly English and major European languages.",
+          },
+          {
+            q: "How accurate is the transcription?",
+            a: "For clear speech recordings in well-supported languages, Whisper Large V3 achieves near-human accuracy. Word error rates for English are typically under 5% for clear studio recordings. Performance degrades with heavy background noise, strong accents, overlapping speakers, or very specialized technical vocabulary not in the training data. For professional-grade transcription of challenging audio, manual review is recommended.",
+          },
+          {
+            q: "Why does transcription sometimes take a while?",
+            a: "Transcription time depends on audio length and model availability. The Whisper Large V3 model has over 1.5 billion parameters and requires GPU resources to run — if the model hasn't been used recently, the first request may take 20–30 seconds for the model to load. Once warm, subsequent transcriptions are faster. Longer audio files naturally take more processing time than short clips.",
+          },
+          {
+            q: "Is my audio file stored after transcription?",
+            a: "No. Your audio file is sent to the transcription API, processed in real time, and the text is returned to your browser. We do not store audio files on our servers. The file exists in memory only for the duration of the API call and is discarded after the response.",
+          },
+        ]}
+      />
 
       <Footer />
     </div>

@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { Upload, Download, ImageIcon, Loader2, ZoomIn } from 'lucide-react'
+import ToolContent from '@/components/tools/ToolContent'
 
 const API = process.env.NEXT_PUBLIC_API_URL
 
@@ -190,6 +191,46 @@ export default function ImageUpscalerPage() {
           )}
         </div>
       </main>
+
+      <ToolContent
+        schemaId="upscaler-faq"
+        sections={[
+          {
+            h2: "How 4× Image Upscaling Works",
+            content: "Our Image Upscaler uses LANCZOS resampling with Unsharp Masking post-processing — a high-quality, computationally efficient approach to image enlargement that has been the industry standard for professional photography and print workflows for decades. When you upload an image, it is processed server-side using Python's Pillow library with the LANCZOS (also known as Lanczos3) resampling filter.\n\nLANCZOS resampling is based on the sinc function windowed by the Lanczos kernel, a mathematical approach to signal reconstruction that minimizes aliasing (jagged edges) and ringing artifacts while preserving high-frequency detail better than simpler resampling methods like bilinear or bicubic. It works by calculating each output pixel as a weighted average of a large neighborhood of surrounding input pixels, with weights determined by the Lanczos kernel function.\n\nAfter enlargement, an Unsharp Mask is applied with carefully tuned parameters (radius 1, strength 80%, threshold 3 levels) to compensate for the slight softening that resampling introduces, restoring apparent sharpness and edge definition. The result is a 4× enlarged image that retains maximum detail from the original without AI hallucination artifacts.",
+          },
+          {
+            h2: "Upscaling vs AI Super-Resolution",
+            content: "LANCZOS upscaling and AI super-resolution (models like Real-ESRGAN, Swin2SR, or ESRGAN) represent two different approaches with distinct trade-offs. Traditional LANCZOS upscaling is deterministic — it mathematically enlarges existing pixels without adding information, producing consistent, predictable results with no possibility of introduced artifacts or hallucinated details. It is extremely fast, requires no GPU, and works identically on all image types.\n\nAI super-resolution models attempt to hallucinate plausible high-frequency details — generating texture, sharpness, and fine structure that wasn't present in the original. This can produce impressive results for certain image categories (faces, natural scenes, architecture) but may introduce artifacts, incorrect textures, or unwanted changes to image content. AI models also require significant GPU compute and can produce inconsistent results.\n\nFor product photography, document scanning, logo enlargement, and images where faithful reproduction of the original is critical, LANCZOS produces more reliable results. For artistic or photographic content where perceptual quality matters more than pixel-perfect fidelity, AI super-resolution can be preferable. Our tool prioritizes reliability and speed with LANCZOS + sharpening.",
+          },
+          {
+            h2: "Use Cases and Output Quality",
+            content: "4× upscaling is appropriate for a wide range of practical applications. Small product images from e-commerce platforms (often 500×500 px) can be enlarged to 2000×2000 px for print catalogs or large-format display. Profile photos from social media (typically 400×400 px) scale to 1600×1600 px for CV headers or presentation materials. Old photos scanned at low resolution can be enlarged for display or printing.\n\nThe output quality depends on the input image. Starting with a high-quality, sharp original produces the best results — LANCZOS preserves existing sharpness extremely well. Starting with a blurry, heavily compressed, or noisy image produces a larger version of those same defects. Upscaling cannot recover detail that wasn't captured in the original; it can only enlarge what is there.\n\nOutput images are provided as PNG files, using lossless compression that preserves all pixel values exactly. For images that will be further edited or composited, PNG is the correct format. For web delivery where file size matters more than lossless quality, you can convert the exported PNG to WebP or JPEG after downloading.",
+          },
+        ]}
+        faqs={[
+          {
+            q: "How much larger does 4× upscaling make an image?",
+            a: "4× upscaling multiplies both the width and height by 4, making the total pixel count 16× larger. A 500×500 image becomes 2000×2000. A 1000×750 image becomes 4000×3000. The file size increases proportionally — a small JPEG may become a large PNG of tens of megabytes, since the output is lossless PNG.",
+          },
+          {
+            q: "What image formats can I upload?",
+            a: "JPEG, PNG, and WebP images up to 5 MB are supported. All color modes (RGB, RGBA, greyscale) are handled. The output is always PNG for lossless quality preservation. If your source image is a JPEG with compression artifacts, those artifacts will be visible in the upscaled version — LANCZOS enlarges existing content faithfully, including existing defects.",
+          },
+          {
+            q: "Is there a maximum input image size?",
+            a: "Input images up to 5 MB are accepted. To prevent server overload, input images larger than 2000 pixels in either dimension are scaled down before upscaling, ensuring the output remains within manageable dimensions. For very high-resolution inputs, consider whether 4× enlargement is actually needed — a 2000×2000 px image upscaled to 8000×8000 px may be larger than most use cases require.",
+          },
+          {
+            q: "How does LANCZOS compare to Photoshop's upscaling?",
+            a: "Adobe Photoshop offers several resampling methods: Preserve Details 2.0 (AI-based), Bicubic Smoother, and Bicubic Sharper. Our LANCZOS + Unsharp Mask approach is most comparable to Photoshop's 'Bicubic Sharper' option, which is Photoshop's recommended method for enlargement followed by sharpening. For most practical upscaling tasks, results are visually equivalent to Photoshop's non-AI methods.",
+          },
+          {
+            q: "Will upscaling fix a blurry photo?",
+            a: "No. Upscaling enlarges existing pixels — it cannot recover information that was never captured. A blurry photo upscaled 4× becomes a larger blurry photo. The Unsharp Mask post-processing enhances perceived sharpness by increasing local contrast at edges, which can make a moderately soft image appear crisper, but it cannot deblur a genuinely out-of-focus or motion-blurred image.",
+          },
+        ]}
+      />
 
       <Footer />
     </div>
