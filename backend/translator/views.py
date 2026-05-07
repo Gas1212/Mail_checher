@@ -38,7 +38,8 @@ def _hf_translate(text: str, src_code: str, tgt_code: str, token: str) -> str:
     headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
     resp = requests.post(url, headers=headers, json={'inputs': text}, timeout=30)
 
-    if resp.status_code == 404:
+    if resp.status_code in (404, 400):
+        # 404 = unknown model, 400 = "Model not supported by provider"
         raise ValueError('no_model')
     if resp.status_code == 503:
         raise RuntimeError('loading')
