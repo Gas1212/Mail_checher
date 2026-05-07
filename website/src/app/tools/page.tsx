@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon, Download, Volume2 } from 'lucide-react';
+import { Shield, Mail, Globe, FileText, AlertTriangle, Server, Sparkles, Search, CheckCircle, Puzzle, QrCode, Link as LinkIcon, Download, Volume2, Mic, Scissors, ZoomIn, Languages } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Navbar from '@/components/layout/Navbar';
@@ -161,6 +161,46 @@ export default function ToolsPage() {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
       category: 'Media Tools',
+      badge: 'AI',
+    },
+    {
+      name: 'Voice to Text',
+      description: 'Transcribe audio files in any language using OpenAI Whisper Large V3',
+      icon: Mic,
+      href: '/tools/voice-to-text',
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+      category: 'Media Tools',
+      badge: 'AI',
+    },
+    {
+      name: 'Background Remover',
+      description: 'Remove image backgrounds instantly with AI — download transparent PNG, no watermark',
+      icon: Scissors,
+      href: '/tools/background-remover',
+      color: 'text-pink-600',
+      bgColor: 'bg-pink-50',
+      category: 'Image Tools',
+      badge: 'AI',
+    },
+    {
+      name: 'Image Upscaler',
+      description: 'Upscale and enhance images 4× with AI super-resolution (Swin2SR)',
+      icon: ZoomIn,
+      href: '/tools/image-upscaler',
+      color: 'text-violet-600',
+      bgColor: 'bg-violet-50',
+      category: 'Image Tools',
+      badge: 'AI',
+    },
+    {
+      name: 'Translator',
+      description: 'Translate text between 12 languages instantly with Meta NLLB-200 AI',
+      icon: Languages,
+      href: '/tools/translator',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      category: 'AI Tools',
       badge: 'AI',
     },
   ];

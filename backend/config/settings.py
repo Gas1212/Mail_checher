@@ -44,9 +44,13 @@ INSTALLED_APPS = [
     'directory',
     'downloader',
     'tts',
+    'translator',
+    'stt',
+    'bgremover',
+    'upscaler',
 ]
 
-# HuggingFace API token for TTS (mms-tts models)
+# HuggingFace API token
 HF_API_TOKEN = config('HF_API_TOKEN', default='')
 
 MIDDLEWARE = [
@@ -165,6 +169,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
     ],
     # No global throttling - applied per-view only
     'DEFAULT_THROTTLE_CLASSES': [],
