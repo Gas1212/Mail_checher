@@ -156,7 +156,7 @@ export default function TextToSpeechPage() {
                 dir={currentLang.dir}
                 rows={5}
                 maxLength={MAX_CHARS}
-                className={`w-full border rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all
+                className={`w-full border rounded-xl px-4 py-3 text-sm text-gray-900 bg-white resize-none focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all placeholder:text-gray-400
                   ${charsLeft < 50 ? 'border-orange-300' : 'border-gray-200'}
                   ${currentLang.dir === 'rtl' ? 'text-right font-arabic leading-loose' : ''}`}
               />
