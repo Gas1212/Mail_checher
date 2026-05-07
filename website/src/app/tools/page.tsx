@@ -185,7 +185,7 @@ export default function ToolsPage() {
     },
     {
       name: 'Image Upscaler',
-      description: 'Upscale and enhance images 4× with AI super-resolution (Swin2SR)',
+      description: 'Upscale and enlarge images 4× instantly — download high-resolution PNG, no watermark',
       icon: ZoomIn,
       href: '/tools/image-upscaler',
       color: 'text-violet-600',

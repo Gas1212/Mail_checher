@@ -10,26 +10,45 @@ class TranslatorThrottle(AnonRateThrottle):
     rate = '10/min'
 
 
-HF_MODEL = 'facebook/nllb-200-distilled-600M'
-HF_API_URL = f'https://api-inference.huggingface.co/models/{HF_MODEL}'
+HF_BASE = 'https://router.huggingface.co/hf-inference/models/Helsinki-NLP'
 
 MAX_CHARS = 1000
 
-# NLLB-200 language codes
+# ISO 639-1 codes used by Helsinki-NLP opus-mt models
 LANGUAGES = {
-    'arabic':     'arb_Arab',
-    'english':    'eng_Latn',
-    'french':     'fra_Latn',
-    'german':     'deu_Latn',
-    'spanish':    'spa_Latn',
-    'italian':    'ita_Latn',
-    'portuguese': 'por_Latn',
-    'russian':    'rus_Cyrl',
-    'chinese':    'zho_Hans',
-    'japanese':   'jpn_Jpan',
-    'turkish':    'tur_Latn',
-    'dutch':      'nld_Latn',
+    'arabic':     'ar',
+    'english':    'en',
+    'french':     'fr',
+    'german':     'de',
+    'spanish':    'es',
+    'italian':    'it',
+    'portuguese': 'pt',
+    'russian':    'ru',
+    'chinese':    'zh',
+    'turkish':    'tr',
+    'dutch':      'nl',
 }
+
+LANG_LABELS = {k: k.capitalize() for k in LANGUAGES}
+
+
+def _hf_translate(text: str, src_code: str, tgt_code: str, token: str) -> str:
+    """Call Helsinki-NLP opus-mt-{src}-{tgt} model. Raises on failure."""
+    url = f'{HF_BASE}/opus-mt-{src_code}-{tgt_code}'
+    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
+    resp = requests.post(url, headers=headers, json={'inputs': text}, timeout=30)
+
+    if resp.status_code == 404:
+        raise ValueError('no_model')
+    if resp.status_code == 503:
+        raise RuntimeError('loading')
+    if resp.status_code != 200:
+        raise RuntimeError(f'hf_{resp.status_code}')
+
+    data = resp.json()
+    if isinstance(data, list) and data and 'translation_text' in data[0]:
+        return data[0]['translation_text']
+    raise RuntimeError('bad_response')
 
 
 @api_view(['POST'])
@@ -61,35 +80,48 @@ def translate(request):
     if not token:
         return Response({'error': 'Translation service not configured.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
-    payload = {
-        'inputs': text,
-        'parameters': {
-            'src_lang': LANGUAGES[source],
-            'tgt_lang': LANGUAGES[target],
-        },
-    }
+    src_code = LANGUAGES[source]
+    tgt_code = LANGUAGES[target]
 
     try:
-        resp = requests.post(HF_API_URL, headers=headers, json=payload, timeout=30)
+        # Try direct model (e.g. opus-mt-en-fr)
+        translation = _hf_translate(text, src_code, tgt_code, token)
+        return Response({'translation': translation})
+
+    except ValueError:
+        # No direct model — pivot through English
+        if source == 'english' or target == 'english':
+            return Response(
+                {'error': f'No translation model for {LANG_LABELS[source]} → {LANG_LABELS[target]}.'},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+        try:
+            en_text = _hf_translate(text, src_code, 'en', token)
+            translation = _hf_translate(en_text, 'en', tgt_code, token)
+            return Response({'translation': translation})
+        except ValueError:
+            return Response(
+                {'error': f'No translation model for {LANG_LABELS[source]} → {LANG_LABELS[target]}.'},
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+        except RuntimeError as e:
+            if 'loading' in str(e):
+                return Response(
+                    {'error': 'Model is loading, please retry in 20 seconds.', 'loading': True},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+            return Response({'error': 'Translation failed. Please try again.'}, status=status.HTTP_502_BAD_GATEWAY)
+
+    except RuntimeError as e:
+        if 'loading' in str(e):
+            return Response(
+                {'error': 'Model is loading, please retry in 20 seconds.', 'loading': True},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        return Response({'error': 'Translation failed. Please try again.'}, status=status.HTTP_502_BAD_GATEWAY)
+
     except requests.Timeout:
         return Response({'error': 'Translation timed out. Please try again.'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
+
     except requests.RequestException as e:
         return Response({'error': f'Network error: {str(e)}'}, status=status.HTTP_502_BAD_GATEWAY)
-
-    if resp.status_code == 503:
-        # Model loading
-        return Response({'error': 'Model is loading, please retry in 20 seconds.', 'loading': True}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-    if resp.status_code != 200:
-        return Response(
-            {'error': f'Translation service error ({resp.status_code}). Please try again.'},
-            status=status.HTTP_502_BAD_GATEWAY,
-        )
-
-    data = resp.json()
-
-    if isinstance(data, list) and len(data) > 0 and 'translation_text' in data[0]:
-        return Response({'translation': data[0]['translation_text']})
-
-    return Response({'error': 'Unexpected response from translation service.'}, status=status.HTTP_502_BAD_GATEWAY)

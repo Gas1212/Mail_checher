@@ -5,9 +5,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { Upload, Download, ImageIcon, Loader2, Scissors } from 'lucide-react'
 
-const API = process.env.NEXT_PUBLIC_API_URL
-
-const MAX_SIZE_MB = 5
+const MAX_SIZE_MB = 10
 const ACCEPTED = 'image/jpeg,image/png,image/webp'
 
 export default function BackgroundRemoverPage() {
@@ -15,6 +13,7 @@ export default function BackgroundRemoverPage() {
   const [preview, setPreview] = useState<string>('')
   const [result, setResult] = useState<string>('')
   const [loading, setLoading] = useState(false)
+  const [progress, setProgress] = useState('')
   const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -26,6 +25,7 @@ export default function BackgroundRemoverPage() {
     setFile(f)
     setError('')
     setResult('')
+    setProgress('')
     const url = URL.createObjectURL(f)
     setPreview(url)
   }
@@ -41,23 +41,28 @@ export default function BackgroundRemoverPage() {
     setLoading(true)
     setError('')
     setResult('')
-
-    const formData = new FormData()
-    formData.append('image', file)
+    setProgress('Loading AI model…')
 
     try {
-      const res = await fetch(`${API}/bgremover/remove/`, {
-        method: 'POST',
-        body: formData,
+      // Dynamic import to avoid SSR issues
+      const { removeBackground } = await import('@imgly/background-removal')
+
+      setProgress('Processing image…')
+      const blob = await removeBackground(file, {
+        progress: (key: string, current: number, total: number) => {
+          if (total > 0) {
+            const pct = Math.round((current / total) * 100)
+            setProgress(`Loading model: ${pct}%`)
+          }
+        },
       })
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || 'Background removal failed. Please try again.')
-      } else {
-        setResult(`data:image/png;base64,${data.image}`)
-      }
-    } catch {
-      setError('Network error. Please check your connection.')
+
+      const url = URL.createObjectURL(blob)
+      setResult(url)
+      setProgress('')
+    } catch (err) {
+      setError('Background removal failed. Please try again with a different image.')
+      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -81,10 +86,10 @@ export default function BackgroundRemoverPage() {
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-pink-50 rounded-full mb-4">
               <Scissors className="w-4 h-4 text-pink-600" />
-              <span className="text-sm font-medium text-pink-600">BRIA RMBG-1.4 · Free, No Watermark</span>
+              <span className="text-sm font-medium text-pink-600">100% In-Browser · No Upload · No Watermark</span>
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-3">Background Remover</h1>
-            <p className="text-gray-500 text-lg">Remove backgrounds with AI — get a transparent PNG instantly</p>
+            <p className="text-gray-500 text-lg">Remove backgrounds with AI — runs entirely in your browser, private and free</p>
           </div>
 
           {/* Upload zone */}
@@ -132,7 +137,7 @@ export default function BackgroundRemoverPage() {
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Processing…
+                    {progress || 'Processing…'}
                   </>
                 ) : (
                   <>
@@ -176,8 +181,13 @@ export default function BackgroundRemoverPage() {
                       Download PNG
                     </button>
                   </div>
-                  <div className="p-4 flex items-center justify-center min-h-[250px]"
-                    style={{ backgroundImage: 'linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e0e0e0 75%), linear-gradient(-45deg, transparent 75%, #e0e0e0 75%)', backgroundSize: '20px 20px', backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0' }}
+                  <div
+                    className="p-4 flex items-center justify-center min-h-[250px]"
+                    style={{
+                      backgroundImage: 'linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e0e0e0 75%), linear-gradient(-45deg, transparent 75%, #e0e0e0 75%)',
+                      backgroundSize: '20px 20px',
+                      backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0',
+                    }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={result} alt="Background removed" className="max-h-64 max-w-full object-contain rounded" />

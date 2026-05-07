@@ -14,6 +14,7 @@ export default function ImageUpscalerPage() {
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string>('')
   const [result, setResult] = useState<string>('')
+  const [sizeInfo, setSizeInfo] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -55,6 +56,9 @@ export default function ImageUpscalerPage() {
         setError(data.error || 'Upscaling failed. Please try again.')
       } else {
         setResult(`data:image/png;base64,${data.image}`)
+        if (data.original_size && data.upscaled_size) {
+          setSizeInfo(`${data.original_size} → ${data.upscaled_size}`)
+        }
       }
     } catch {
       setError('Network error. Please check your connection.')
@@ -81,7 +85,7 @@ export default function ImageUpscalerPage() {
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-violet-50 rounded-full mb-4">
               <ZoomIn className="w-4 h-4 text-violet-600" />
-              <span className="text-sm font-medium text-violet-600">Swin2SR · 4× Super Resolution</span>
+              <span className="text-sm font-medium text-violet-600">LANCZOS + Sharpen · 4× Upscaling</span>
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-3">Image Upscaler</h1>
             <p className="text-gray-500 text-lg">Enhance and upscale images 4× with AI — free, no watermark</p>
@@ -167,7 +171,7 @@ export default function ImageUpscalerPage() {
               {result && (
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-                    <span className="text-sm font-semibold text-gray-600">Upscaled 4×</span>
+                    <span className="text-sm font-semibold text-gray-600">Upscaled 4× {sizeInfo && <span className="font-normal text-gray-400 text-xs">({sizeInfo})</span>}</span>
                     <button
                       onClick={handleDownload}
                       className="flex items-center gap-1 text-xs font-medium text-violet-600 hover:text-violet-800 transition"

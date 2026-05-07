@@ -1,6 +1,6 @@
-import requests
+import io
 import base64
-from django.conf import settings
+from PIL import Image
 from rest_framework.decorators import api_view, throttle_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -9,13 +9,12 @@ from rest_framework.throttling import AnonRateThrottle
 
 
 class UpscalerThrottle(AnonRateThrottle):
-    rate = '5/min'
+    rate = '10/min'
 
-
-HF_MODEL = 'caidas/swin2SR-realworld-sr-x4-64'
-HF_API_URL = f'https://api-inference.huggingface.co/models/{HF_MODEL}'
 
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
+MAX_DIMENSION = 2000              # px — limit input so 4x doesn't exceed 8000px
+SCALE = 4
 
 ALLOWED_TYPES = {'image/jpeg', 'image/jpg', 'image/png', 'image/webp'}
 
@@ -35,33 +34,35 @@ def upscale(request):
     if content_type not in ALLOWED_TYPES:
         return Response({'error': 'Unsupported format. Use JPEG, PNG, or WebP.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    token = settings.HF_API_TOKEN
-    if not token:
-        return Response({'error': 'Upscaling service not configured.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-    image_bytes = image_file.read()
-
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': content_type,
-    }
-
     try:
-        resp = requests.post(HF_API_URL, headers=headers, data=image_bytes, timeout=60)
-    except requests.Timeout:
-        return Response({'error': 'Request timed out. Please try a smaller image.'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
-    except requests.RequestException as e:
-        return Response({'error': f'Network error: {str(e)}'}, status=status.HTTP_502_BAD_GATEWAY)
+        img = Image.open(image_file)
+        img = img.convert('RGBA')
 
-    if resp.status_code == 503:
-        return Response({'error': 'Model is loading, please retry in 20 seconds.', 'loading': True}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        w, h = img.size
+        if w > MAX_DIMENSION or h > MAX_DIMENSION:
+            return Response(
+                {'error': f'Image too large. Maximum {MAX_DIMENSION}×{MAX_DIMENSION} px.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    if resp.status_code != 200:
-        return Response(
-            {'error': f'Upscaling failed ({resp.status_code}). Please try again.'},
-            status=status.HTTP_502_BAD_GATEWAY,
-        )
+        new_w, new_h = w * SCALE, h * SCALE
+        upscaled = img.resize((new_w, new_h), Image.LANCZOS)
 
-    # Response is binary PNG image
-    result_b64 = base64.b64encode(resp.content).decode('utf-8')
-    return Response({'image': result_b64, 'format': 'png'})
+        # Apply a mild unsharp mask to enhance details post-upscale
+        from PIL import ImageFilter
+        upscaled = upscaled.filter(ImageFilter.UnsharpMask(radius=1, percent=80, threshold=3))
+
+        buf = io.BytesIO()
+        upscaled.save(buf, format='PNG', optimize=True)
+        buf.seek(0)
+
+        result_b64 = base64.b64encode(buf.read()).decode('utf-8')
+        return Response({
+            'image': result_b64,
+            'format': 'png',
+            'original_size': f'{w}×{h}',
+            'upscaled_size': f'{new_w}×{new_h}',
+        })
+
+    except Exception as e:
+        return Response({'error': f'Upscaling failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
