@@ -13,7 +13,7 @@ class STTThrottle(AnonRateThrottle):
 
 
 HF_MODEL = 'openai/whisper-large-v3'
-HF_API_URL = f'https://api-inference.huggingface.co/models/{HF_MODEL}'
+HF_API_URL = f'https://router.huggingface.co/hf-inference/models/{HF_MODEL}'
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
