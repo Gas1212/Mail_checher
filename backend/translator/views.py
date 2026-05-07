@@ -40,7 +40,7 @@ def _hf_translate(text: str, src_code: str, tgt_code: str, token: str) -> str:
 
     import logging
     logger = logging.getLogger(__name__)
-    logger.warning(f'HF translate {src_code}→{tgt_code}: status={resp.status_code} body={resp.text[:200]}')
+    logger.warning(f'HF translate {src_code}→{tgt_code}: input_repr={repr(text[:30])} status={resp.status_code} body={resp.text[:200]}')
 
     if resp.status_code in (404, 400):
         # 404 = unknown model, 400 = "Model not supported by provider"
