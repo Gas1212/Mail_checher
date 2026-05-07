@@ -13,11 +13,10 @@ class STTThrottle(AnonRateThrottle):
 
 HF_BASE = 'https://router.huggingface.co/hf-inference/models'
 
-# Try models in order — largest/best first, fallback to smaller
+# Models tried in order; fallback if first is unavailable
 HF_MODELS = [
     'openai/whisper-large-v3-turbo',
     'openai/whisper-large-v3',
-    'openai/whisper-base',
 ]
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -25,35 +24,24 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 ALLOWED_TYPES = {
     'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/wave', 'audio/x-wav',
     'audio/ogg', 'audio/webm', 'audio/flac', 'audio/mp4', 'audio/m4a',
-    'audio/x-m4a', 'video/webm',
+    'audio/x-m4a', 'video/webm', 'audio/x-flac',
+}
+
+# Normalize browser/OS MIME types to what HF router accepts
+CT_NORMALIZE = {
+    'audio/mp3':   'audio/mpeg',
+    'audio/wave':  'audio/wav',
+    'audio/x-wav': 'audio/wav',
+    'video/webm':  'audio/webm',
+    'audio/x-m4a': 'audio/m4a',
+    'audio/x-flac': 'audio/flac',
 }
 
 
-def _normalize_content_type(ct: str) -> str:
-    """Strip codec params: 'audio/webm; codecs=opus' → 'audio/webm'"""
-    return ct.split(';')[0].strip()
-
-
-def _hf_transcribe(audio_bytes: bytes, content_type: str, token: str) -> str:
-    """Try each Whisper model in order; raises ValueError if none work."""
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': content_type,
-    }
-    last_error = ''
-    for model in HF_MODELS:
-        url = f'{HF_BASE}/{model}'
-        resp = requests.post(url, headers=headers, data=audio_bytes, timeout=60)
-        if resp.status_code == 200:
-            data = resp.json()
-            if 'text' in data:
-                return data['text']
-            raise ValueError(f'Unexpected response: {resp.text[:200]}')
-        if resp.status_code == 503:
-            raise RuntimeError('loading')
-        # 400 = model not supported on this provider — try next model
-        last_error = f'{resp.status_code}: {resp.text[:200]}'
-    raise ValueError(f'No working model found. Last error: {last_error}')
+def _normalize_ct(ct: str) -> str:
+    """Strip codec params and normalize to HF-accepted MIME type."""
+    base = ct.split(';')[0].strip().lower()
+    return CT_NORMALIZE.get(base, base)
 
 
 @api_view(['POST'])
@@ -68,26 +56,43 @@ def transcribe(request):
         return Response({'error': 'File too large. Maximum 10 MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
     raw_ct = audio_file.content_type or 'audio/mpeg'
-    content_type = _normalize_content_type(raw_ct)
-    if content_type not in ALLOWED_TYPES:
+    base_ct = raw_ct.split(';')[0].strip().lower()
+    if base_ct not in ALLOWED_TYPES:
         return Response({'error': f'Unsupported audio format: {raw_ct}.'}, status=status.HTTP_400_BAD_REQUEST)
 
+    hf_ct = _normalize_ct(raw_ct)
     token = settings.HF_API_TOKEN
     if not token:
         return Response({'error': 'Transcription service not configured.'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
     audio_bytes = audio_file.read()
+    headers = {'Authorization': f'Bearer {token}', 'Content-Type': hf_ct}
 
+    last_err = ''
     try:
-        text = _hf_transcribe(audio_bytes, content_type, token)
-        return Response({'text': text})
-    except RuntimeError:
-        return Response(
-            {'error': 'Model is loading, please retry in 20 seconds.', 'loading': True},
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
-        )
-    except ValueError as e:
-        return Response({'error': str(e)}, status=status.HTTP_502_BAD_GATEWAY)
+        for model in HF_MODELS:
+            resp = requests.post(f'{HF_BASE}/{model}', headers=headers, data=audio_bytes, timeout=60)
+
+            if resp.status_code == 200:
+                data = resp.json()
+                if 'text' in data:
+                    return Response({'text': data['text']})
+                return Response({'error': 'Unexpected response from transcription service.'}, status=status.HTTP_502_BAD_GATEWAY)
+
+            if resp.status_code == 503:
+                return Response({'error': 'Model is loading, please retry in 20 seconds.', 'loading': True}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+            err_body = resp.text[:300]
+            # "not supported by provider" → try next model
+            if resp.status_code == 400 and 'not supported' in err_body.lower():
+                last_err = err_body
+                continue
+
+            # Any other error (bad audio, etc.) → return immediately
+            return Response({'error': f'Transcription failed: {err_body}'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'error': f'No Whisper model available. {last_err}'}, status=status.HTTP_502_BAD_GATEWAY)
+
     except requests.Timeout:
         return Response({'error': 'Transcription timed out. Please try a shorter audio file.'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
     except requests.RequestException as e:
